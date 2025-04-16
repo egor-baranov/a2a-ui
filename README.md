@@ -1,7 +1,7 @@
 # A2A UI
 UI for Google A2A made using Next.js, Typescript and Shadcn
 
-<img width="1624" alt="image" src="https://github.com/user-attachments/assets/a4249f33-1385-408c-b63e-1eed43e9e23c" />
+<img width="1624" alt="image" src="https://github.com/user-attachments/assets/73572201-e0e5-46ab-8d6e-56ce543a6688" />
 
 
 # Make sure you've configured CORS policies correctly (for local use) 
