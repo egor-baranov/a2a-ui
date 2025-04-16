@@ -9,10 +9,16 @@ import {
 } from "@/components/ui/card";
 import {Input} from "@/components/ui/input";
 import {Textarea} from "@/components/ui/textarea";
-import {ArrowUp, LucideSidebar} from "lucide-react";
+import {ArrowUp, LucideScroll, LucideSidebar, Scroll, ScrollText} from "lucide-react";
 import {AgentCard, Task, TaskQueryParams, TaskSendParams, TextPart} from "@/a2a/schema";
 import {A2AClient} from "@/a2a/client";
 import {v4 as uuidv4} from "uuid";
+import ConversationListPage from "@/app/pages/ConversationListPage";
+import AgentListPage from "@/app/pages/AgentListPage";
+import EventListPage from "@/app/pages/EventList";
+import TaskListPage from "@/app/pages/TaskListPage";
+import SettingsPage from "@/app/pages/SettingsPage";
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 interface ChatMessage {
     id: number;
@@ -20,39 +26,13 @@ interface ChatMessage {
     content: string;
 }
 
-export default function AgentsPage() {
+export default function HomePage() {
     // Initialize with one default agent (using the sample JSON provided).
-    const [agents, setAgents] = useState<AgentCard[]>([
-        {
-            name: "SDE Agent",
-            description:
-                "This agent made by GitVerse helps with various software development tasks such as generating code, running tests, and refining solutions based on developer inputs.",
-            url: "http://localhost:10004/",
-            version: "1.0.0",
-            capabilities: {
-                streaming: true,
-                pushNotifications: false,
-                stateTransitionHistory: false,
-            },
-            defaultInputModes: ["text", "text/plain"],
-            defaultOutputModes: ["text", "text/plain"],
-            skills: [
-                {
-                    id: "sde_assistance",
-                    name: "SDE Assistant Tool",
-                    description:
-                        "Assists with software development tasks, including code generation, testing, and debugging.",
-                    tags: ["sde", "software_development", "code_generation", "testing"],
-                    examples: [
-                        "Generate Python code for a web scraper.",
-                        "Can you debug my JavaScript application?",
-                    ],
-                },
-            ],
-        },
-    ]);
+    const [agents, setAgents] = useState<AgentCard[]>([]);
 
-    const [selectedAgent, setSelectedAgent] = useState<AgentCard>(agents[0]);
+    const [activeTab, setActiveTab] = useState<"chat" | "chats" | "agents" | "events" | "tasks" | "settings">("chats");
+
+    const [selectedAgent, setSelectedAgent] = useState<AgentCard | null>(agents[0]);
     const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
         {
             id: 1,
@@ -78,7 +58,7 @@ export default function AgentsPage() {
         ]);
         setNewChatMessage("");
 
-        const client = new A2AClient(selectedAgent.url, window.fetch.bind(window));
+        const client = new A2AClient(selectedAgent!!.url, window.fetch.bind(window));
         try {
             // Send a simple task (pass only params)
             const taskId = uuidv4();
@@ -147,11 +127,50 @@ export default function AgentsPage() {
     return (
         <div className="h-screen flex flex-col overflow-hidden">
             {/* Header */}
-            <header className="bg-white border-b p-4">
-                <h1 className="text-xl font-bold">A2A UI</h1>
+
+            <header className="bg-white border-b p-4 flex items-center justify-between">
+                <h1 className="pl-12 text-xl font-bold">A2A UI</h1>
+
+                <nav className="space-x-8 pr-16">
+                    <Button
+                        variant={activeTab === "chats" || activeTab == "chat" ? "default" : "ghost"}
+                        className="text-md cursor-pointer"
+                        onClick={() => setActiveTab("chats")}
+                    >
+                        Conversations
+                    </Button>
+                    <Button
+                        variant={activeTab === "agents" ? "default" : "ghost"}
+                        className="text-md cursor-pointer"
+                        onClick={() => setActiveTab("agents")}
+                    >
+                        Agents
+                    </Button>
+                    <Button
+                        variant={activeTab === "events" ? "default" : "ghost"}
+                        className="text-md cursor-pointer"
+                        onClick={() => setActiveTab("events")}
+                    >
+                        Event List
+                    </Button>
+                    <Button
+                        variant={activeTab === "tasks" ? "default" : "ghost"}
+                        className="text-md cursor-pointer"
+                        onClick={() => setActiveTab("tasks")}
+                    >
+                        Task List
+                    </Button>
+                    <Button
+                        variant={activeTab === "settings" ? "default" : "ghost"}
+                        className="text-md cursor-pointer"
+                        onClick={() => setActiveTab("settings")}
+                    >
+                        Settings
+                    </Button>
+                </nav>
             </header>
 
-            <main className="flex flex-1">
+            {activeTab == "chat" && (<main className="flex flex-1">
                 {/* Left Sidebar: Agent List */}
                 {showAgentList ? (
                     <aside className="w-64 border-r p-4 relative flex flex-col">
@@ -180,7 +199,7 @@ export default function AgentsPage() {
                                 <li
                                     key={index}
                                     className={`p-2 rounded cursor-pointer hover:bg-gray-100 ${
-                                        selectedAgent.name === agent.name ? "bg-gray-200" : ""
+                                        selectedAgent?.name === agent.name ? "bg-gray-200" : ""
                                     }`}
                                     onClick={() => setSelectedAgent(agent)}
                                 >
@@ -201,25 +220,27 @@ export default function AgentsPage() {
                     </div>
                 )}
 
-                {/* Center Chat Section: Full Width Conversation */}
-                <section className="flex-1 flex flex-col p-4 gap-4">
-                    <Card className="flex-1 flex flex-col">
-                        <CardContent className="flex-1 overflow-y-auto space-y-3 px-6">
-                            {chatMessages.map((message) => (
-                                <div
-                                    key={message.id}
-                                    className={`p-3 text-sm whitespace-pre-wrap break-words px-4 ${
-                                        message.sender === "user"
-                                            ? "bg-gray-100 rounded-xl ml-auto text-left max-w-[50%] w-fit"
-                                            : "bg-white rounded-md self-start text-left w-full"
-                                    }`}
-                                >
-                                    {message.content}
-                                </div>
-                            ))}
+                {selectedAgent != null && (<section className="flex flex-col w-full h-full p-4 gap-4">
+                    <Card className="flex flex-col w-full h-full">
+                        {/* Message container that occupies full space and hides overflow */}
+                        <CardContent className="flex-1 overflow-hidden w-full">
+                            <ScrollArea className="w-full h-[620px]">
+                                {chatMessages.map((message) => (
+                                    <div
+                                        key={message.id}
+                                        className={`p-3 text-sm whitespace-pre-wrap break-words px-4 ${
+                                            message.sender === "user"
+                                                ? "bg-gray-100 rounded-xl ml-auto text-left max-w-[50%] w-fit"
+                                                : "bg-white rounded-md self-start text-left w-full"
+                                        }`}
+                                    >
+                                        {message.content}
+                                    </div>
+                                ))}
+                            </ScrollArea>
                         </CardContent>
-                        {/* Chat Input Area positioned at the bottom */}
-                        <div className="mt-auto border-t px-6 pt-6">
+                        {/* Input area remains fixed at the bottom */}
+                        <div className="border-t px-6 pt-6 w-full">
                             <div className="relative">
                                 <Textarea
                                     placeholder="Ask anything"
@@ -232,15 +253,16 @@ export default function AgentsPage() {
                                     size="icon"
                                     className="absolute bottom-2 right-2 rounded-full h-8 w-8 p-0 cursor-pointer"
                                 >
-                                    <ArrowUp className="h-4 w-4"/>
+                                    <ArrowUp className="h-4 w-4" />
                                 </Button>
                             </div>
                         </div>
                     </Card>
-                </section>
+                </section>)}
+
 
                 {/* Right Sidebar: Agent Details */}
-                {showAgentDetails ? (
+                {showAgentDetails && selectedAgent ? (
                     <aside className="w-96 border-l relative flex flex-col h-full">
                         <div className="absolute top-2 left-2">
                             <Button
@@ -328,6 +350,21 @@ export default function AgentsPage() {
                     </div>
                 )}
 
+            </main>)}
+
+            <main className="flex-grow overflow-auto px-16 pt-8">
+                {activeTab == "chats" && <ConversationListPage/>}
+                {activeTab == "agents" && <AgentListPage/>}
+                {activeTab == "events" && <EventListPage/>}
+                {activeTab == "tasks" && <TaskListPage/>}
+                {activeTab == "settings" && <SettingsPage/>}
+                {activeTab == "chats" && <Button
+                    variant={"default"}
+                    className="text-md cursor-pointer"
+                    onClick={() => setActiveTab("chat")}
+                >
+                    Open Chat
+                </Button>}
             </main>
 
             {/* New Agent Modal Overlay (Paste URL and fetch JSON to create new agent) */}
