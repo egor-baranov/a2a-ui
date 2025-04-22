@@ -18,7 +18,9 @@ import AgentListPage from "@/app/pages/AgentListPage";
 import EventListPage from "@/app/pages/EventList";
 import TaskListPage from "@/app/pages/TaskListPage";
 import SettingsPage from "@/app/pages/SettingsPage";
-import { ScrollArea } from "@/components/ui/scroll-area"
+import {ScrollArea} from "@/components/ui/scroll-area"
+import {StateConversation} from "@/a2a/state";
+import {useHostState} from "@/a2a/state/host/hostStateContext";
 
 interface ChatMessage {
     id: number;
@@ -32,6 +34,8 @@ export default function HomePage() {
 
     const [activeTab, setActiveTab] = useState<"chat" | "chats" | "agents" | "events" | "tasks" | "settings">("chats");
 
+    const [hostState, setHostState] = useHostState();
+
     const [selectedAgent, setSelectedAgent] = useState<AgentCard | null>(agents[0]);
     const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
         {
@@ -40,13 +44,11 @@ export default function HomePage() {
             content: "Hello, I am your agent. How can I assist you today?",
         }
     ]);
-    const [newChatMessage, setNewChatMessage] = useState<string>("");
-    const [showAgentList, setShowAgentList] = useState(true);
-    const [showAgentDetails, setShowAgentDetails] = useState(true);
-    const [showNewAgentModal, setShowNewAgentModal] = useState(false);
 
-    // Instead of a form with multiple fields, we now accept only a URL.
-    const [newAgentUrl, setNewAgentUrl] = useState<string>("");
+    const [conversation, setConversation] = useState<StateConversation | null>(null);
+
+    const [newChatMessage, setNewChatMessage] = useState<string>("");
+    const [showAgentDetails, setShowAgentDetails] = useState(true);
 
     // Handler for sending messages in the chat.
     const handleSendMessage = async () => {
@@ -58,7 +60,7 @@ export default function HomePage() {
         ]);
         setNewChatMessage("");
 
-        const client = new A2AClient(selectedAgent!!.url, window.fetch.bind(window));
+        const client = new A2AClient(hostState.agents.first!!.url, window.fetch.bind(window));
         try {
             // Send a simple task (pass only params)
             const taskId = uuidv4();
@@ -87,40 +89,6 @@ export default function HomePage() {
             ]);
         } catch (error) {
             console.error("A2A Client Error:", error);
-        }
-    };
-
-    // Handler for creating a new agent from the modal.
-    const handleCreateNewAgent = async () => {
-        const rawUrl = newAgentUrl.trim();
-        if (!rawUrl) return;
-
-        try {
-            // Assuming AgentCard is a TypeScript type for your agent data
-            const newAgent: AgentCard = await new A2AClient(
-                newAgentUrl,
-                window.fetch.bind(window)
-            ).agentCard();
-
-            // Update state with the new agent
-            setAgents((prev) => [...prev, newAgent]);
-            setSelectedAgent(newAgent);
-
-            // Add a default greeting message
-            setChatMessages([
-                {
-                    id: 1,
-                    sender: "agent",
-                    content: `Hello, I am your new agent "${newAgent.name}". How can I assist you today?`,
-                },
-            ]);
-
-            // Reset new agent URL and close the modal
-            setNewAgentUrl("");
-            setShowNewAgentModal(false);
-        } catch (error) {
-            console.error("Error fetching agent data:", error);
-            alert(`Failed to fetch agent. Check the URL and try again: ${error}.`);
         }
     };
 
@@ -171,56 +139,7 @@ export default function HomePage() {
             </header>
 
             {activeTab == "chat" && (<main className="flex flex-1">
-                {/* Left Sidebar: Agent List */}
-                {showAgentList ? (
-                    <aside className="w-64 border-r p-4 relative flex flex-col">
-                        {/* Sidebar toggle icon (pinned to top) */}
-                        <div className="absolute top-2 right-2">
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => setShowAgentList(false)}
-                            >
-                                <LucideSidebar className="w-5 h-5"/>
-                            </Button>
-                        </div>
-                        <h2 className="text-lg font-semibold mt-8 mb-4 px-2">Remote Agents</h2>
-                        {/* New Agent Button appears below icon */}
-                        <div className="mt-4 mb-6">
-                            <Button
-                                className="w-full cursor-pointer"
-                                onClick={() => setShowNewAgentModal(true)}
-                            >
-                                Add Agent
-                            </Button>
-                        </div>
-                        <ul className="flex-1 overflow-y-auto">
-                            {agents.map((agent, index) => (
-                                <li
-                                    key={index}
-                                    className={`p-2 rounded cursor-pointer hover:bg-gray-100 ${
-                                        selectedAgent?.name === agent.name ? "bg-gray-200" : ""
-                                    }`}
-                                    onClick={() => setSelectedAgent(agent)}
-                                >
-                                    {agent.name}
-                                </li>
-                            ))}
-                        </ul>
-                    </aside>
-                ) : (
-                    <div className="w-12 cursor-pointer flex items-start justify-center pt-2 border-r">
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => setShowAgentList(true)}
-                        >
-                            <LucideSidebar className="w-5 h-5"/>
-                        </Button>
-                    </div>
-                )}
-
-                {selectedAgent != null && (<section className="flex flex-col w-full h-full p-4 gap-4">
+                {(<section className="flex flex-col w-full h-full p-4 gap-4">
                     <Card className="flex flex-col w-full h-full">
                         {/* Message container that occupies full space and hides overflow */}
                         <CardContent className="flex-1 overflow-hidden w-full">
@@ -246,14 +165,14 @@ export default function HomePage() {
                                     placeholder="Ask anything"
                                     value={newChatMessage}
                                     onChange={(e) => setNewChatMessage(e.target.value)}
-                                    className="w-full pr-10 pt-5 px-4 pb-4 rounded-2xl shadow-md resize-none"
+                                    className="w-full pr-10 pt-5 px-4 pb-4 rounded-2xl shadow-md resize-none focus-visible:ring-0 min-h-auto overflow-auto max-h-80 resize-none"
                                 />
                                 <Button
                                     onClick={handleSendMessage}
                                     size="icon"
                                     className="absolute bottom-2 right-2 rounded-full h-8 w-8 p-0 cursor-pointer"
                                 >
-                                    <ArrowUp className="h-4 w-4" />
+                                    <ArrowUp className="h-4 w-4"/>
                                 </Button>
                             </div>
                         </div>
@@ -262,7 +181,7 @@ export default function HomePage() {
 
 
                 {/* Right Sidebar: Agent Details */}
-                {showAgentDetails && selectedAgent ? (
+                {showAgentDetails && hostState.agents.first ? (
                     <aside className="w-96 border-l relative flex flex-col h-full">
                         <div className="absolute top-2 left-2">
                             <Button
@@ -279,19 +198,19 @@ export default function HomePage() {
                             <div>
                                 <label className="block text-sm font-medium mb-1">Name</label>
                                 <Input
-                                    value={selectedAgent.name}
+                                    value={hostState.agents.first}
                                     onChange={(e) =>
-                                        setSelectedAgent({...selectedAgent, name: e.target.value})
+                                        setSelectedAgent({...hostState.agents.first, name: e.target.value})
                                     }
                                 />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium mb-1">Description</label>
                                 <Textarea
-                                    value={selectedAgent.description ?? ""}
+                                    value={hostState.agents.first.description ?? ""}
                                     onChange={(e) =>
                                         setSelectedAgent({
-                                            ...selectedAgent,
+                                            ...hostState.agents.first,
                                             description: e.target.value,
                                         })
                                     }
@@ -300,16 +219,16 @@ export default function HomePage() {
                             <div>
                                 <label className="block text-sm font-medium mb-1">URL</label>
                                 <Input
-                                    value={selectedAgent.url}
+                                    value={hostState.agents.first.url}
                                     onChange={(e) =>
-                                        setSelectedAgent({...selectedAgent, url: e.target.value})
+                                        setSelectedAgent({...hostState.agents.first, url: e.target.value})
                                     }
                                 />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium mb-1">Skills</label>
                                 <Textarea
-                                    value={selectedAgent.skills
+                                    value={hostState.agents.first.skills
                                         .map(
                                             (s) =>
                                                 `${s.name}: ${s.description} (${s.tags!.join(", ")})`
@@ -321,9 +240,9 @@ export default function HomePage() {
                             <div>
                                 <label className="block text-sm font-medium mb-1">Version</label>
                                 <Input
-                                    value={selectedAgent.version}
+                                    value={hostState.agents.first.version}
                                     onChange={(e) =>
-                                        setSelectedAgent({...selectedAgent, version: e.target.value})
+                                        setSelectedAgent({...hostState.agents.first, version: e.target.value})
                                     }
                                 />
                             </div>
@@ -332,7 +251,7 @@ export default function HomePage() {
                                     Capabilities (streaming, pushNotifications, stateTransitionHistory)
                                 </label>
                                 <Input
-                                    value={`streaming: ${selectedAgent.capabilities.streaming}, pushNotifications: ${selectedAgent.capabilities.pushNotifications}, stateTransitionHistory: ${selectedAgent.capabilities.stateTransitionHistory}`}
+                                    value={`streaming: ${hostState.agents.first.capabilities.streaming}, pushNotifications: ${hostState.agents.first.capabilities.pushNotifications}, stateTransitionHistory: ${hostState.agents.first.capabilities.stateTransitionHistory}`}
                                     disabled
                                 />
                             </div>
@@ -353,46 +272,17 @@ export default function HomePage() {
             </main>)}
 
             <main className="flex-grow overflow-auto px-16 pt-8">
-                {activeTab == "chats" && <ConversationListPage/>}
+                {activeTab == "chats" && <ConversationListPage openConversation={
+                    (conversation) => {
+                        setConversation(conversation);
+                        setActiveTab("chat");
+                    }
+                }/>}
                 {activeTab == "agents" && <AgentListPage/>}
                 {activeTab == "events" && <EventListPage/>}
                 {activeTab == "tasks" && <TaskListPage/>}
                 {activeTab == "settings" && <SettingsPage/>}
-                {activeTab == "chats" && <Button
-                    variant={"default"}
-                    className="text-md cursor-pointer"
-                    onClick={() => setActiveTab("chat")}
-                >
-                    Open Chat
-                </Button>}
             </main>
-
-            {/* New Agent Modal Overlay (Paste URL and fetch JSON to create new agent) */}
-            {showNewAgentModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-                    <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
-                        <h3 className="text-xl font-semibold mb-4">Create New Agent</h3>
-                        <div className="space-y-4">
-                            <div>
-                                <label className="block text-sm font-medium mb-1">
-                                    Agent URL
-                                </label>
-                                <Input
-                                    value={newAgentUrl}
-                                    onChange={(e) => setNewAgentUrl(e.target.value)}
-                                    placeholder="http://localhost:10004"
-                                />
-                            </div>
-                        </div>
-                        <div className="mt-6 flex justify-end space-x-2">
-                            <Button variant="outline" onClick={() => setShowNewAgentModal(false)}>
-                                Cancel
-                            </Button>
-                            <Button onClick={handleCreateNewAgent}>Create Agent</Button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }
