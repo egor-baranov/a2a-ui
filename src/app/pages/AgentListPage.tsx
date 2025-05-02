@@ -22,7 +22,7 @@ export default function AgentListPage() {
     const [showAgentList, setShowAgentList] = useState(true);
     const [selectedAgent, setSelectedAgent] = useState<AgentCard | null>(agents[0]);
 
-    const [hostState, setHostState] = useHostState();
+    const {hostState, setHostState} = useHostState();
     const [showNewAgentModal, setShowNewAgentModal] = useState(false);
 
     // Instead of a form with multiple fields, we now accept only a URL.
@@ -42,8 +42,10 @@ export default function AgentListPage() {
 
             // Update state with the new agent
             setAgents((prev) => [...prev, newAgent]);
-            hostState.agents = [...hostState.agents, newAgent];
-            setHostState(hostState);
+            setHostState({
+                ...hostState,
+                hosts: [...hostState.hosts, newAgent]
+            });
             setSelectedAgent(newAgent);
 
             // Reset new agent URL and close the modal
@@ -60,7 +62,7 @@ export default function AgentListPage() {
             <div className="flex items-center justify-between mb-8">
                 {/* Left block: heading + description */}
                 <div>
-                    <h2 className="text-2xl font-semibold">Agents</h2>
+                    <h2 className="text-2xl font-semibold">Hosts</h2>
                     <p className="text-muted-foreground">
                         This is the page where you can manage agents and their workflows.
                     </p>
@@ -79,7 +81,7 @@ export default function AgentListPage() {
                 </Button>
             </div>
             <div className="space-y-4">
-                {agents.map((agent, index) => (
+                {hostState.hosts.map((agent, index) => (
                     <Card key={agent.url} className="py-3 px-6">
 
                         <CardContent className="p-0 flex justify-between items-center text-sm">

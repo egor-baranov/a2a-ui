@@ -34,7 +34,7 @@ export default function HomePage() {
 
     const [activeTab, setActiveTab] = useState<"chat" | "chats" | "agents" | "events" | "tasks" | "settings">("chats");
 
-    const [hostState, setHostState] = useHostState();
+    const {hostState, setHostState} = useHostState();
 
     const [selectedAgent, setSelectedAgent] = useState<AgentCard | null>(agents[0]);
     const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
@@ -60,7 +60,7 @@ export default function HomePage() {
         ]);
         setNewChatMessage("");
 
-        const client = new A2AClient(hostState.agents.first!!.url, window.fetch.bind(window));
+        const client = new A2AClient(hostState.hosts[0]!!.url, window.fetch.bind(window));
         try {
             // Send a simple task (pass only params)
             const taskId = uuidv4();
@@ -143,7 +143,7 @@ export default function HomePage() {
                     <Card className="flex flex-col w-full h-full">
                         {/* Message container that occupies full space and hides overflow */}
                         <CardContent className="flex-1 overflow-hidden w-full">
-                            <ScrollArea className="w-full h-[620px]">
+                            <ScrollArea className="w-full h-[1100px]">
                                 {chatMessages.map((message) => (
                                     <div
                                         key={message.id}
@@ -181,7 +181,7 @@ export default function HomePage() {
 
 
                 {/* Right Sidebar: Agent Details */}
-                {showAgentDetails && hostState.agents.first ? (
+                {showAgentDetails && hostState.hosts.length > 0 ? (
                     <aside className="w-96 border-l relative flex flex-col h-full">
                         <div className="absolute top-2 left-2">
                             <Button
@@ -198,19 +198,19 @@ export default function HomePage() {
                             <div>
                                 <label className="block text-sm font-medium mb-1">Name</label>
                                 <Input
-                                    value={hostState.agents.first}
+                                    value={hostState.hosts[0]!!.url}
                                     onChange={(e) =>
-                                        setSelectedAgent({...hostState.agents.first, name: e.target.value})
+                                        setSelectedAgent({...hostState.hosts[0]!!, name: e.target.value})
                                     }
                                 />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium mb-1">Description</label>
                                 <Textarea
-                                    value={hostState.agents.first.description ?? ""}
+                                    value={hostState.hosts[0].description ?? ""}
                                     onChange={(e) =>
                                         setSelectedAgent({
-                                            ...hostState.agents.first,
+                                            ...hostState.hosts[0],
                                             description: e.target.value,
                                         })
                                     }
@@ -219,16 +219,16 @@ export default function HomePage() {
                             <div>
                                 <label className="block text-sm font-medium mb-1">URL</label>
                                 <Input
-                                    value={hostState.agents.first.url}
+                                    value={hostState.hosts[0].url}
                                     onChange={(e) =>
-                                        setSelectedAgent({...hostState.agents.first, url: e.target.value})
+                                        setSelectedAgent({...hostState.hosts[0], url: e.target.value})
                                     }
                                 />
                             </div>
                             <div>
                                 <label className="block text-sm font-medium mb-1">Skills</label>
                                 <Textarea
-                                    value={hostState.agents.first.skills
+                                    value={hostState.hosts[0].skills
                                         .map(
                                             (s) =>
                                                 `${s.name}: ${s.description} (${s.tags!.join(", ")})`
@@ -240,9 +240,9 @@ export default function HomePage() {
                             <div>
                                 <label className="block text-sm font-medium mb-1">Version</label>
                                 <Input
-                                    value={hostState.agents.first.version}
+                                    value={hostState.hosts[0].version}
                                     onChange={(e) =>
-                                        setSelectedAgent({...hostState.agents.first, version: e.target.value})
+                                        setSelectedAgent({...hostState.hosts[0], version: e.target.value})
                                     }
                                 />
                             </div>
@@ -251,7 +251,7 @@ export default function HomePage() {
                                     Capabilities (streaming, pushNotifications, stateTransitionHistory)
                                 </label>
                                 <Input
-                                    value={`streaming: ${hostState.agents.first.capabilities.streaming}, pushNotifications: ${hostState.agents.first.capabilities.pushNotifications}, stateTransitionHistory: ${hostState.agents.first.capabilities.stateTransitionHistory}`}
+                                    value={`streaming: ${hostState.hosts[0].capabilities.streaming}, pushNotifications: ${hostState.hosts[0].capabilities.pushNotifications}, stateTransitionHistory: ${hostState.hosts[0].capabilities.stateTransitionHistory}`}
                                     disabled
                                 />
                             </div>
