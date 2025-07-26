@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Copy, Edit, Download } from "lucide-react";
 
 interface SvgGridProps {
@@ -9,6 +9,8 @@ interface SvgGridProps {
 }
 
 export default function SvgGrid({ svgResults, loading }: SvgGridProps) {
+	const [activeIndex, setActiveIndex] = useState<number | null>(null);
+
 	const copyToClipboard = (svg: string) => {
 		navigator.clipboard.writeText(svg);
 	};
@@ -27,11 +29,16 @@ export default function SvgGrid({ svgResults, loading }: SvgGridProps) {
 		alert("Edit feature not implemented yet");
 	};
 
+	const handleTap = (index: number) => {
+		setActiveIndex((prev) => (prev === index ? null : index));
+	};
+
 	return (
 		<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
 			{svgResults.map((svg, idx) => (
 				<div
 					key={idx}
+					onClick={() => handleTap(idx)}
 					className="group aspect-square rounded-2xl bg-gray-50 border overflow-hidden p-4 flex flex-col items-center justify-center relative"
 				>
 					{svg === null ? (
@@ -41,32 +48,42 @@ export default function SvgGrid({ svgResults, loading }: SvgGridProps) {
 							<object
 								type="image/svg+xml"
 								data={`data:image/svg+xml;utf8,${encodeURIComponent(svg)}`}
-								className="max-w-full max-h-full flex-grow"
+								className="max-w-full max-h-full flex-grow pointer-events-none"
 							/>
 							<div
-								className="
-                  absolute bottom-2 right-2 flex gap-2
-                  bg-white bg-opacity-80 rounded-md p-1 shadow-md
-                  opacity-0 group-hover:opacity-100
-                  transition-opacity duration-200
-                "
+								className={`
+									absolute bottom-2 right-2 flex gap-2
+									bg-white bg-opacity-80 rounded-md p-1 shadow-md
+									transition-opacity duration-200
+									opacity-0 group-hover:opacity-100
+									${activeIndex === idx ? "opacity-100" : ""}
+								`}
 							>
 								<button
-									onClick={() => copyToClipboard(svg)}
+									onClick={(e) => {
+										e.stopPropagation();
+										copyToClipboard(svg);
+									}}
 									aria-label="Copy SVG"
 									className="p-1 hover:bg-gray-200 rounded"
 								>
 									<Copy className="w-4 h-4" />
 								</button>
 								<button
-									onClick={() => handleEdit(svg)}
+									onClick={(e) => {
+										e.stopPropagation();
+										handleEdit(svg);
+									}}
 									aria-label="Edit SVG"
 									className="p-1 hover:bg-gray-200 rounded"
 								>
 									<Edit className="w-4 h-4" />
 								</button>
 								<button
-									onClick={() => downloadSVG(svg)}
+									onClick={(e) => {
+										e.stopPropagation();
+										downloadSVG(svg);
+									}}
 									aria-label="Download SVG"
 									className="p-1 hover:bg-gray-200 rounded"
 								>

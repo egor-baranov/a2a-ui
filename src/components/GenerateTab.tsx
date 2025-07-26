@@ -8,62 +8,70 @@ import { Badge } from "@/components/ui/badge";
 import SvgGrid from "@/components/SvgGrid";
 import type { components } from "@/types/api-types";
 
-const presets = ["App Logo", "Search Icon", "SVG Image", "Improve Icon"];
+const presets    = ["App Logo", "Search Icon", "SVG Image", "Improve Icon"];
+const quantities = [1, 2, 3, 5, 7, 10];
 
 type SVGGenerationRequest = components["schemas"]["SVGGenerationRequest"];
 
 export default function GenerateTab() {
 	const [newMessage, setNewMessage] = useState("");
-	const [svgResults, setSvgResults] = useState<(string | null)[]>([]);
-	const [loading, setLoading] = useState(false);
+	const [quantity,   setQuantity]   = useState<number>(1);
+	const [svgResults, setSvgResults] = useState<string[]>([]);
+	const [loading,    setLoading]    = useState(false);
 
-	const handleSend = async () => {
-		if (!newMessage.trim()) return;
-
-		setSvgResults((prev) => [...prev, null]); // Add loading placeholder
-		setLoading(true);
-
+	// helper that always returns one SVG string (or throws)
+	const fetchOneSvg = async (): Promise<string> => {
 		const payload: SVGGenerationRequest = {
 			prompt: newMessage,
 			size: "1024x1024",
 			style: "vector_illustration",
 			aspect_ratio: "Not set",
-		};
+			quantity: 1,
+		} as any;
 
-		setNewMessage("");
-
-		try {
-			const res = await fetch("https://svgen-backend-production.up.railway.app/v1/svg", {
+		const res = await fetch(
+			"https://svgen-backend-production.up.railway.app/v1/svg",
+			{
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify(payload),
-			});
-
-			if (!res.ok) {
-				const errorText = await res.text().catch(() => "<unable to read>");
-				throw new Error(`HTTP ${res.status} ${res.statusText}: ${errorText}`);
 			}
+		);
+		if (!res.ok) {
+			const txt = await res.text().catch(() => "<unable to read>");
+			throw new Error(`HTTP ${res.status}: ${txt}`);
+		}
+		const json = await res.json();
+		// API sometimes returns a single string or array of one
+		const svg = Array.isArray(json.svg) ? json.svg[0] : json.svg;
+		return svg as string;
+	};
 
-			const json = await res.json();
-			const svg = typeof json.svg === "string" ? json.svg : JSON.stringify(json);
+	const handleSend = async () => {
+		if (!newMessage.trim()) return;
 
-			setSvgResults((prev) => {
-				const updated = [...prev];
-				const nullIndex = updated.lastIndexOf(null);
-				if (nullIndex !== -1) updated[nullIndex] = svg;
-				return updated;
-			});
-		} catch (error: any) {
-			console.error("SVG Generation Failed:", error);
+		setLoading(true);
+		setNewMessage("");
+		// pre-fill placeholders so grid doesn't collapse
+		setSvgResults(Array(quantity).fill(""));
 
-			setSvgResults((prev) => {
-				const updated = [...prev];
-				const nullIndex = updated.lastIndexOf(null);
-				if (nullIndex !== -1)
-					updated[nullIndex] =
-						'<svg height="2500" width="2158" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 950"><path d="..."/></svg>';
-				return updated;
-			});
+		try {
+			// fire `quantity` independent calls
+			const svgs = await Promise.all(
+				Array.from({ length: quantity }, () =>
+					fetchOneSvg().catch((_) =>
+						`<svg xmlns="http://www.w3.org/2000/svg"><text x="0" y="15">Error</text></svg>`
+					)
+				)
+			);
+			setSvgResults(svgs);
+		} catch {
+			// shouldn't get here, but just in case
+			setSvgResults(
+				Array(quantity).fill(
+					`<svg xmlns="http://www.w3.org/2000/svg"><text x="0" y="15">Error</text></svg>`
+				)
+			);
 		} finally {
 			setLoading(false);
 		}
@@ -71,44 +79,65 @@ export default function GenerateTab() {
 
 	return (
 		<div className="w-full max-w-5xl mx-auto space-y-6">
-			{/* Input area */}
-			<div className="relative">
-				<Button
-					onClick={handleSend}
-					size="icon"
-					variant="ghost"
-					className="absolute bottom-2 right-12 rounded-full h-8 w-8 p-0 cursor-pointer bg-none"
-					aria-label="Attach"
-				>
-					<Paperclip className="h-4 w-4" />
-				</Button>
+			{/* Controls */}
+			<div className="flex flex-wrap items-center gap-4">
+				<div className="relative flex-1">
+					<select
+						id="quantity"
+						value={quantity}
+						onChange={(e) => setQuantity(Number(e.target.value))}
+						className="rounded-lg border px-2 py-1 border-none focus:outline-none focus:ring-0 absolute bottom-2 right-24"
+					>
+						{quantities.map((q) => (
+							<option key={q} value={q}>
+								{q}
+							</option>
+						))}
+					</select>
 
-				<Textarea
-					placeholder="Enter your instructions"
-					value={newMessage}
-					onChange={(e) => setNewMessage(e.target.value)}
-					className="bg-gray-100 w-full pr-10 pt-5 px-4 pb-4 rounded-2xl shadow-none focus:outline-none focus-visible:ring-0 min-h-auto overflow-auto max-h-80 resize-none"
-				/>
-				<Button
-					onClick={handleSend}
-					size="icon"
-					className="absolute bottom-2 right-2 rounded-full h-8 w-8 p-0 cursor-pointer"
-					aria-label="Send"
-				>
-					<ArrowUp className="h-4 w-4" />
-				</Button>
+					<Button
+						onClick={handleSend}
+						size="icon"
+						variant="ghost"
+						className="absolute bottom-2 right-12 rounded-full h-8 w-8 p-0"
+						aria-label="Attach"
+					>
+						<Paperclip className="h-4 w-4" />
+					</Button>
+
+					<Textarea
+						placeholder="Enter your instructions"
+						value={newMessage}
+						onChange={(e) => setNewMessage(e.target.value)}
+						className="bg-gray-100 w-full pr-10 pt-5 px-4 pb-4 rounded-2xl focus:outline-none focus-visible:ring-0 max-h-80 resize-none"
+					/>
+
+					<Button
+						onClick={handleSend}
+						size="icon"
+						className="absolute bottom-2 right-2 rounded-full h-8 w-8 p-0"
+						aria-label="Send"
+					>
+						<ArrowUp className="h-4 w-4" />
+					</Button>
+				</div>
 			</div>
 
 			{/* Presets */}
 			<div className="flex flex-wrap justify-center gap-3">
 				{presets.map((p, i) => (
-					<Badge key={i} variant="outline" className="cursor-pointer text-md px-4 py-2 rounded-2xl" onClick={() => setNewMessage(p)}>
+					<Badge
+						key={i}
+						variant="outline"
+						className="cursor-pointer text-sm px-2 py-1 rounded-2xl"
+						onClick={() => setNewMessage(p)}
+					>
 						{p}
 					</Badge>
 				))}
 			</div>
 
-			{/* SVG results grid */}
+			{/* SVG Results Grid */}
 			<SvgGrid svgResults={svgResults} loading={loading} />
 		</div>
 	);
