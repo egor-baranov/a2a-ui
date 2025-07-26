@@ -2,8 +2,6 @@ import type {Metadata} from "next";
 import {Geist, Geist_Mono} from "next/font/google";
 import "./globals.css";
 import React from "react";
-import {AgentStateProvider} from "@/a2a/state/agent/agentStateContext";
-import {Providers} from "@/app/providers";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -29,9 +27,7 @@ export default function RootLayout({
         <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {/* Wrap your entire app with AgentStateProvider */}
-        <Providers>
-            {children}
-        </Providers>
+        {children}
         </body>
         </html>
     );
