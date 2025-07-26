@@ -12,17 +12,18 @@ const presets    = ["App Logo", "Search Icon", "SVG Image", "Improve Icon"];
 const quantities = [1, 2, 3, 5, 7, 10];
 
 type SVGGenerationRequest = components["schemas"]["SVGGenerationRequest"];
+type Result = { svg: string; prompt: string };
 
 export default function GenerateTab() {
 	const [newMessage, setNewMessage] = useState("");
 	const [quantity,   setQuantity]   = useState<number>(1);
-	const [svgResults, setSvgResults] = useState<string[]>([]);
+	const [svgResults, setSvgResults] = useState<Result[]>([]);
 	const [loading,    setLoading]    = useState(false);
 
-	// helper that always returns one SVG string (or throws)
-	const fetchOneSvg = async (): Promise<string> => {
+	// helper that returns one SVG string (or throws)
+	const fetchOneSvg = async (prompt: string): Promise<string> => {
 		const payload: SVGGenerationRequest = {
-			prompt: newMessage,
+			prompt,
 			size: "1024x1024",
 			style: "vector_illustration",
 			aspect_ratio: "Not set",
@@ -42,35 +43,43 @@ export default function GenerateTab() {
 			throw new Error(`HTTP ${res.status}: ${txt}`);
 		}
 		const json = await res.json();
-		// API sometimes returns a single string or array of one
 		const svg = Array.isArray(json.svg) ? json.svg[0] : json.svg;
 		return svg as string;
 	};
 
 	const handleSend = async () => {
-		if (!newMessage.trim()) return;
+		const prompt = newMessage.trim();
+		if (!prompt) return;
 
 		setLoading(true);
 		setNewMessage("");
-		// pre-fill placeholders so grid doesn't collapse
-		setSvgResults(Array(quantity).fill(""));
+
+		// pre-fill placeholders so grid keeps layout
+		const placeholders: Result[] = Array.from({ length: quantity }, () => ({
+			svg: "",
+			prompt
+		}));
+		setSvgResults(placeholders);
 
 		try {
-			// fire `quantity` independent calls
 			const svgs = await Promise.all(
 				Array.from({ length: quantity }, () =>
-					fetchOneSvg().catch((_) =>
+					fetchOneSvg(prompt).catch(() =>
 						`<svg xmlns="http://www.w3.org/2000/svg"><text x="0" y="15">Error</text></svg>`
 					)
 				)
 			);
-			setSvgResults(svgs);
+
+			// map each returned SVG to its prompt
+			const results: Result[] = svgs.map((svg) => ({ svg, prompt }));
+			setSvgResults(results);
 		} catch {
-			// shouldn't get here, but just in case
+			// fallback: all error placeholders
 			setSvgResults(
-				Array(quantity).fill(
-					`<svg xmlns="http://www.w3.org/2000/svg"><text x="0" y="15">Error</text></svg>`
-				)
+				Array.from({ length: quantity }, () => ({
+					svg: `<svg xmlns="http://www.w3.org/2000/svg"><text x="0" y="15">Error</text></svg>`,
+					prompt
+				}))
 			);
 		} finally {
 			setLoading(false);
@@ -86,7 +95,7 @@ export default function GenerateTab() {
 						id="quantity"
 						value={quantity}
 						onChange={(e) => setQuantity(Number(e.target.value))}
-						className="rounded-lg border px-2 py-1 border-none focus:outline-none focus:ring-0 absolute bottom-2 right-24"
+						className="rounded-lg border px-2 py-1 border-none focus:outline-none focus:ring-0 absolute bottom-2 right-22"
 					>
 						{quantities.map((q) => (
 							<option key={q} value={q}>
@@ -109,7 +118,7 @@ export default function GenerateTab() {
 						placeholder="Enter your instructions"
 						value={newMessage}
 						onChange={(e) => setNewMessage(e.target.value)}
-						className="bg-gray-100 w-full pr-10 pt-5 px-4 pb-4 rounded-2xl focus:outline-none focus-visible:ring-0 max-h-80 resize-none"
+						className="bg-gray-100 shadow-none w-full pr-10 pt-5 px-4 pb-4 rounded-2xl focus:outline-none focus-visible:ring-0 max-h-80 resize-none"
 					/>
 
 					<Button
