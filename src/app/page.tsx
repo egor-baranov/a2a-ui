@@ -4,6 +4,8 @@ import React from "react";
 import { Elements } from "@stripe/react-stripe-js";
 import { stripePromise } from "@/lib/stripe";
 import HomePage from "@/components/HomePage";
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+
 
 export default function HomePageWrapper() {
     return (
