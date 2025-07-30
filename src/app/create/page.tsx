@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import {ArrowUp, Paperclip, Settings, Settings2} from "lucide-react";
+import {ArrowUp, Paperclip, Settings, Settings2, Wand2} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import SvgGrid from "@/components/SvgGrid";
 import type { components } from "@/types/api-types";
@@ -43,7 +43,7 @@ const quantities = [1, 2, 3, 5, 7, 10];
 type SVGGenerationRequest = components["schemas"]["SVGGenerationRequest"];
 type Result = { svg: string; prompt: string };
 
-export default function GenerateTab() {
+export default function CreatePage() {
 	const [newMessage, setNewMessage] = useState("");
 	const [quantity, setQuantity] = useState<number>(1);
 	const [style, setStyle] = useState<string>("icon/outline");
@@ -122,7 +122,7 @@ export default function GenerateTab() {
 	};
 
 	return (
-		<div className="w-full max-w-5xl mx-auto space-y-6">
+		<div className="w-full max-w-5xl mx-auto space-y-6 pt-16 px-4">
 			{/* Controls */}
 			<div className="flex flex-wrap items-start gap-4">
 				<div className="relative flex-1">
@@ -197,7 +197,7 @@ export default function GenerateTab() {
 						className="absolute bottom-2 right-12 rounded-full h-8 w-8 p-0"
 						aria-label="Attach"
 					>
-						<Paperclip className="h-4 w-4" />
+						<Wand2 className="h-4 w-4" />
 					</Button>
 
 					{/* Textarea Input */}

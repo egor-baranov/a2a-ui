@@ -38,6 +38,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/enhance-prompt": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Enhance Prompt */
+        post: operations["enhance_prompt_v1_enhance_prompt_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health": {
         parameters: {
             query?: never;
@@ -63,6 +80,32 @@ export interface components {
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /**
+         * PromptEnhanceRequest
+         * @example {
+         *       "prompt": "Simple superman icon",
+         *       "style": "icon"
+         *     }
+         */
+        PromptEnhanceRequest: {
+            /**
+             * Prompt
+             * @description Simple prompt to be enhanced
+             */
+            prompt: string;
+            /**
+             * Style
+             * @description Target style for the SVG (helps tailor the enhancement)
+             * @default vector_illustration
+             * @enum {string}
+             */
+            style: "icon" | "vector_illustration";
+        };
+        /** PromptEnhanceResponse */
+        PromptEnhanceResponse: {
+            /** Enhanced Prompt */
+            enhanced_prompt: string;
         };
         /**
          * SVGGenerationRequest
@@ -157,6 +200,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    enhance_prompt_v1_enhance_prompt_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PromptEnhanceRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PromptEnhanceResponse"];
                 };
             };
             /** @description Validation Error */

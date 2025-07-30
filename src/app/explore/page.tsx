@@ -2,7 +2,6 @@
 
 import React from "react";
 import { Copy, Edit, Download } from "lucide-react";
-import PaymentRequestButton from "@/components/ui/PaymentRequestButton";
 
 const sampleSVGs = [
 	`<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="black"><circle cx="12" cy="12" r="10" stroke-width="2" /></svg>`,
@@ -12,7 +11,7 @@ const sampleSVGs = [
 	`<svg xmlns="http://www.w3.org/2000/svg" fill="black" viewBox="0 0 24 24"><path d="M2 2h20v20H2z" /></svg>`,
 ];
 
-export default function ExploreTab() {
+export default function ExplorePage() {
 	const copyToClipboard = (svg: string) => {
 		navigator.clipboard.writeText(svg);
 	};
@@ -70,10 +69,6 @@ export default function ExploreTab() {
 					</div>
 				</div>
 			))}
-			{/* Payment CTA at the end */}
-			<div className="col-span-full">
-				<PaymentRequestButton />
-			</div>
 		</div>
 	);
 }
