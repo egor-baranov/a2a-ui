@@ -1,11 +1,6 @@
 "use client";
 
-import React, {useState} from "react";
-import Header from "@/components/Header";
-import CreatePage from "@/app/create/page";
-import ExplorePage from "@/app/explore/page";
-import LoginPage from "@/app/login/page";
-import LandingPage from "@/components/LandingPage";
+import React from "react";
 import {Button} from "@/components/ui/button";
 import {Card, CardContent} from "@/components/ui/card";
 import {Copy, Download, Edit} from "lucide-react";
