@@ -3,12 +3,41 @@
 import React, { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { ArrowUp, Paperclip } from "lucide-react";
+import {ArrowUp, Paperclip, Settings, Settings2} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import SvgGrid from "@/components/SvgGrid";
 import type { components } from "@/types/api-types";
+// Import SVGO optimize from browser build to avoid fs dependency
+import { optimize } from "svgo/browser";
+import {PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
+import {Popover} from "@/components/ui/popover";
 
-const presets    = ["App Logo", "Search Icon", "SVG Image", "Improve Icon"];
+
+// Preset prompts, styles, and quantity options
+const presets = ["App Logo", "Search Icon", "SVG Image", "Improve Icon"];
+const styles = [
+	"vector_illustration",
+	"vector_illustration/cartoon",
+	"vector_illustration/doodle_line_art",
+	"vector_illustration/engraving",
+	"vector_illustration/flat_2",
+	"vector_illustration/kawaii",
+	"vector_illustration/line_art",
+	"vector_illustration/line_circuit",
+	"vector_illustration/linocut",
+	"vector_illustration/seamless",
+	"icon",
+	"icon/broken_line",
+	"icon/colored_outline",
+	"icon/colored_shapes",
+	"icon/colored_shapes_gradient",
+	"icon/doodle_fill",
+	"icon/doodle_offset_fill",
+	"icon/offset_fill",
+	"icon/outline",
+	"icon/outline_gradient",
+	"icon/uneven_fill",
+];
 const quantities = [1, 2, 3, 5, 7, 10];
 
 type SVGGenerationRequest = components["schemas"]["SVGGenerationRequest"];
@@ -16,16 +45,18 @@ type Result = { svg: string; prompt: string };
 
 export default function GenerateTab() {
 	const [newMessage, setNewMessage] = useState("");
-	const [quantity,   setQuantity]   = useState<number>(1);
+	const [quantity, setQuantity] = useState<number>(1);
+	const [style, setStyle] = useState<string>("icon/outline");
+	const [optimizeSvg, setOptimizeSvg] = useState<boolean>(false);
 	const [svgResults, setSvgResults] = useState<Result[]>([]);
-	const [loading,    setLoading]    = useState(false);
+	const [loading, setLoading] = useState(false);
 
 	// helper that returns one SVG string (or throws)
 	const fetchOneSvg = async (prompt: string): Promise<string> => {
 		const payload: SVGGenerationRequest = {
 			prompt,
 			size: "1024x1024",
-			style: "vector_illustration",
+			style,
 			aspect_ratio: "Not set",
 			quantity: 1,
 		} as any;
@@ -43,8 +74,19 @@ export default function GenerateTab() {
 			throw new Error(`HTTP ${res.status}: ${txt}`);
 		}
 		const json = await res.json();
-		const svg = Array.isArray(json.svg) ? json.svg[0] : json.svg;
-		return svg as string;
+		const rawSvg = Array.isArray(json.svg) ? json.svg[0] : json.svg;
+
+		// optimize if enabled
+		if (optimizeSvg) {
+			try {
+				const optimized = optimize(rawSvg as string, { multipass: true });
+				return optimized.data;
+			} catch {
+				return rawSvg as string;
+			}
+		}
+
+		return rawSvg as string;
 	};
 
 	const handleSend = async () => {
@@ -55,30 +97,23 @@ export default function GenerateTab() {
 		setNewMessage("");
 
 		// pre-fill placeholders so grid keeps layout
-		const placeholders: Result[] = Array.from({ length: quantity }, () => ({
-			svg: "",
-			prompt
-		}));
+		const placeholders: Result[] = Array.from({ length: quantity }, () => ({ svg: "", prompt }));
 		setSvgResults(placeholders);
 
 		try {
 			const svgs = await Promise.all(
 				Array.from({ length: quantity }, () =>
 					fetchOneSvg(prompt).catch(() =>
-						`<svg xmlns="http://www.w3.org/2000/svg"><text x="0" y="15">Error</text></svg>`
+						`<svg xmlns=\"http://www.w3.org/2000/svg\"><text x=\"0\" y=\"15\">Error</text></svg>`
 					)
 				)
 			);
-
-			// map each returned SVG to its prompt
-			const results: Result[] = svgs.map((svg) => ({ svg, prompt }));
-			setSvgResults(results);
+			setSvgResults(svgs.map((svg) => ({ svg, prompt })));
 		} catch {
-			// fallback: all error placeholders
 			setSvgResults(
 				Array.from({ length: quantity }, () => ({
-					svg: `<svg xmlns="http://www.w3.org/2000/svg"><text x="0" y="15">Error</text></svg>`,
-					prompt
+					svg: `<svg xmlns=\"http://www.w3.org/2000/svg\"><text x=\"0\" y=\"15\">Error</text></svg>`,
+					prompt,
 				}))
 			);
 		} finally {
@@ -89,21 +124,72 @@ export default function GenerateTab() {
 	return (
 		<div className="w-full max-w-5xl mx-auto space-y-6">
 			{/* Controls */}
-			<div className="flex flex-wrap items-center gap-4">
+			<div className="flex flex-wrap items-start gap-4">
 				<div className="relative flex-1">
-					<select
-						id="quantity"
-						value={quantity}
-						onChange={(e) => setQuantity(Number(e.target.value))}
-						className="rounded-lg border px-2 py-1 border-none focus:outline-none focus:ring-0 absolute bottom-2 right-22"
-					>
-						{quantities.map((q) => (
-							<option key={q} value={q}>
-								{q}
-							</option>
-						))}
-					</select>
+					<Popover>
+						<PopoverTrigger asChild>
+							<Button
+								onClick={handleSend}
+								size="icon"
+								variant="ghost"
+								className="absolute bottom-2 left-2 h-8 w-8 p-0 rounded-full"
+								aria-label="Settings"
+							>
+								<Settings2 className="h-4 w-4" />
+							</Button>
+						</PopoverTrigger>
+						<PopoverContent className="w-48 bg-white border-1 border-gray-200 rounded-lg p-2 shadow-md z-[1000]">
+							<div className="space-y-4">
+								{/* Optimize checkbox */}
+								<label className="flex items-center justify-between text-sm">
+									<span>Optimize SVG</span>
+									<input
+										type="checkbox"
+										checked={optimizeSvg}
+										onChange={(e) => setOptimizeSvg(e.target.checked)}
+										className="h-4 w-4 accent-blue-500"
+									/>
+								</label>
 
+								{/* Quantity selector */}
+								<div className="flex items-center justify-between">
+									<label htmlFor="quantity" className="text-sm">
+										Quantity
+									</label>
+									<select
+										id="quantity"
+										value={quantity}
+										onChange={(e) => setQuantity(Number(e.target.value))}
+										className="h-8 w-16 rounded-md border border-gray-300 px-2 text-right text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+									>
+										{quantities.map((q) => (
+											<option key={q} value={q}>
+												{q}
+											</option>
+										))}
+									</select>
+								</div>
+
+								{/* Style selector */}
+								<div className="flex items-center justify-between">
+									<select
+										id="style"
+										value={style}
+										onChange={(e) => setStyle(e.target.value)}
+										className="h-8 w-full rounded-md border border-gray-300 px-2 text-left text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+									>
+										{styles.map((s) => (
+											<option key={s} value={s}>
+												{s}
+											</option>
+										))}
+									</select>
+								</div>
+							</div>
+						</PopoverContent>
+					</Popover>
+
+					{/* Attach Button */}
 					<Button
 						onClick={handleSend}
 						size="icon"
@@ -114,13 +200,15 @@ export default function GenerateTab() {
 						<Paperclip className="h-4 w-4" />
 					</Button>
 
+					{/* Textarea Input */}
 					<Textarea
 						placeholder="Enter your instructions"
 						value={newMessage}
 						onChange={(e) => setNewMessage(e.target.value)}
-						className="bg-gray-100 shadow-none w-full pr-10 pt-5 px-4 pb-4 rounded-2xl focus:outline-none focus-visible:ring-0 max-h-80 resize-none"
+						className="bg-gray-100 shadow-none w-full pr-10 pt-5 px-4 pb-12 rounded-2xl focus:outline-none focus-visible:ring-0 max-h-80 resize-none"
 					/>
 
+					{/* Send Button */}
 					<Button
 						onClick={handleSend}
 						size="icon"
@@ -135,14 +223,7 @@ export default function GenerateTab() {
 			{/* Presets */}
 			<div className="flex flex-wrap justify-center gap-3">
 				{presets.map((p, i) => (
-					<Badge
-						key={i}
-						variant="outline"
-						className="cursor-pointer text-sm px-2 py-1 rounded-2xl"
-						onClick={() => setNewMessage(p)}
-					>
-						{p}
-					</Badge>
+					<Badge key={i} variant="outline" className="cursor-pointer text-sm px-2 py-1 rounded-2xl" onClick={() => setNewMessage(p)}>{p}</Badge>
 				))}
 			</div>
 
