@@ -21,6 +21,186 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create User
+         * @description Create a new user (requires email verification)
+         */
+        post: operations["create_user_users_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{user_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get User
+         * @description Get user by ID with all relations
+         */
+        get: operations["get_user_users__user_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{user_id}/statistics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get User Statistics
+         * @description Get user statistics
+         */
+        get: operations["get_user_statistics_users__user_id__statistics_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subscriptions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create Subscription
+         * @description Create or update a subscription for a user
+         */
+        post: operations["create_subscription_subscriptions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{user_id}/subscription": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get User Subscription
+         * @description Get subscription for a user
+         */
+        get: operations["get_user_subscription_users__user_id__subscription_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/generations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create Generation
+         * @description Create a new generation record
+         */
+        post: operations["create_generation_generations_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{user_id}/generations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get User Generations
+         * @description Get all generations for a user
+         */
+        get: operations["get_user_generations_users__user_id__generations_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/svgs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create Svg
+         * @description Create a new SVG record
+         */
+        post: operations["create_svg_svgs_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{user_id}/svgs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get User Svgs
+         * @description Get all SVGs for a user
+         */
+        get: operations["get_user_svgs_users__user_id__svgs_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/svg": {
         parameters: {
             query?: never;
@@ -30,7 +210,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Generate Svg Raw */
+        /**
+         * Generate Svg Raw
+         * @description Generate SVG using Replicate API
+         */
         post: operations["generate_svg_raw_v1_svg_post"];
         delete?: never;
         options?: never;
@@ -47,8 +230,51 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Enhance Prompt */
+        /**
+         * Enhance Prompt
+         * @description Enhance a prompt using OpenAI
+         */
         post: operations["enhance_prompt_v1_enhance_prompt_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/send-verification-code": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send Verification Code
+         * @description Send verification code to email
+         */
+        post: operations["send_verification_code_auth_send_verification_code_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/verify-code": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Verify Email Code
+         * @description Verify the email verification code
+         */
+        post: operations["verify_email_code_auth_verify_code_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -62,7 +288,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Health Check */
+        /**
+         * Health Check
+         * @description Health check endpoint
+         */
         get: operations["health_check_health_get"];
         put?: never;
         post?: never;
@@ -76,6 +305,83 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * EmailVerificationCodeRequest
+         * @example {
+         *       "code": "123456",
+         *       "email": "user@example.com"
+         *     }
+         */
+        EmailVerificationCodeRequest: {
+            /**
+             * Email
+             * Format: email
+             */
+            email: string;
+            /** Code */
+            code: string;
+        };
+        /**
+         * EmailVerificationRequest
+         * @example {
+         *       "email": "user@example.com"
+         *     }
+         */
+        EmailVerificationRequest: {
+            /**
+             * Email
+             * Format: email
+             */
+            email: string;
+        };
+        /** EmailVerificationResponse */
+        EmailVerificationResponse: {
+            /** Message */
+            message: string;
+            /** Success */
+            success: boolean;
+        };
+        /**
+         * GenerationCreate
+         * @example {
+         *       "prompt": "A cute red panda using a laptop",
+         *       "style": "vector_illustration",
+         *       "user_id": 1
+         *     }
+         */
+        GenerationCreate: {
+            /** User Id */
+            user_id: number;
+            /** Prompt */
+            prompt: string;
+            /**
+             * Style
+             * @default vector_illustration
+             * @enum {string}
+             */
+            style: "vector_illustration" | "vector_illustration/cartoon" | "vector_illustration/doodle_line_art" | "vector_illustration/engraving" | "vector_illustration/flat_2" | "vector_illustration/kawaii" | "vector_illustration/line_art" | "vector_illustration/line_circuit" | "vector_illustration/linocut" | "vector_illustration/seamless" | "icon" | "icon/broken_line" | "icon/colored_outline" | "icon/colored_shapes" | "icon/colored_shapes_gradient" | "icon/doodle_fill" | "icon/doodle_offset_fill" | "icon/offset_fill" | "icon/outline" | "icon/outline_gradient" | "icon/uneven_fill";
+        };
+        /** GenerationResponse */
+        GenerationResponse: {
+            /** Id */
+            id: number;
+            /** User Id */
+            user_id: number;
+            /** Prompt */
+            prompt: string;
+            /** Style */
+            style: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Svgs
+             * @default []
+             */
+            svgs: components["schemas"]["SVGResponse"][];
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
@@ -106,6 +412,28 @@ export interface components {
         PromptEnhanceResponse: {
             /** Enhanced Prompt */
             enhanced_prompt: string;
+        };
+        /**
+         * SVGCreate
+         * @example {
+         *       "content": "<svg>...</svg>",
+         *       "generation_id": 1,
+         *       "label": "Red Panda Icon",
+         *       "public": true
+         *     }
+         */
+        SVGCreate: {
+            /** Generation Id */
+            generation_id: number;
+            /** Label */
+            label?: string | null;
+            /** Content */
+            content: string;
+            /**
+             * Public
+             * @default false
+             */
+            public: boolean;
         };
         /**
          * SVGGenerationRequest
@@ -141,6 +469,150 @@ export interface components {
              * @default Not set
              */
             aspect_ratio: string;
+        };
+        /** SVGGenerationResponse */
+        SVGGenerationResponse: {
+            /** Svg */
+            svg?: string | null;
+        };
+        /** SVGResponse */
+        SVGResponse: {
+            /** Id */
+            id: number;
+            /** Generation Id */
+            generation_id: number;
+            /** Label */
+            label: string | null;
+            /** Content */
+            content: string;
+            /** Public */
+            public: boolean;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /**
+         * SubscriptionCreate
+         * @example {
+         *       "payment_info": "stripe_payment_id_123",
+         *       "tier": "pro",
+         *       "to_date": "2025-12-31T23:59:59",
+         *       "user_id": 1
+         *     }
+         */
+        SubscriptionCreate: {
+            /** User Id */
+            user_id: number;
+            /** @default free */
+            tier: components["schemas"]["SubscriptionTier"];
+            /** Payment Info */
+            payment_info?: string | null;
+            /** To Date */
+            to_date?: string | null;
+        };
+        /** SubscriptionResponse */
+        SubscriptionResponse: {
+            /** Id */
+            id: number;
+            /** User Id */
+            user_id: number;
+            tier: components["schemas"]["SubscriptionTier"];
+            /** Payment Info */
+            payment_info: string | null;
+            /**
+             * From Date
+             * Format: date-time
+             */
+            from_date: string;
+            /** To Date */
+            to_date: string | null;
+        };
+        /**
+         * SubscriptionTier
+         * @enum {string}
+         */
+        SubscriptionTier: "free" | "base" | "pro";
+        /**
+         * UserCreate
+         * @example {
+         *       "email": "john@example.com",
+         *       "password": "securepassword123",
+         *       "username": "john_doe"
+         *     }
+         */
+        UserCreate: {
+            /** Username */
+            username: string;
+            /**
+             * Email
+             * Format: email
+             */
+            email: string;
+            /** Password */
+            password: string;
+        };
+        /** UserResponse */
+        UserResponse: {
+            /** Id */
+            id: number;
+            /** Username */
+            username: string;
+            /** Email */
+            email: string;
+            /** Generation Limit */
+            generation_limit: number;
+            /** Private Limit */
+            private_limit: number;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /** UserStatistics */
+        UserStatistics: {
+            /** Total Generations */
+            total_generations: number;
+            /** Total Svgs */
+            total_svgs: number;
+            /** Public Svgs */
+            public_svgs: number;
+            /** Private Svgs */
+            private_svgs: number;
+            /** Generation Limit */
+            generation_limit: number;
+            /** Private Limit */
+            private_limit: number;
+            /** Generations Remaining */
+            generations_remaining: number;
+            /** Private Svgs Remaining */
+            private_svgs_remaining: number;
+        };
+        /** UserWithRelations */
+        UserWithRelations: {
+            /** Id */
+            id: number;
+            /** Username */
+            username: string;
+            /** Email */
+            email: string;
+            /** Generation Limit */
+            generation_limit: number;
+            /** Private Limit */
+            private_limit: number;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            subscription?: components["schemas"]["SubscriptionResponse"] | null;
+            /**
+             * Generations
+             * @default []
+             */
+            generations: components["schemas"]["GenerationResponse"][];
         };
         /** ValidationError */
         ValidationError: {
@@ -180,6 +652,295 @@ export interface operations {
             };
         };
     };
+    create_user_users_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_user_users__user_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserWithRelations"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_user_statistics_users__user_id__statistics_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserStatistics"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_subscription_subscriptions_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubscriptionCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubscriptionResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_user_subscription_users__user_id__subscription_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubscriptionResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_generation_generations_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GenerationCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GenerationResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_user_generations_users__user_id__generations_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GenerationResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_svg_svgs_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SVGCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SVGResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_user_svgs_users__user_id__svgs_get: {
+        parameters: {
+            query?: {
+                public_only?: boolean;
+            };
+            header?: never;
+            path: {
+                user_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SVGResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     generate_svg_raw_v1_svg_post: {
         parameters: {
             query?: never;
@@ -199,7 +960,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["SVGGenerationResponse"];
                 };
             };
             /** @description Validation Error */
@@ -233,6 +994,72 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PromptEnhanceResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    send_verification_code_auth_send_verification_code_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EmailVerificationRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmailVerificationResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    verify_email_code_auth_verify_code_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EmailVerificationCodeRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmailVerificationResponse"];
                 };
             };
             /** @description Validation Error */

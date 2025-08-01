@@ -5,6 +5,7 @@ import {Button} from "@/components/ui/button";
 import {Card, CardContent} from "@/components/ui/card";
 import {Copy, Download, Edit} from "lucide-react";
 import Paywall from "@/components/Paywall";
+import Link from "next/link";
 
 
 export default function HomePage() {
@@ -19,12 +20,16 @@ export default function HomePage() {
 					monochrome interface—focus on creativity.
 				</p>
 				<div className="flex justify-center gap-4">
-					<Button size="lg" className="bg-black text-white hover:bg-gray-800">
-						Try It Free
-					</Button>
-					<Button size="lg" variant="outline" className="border-black text-black hover:bg-gray-100">
-						View Docs
-					</Button>
+					<Link key={"Sign in"} href={"/login"} passHref>
+						<Button size="lg" className="bg-black text-white hover:bg-gray-800 cursor-pointer">
+							Get started for free
+						</Button>
+					</Link>
+					<Link key={"Explore"} href={"/explore"} passHref>
+						<Button size="lg" variant="outline" className="border-1 text-black hover:bg-gray-100 cursor-pointer">
+							Explore
+						</Button>
+					</Link>
 				</div>
 			</section>
 
@@ -34,7 +39,7 @@ export default function HomePage() {
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
 					<Card className="border border-gray-200">
 						<CardContent className="text-center">
-							<Copy className="mx-auto mb-4 h-8 w-8 text-black" />
+							<Copy className="mx-auto mb-4 h-8 w-8 text-black"/>
 							<h3 className="text-xl font-semibold mb-2">Instant Icons</h3>
 							<p className="text-gray-700">
 								Generate SVG icons instantly via AI-driven prompts, styled to your
@@ -45,7 +50,7 @@ export default function HomePage() {
 
 					<Card className="border border-gray-200">
 						<CardContent className="text-center">
-							<Edit className="mx-auto mb-4 h-8 w-8 text-black" />
+							<Edit className="mx-auto mb-4 h-8 w-8 text-black"/>
 							<h3 className="text-xl font-semibold mb-2">Logo Designer</h3>
 							<p className="text-gray-700">
 								Customize shapes, fonts, and layouts for professional logos.
@@ -55,7 +60,7 @@ export default function HomePage() {
 
 					<Card className="border border-gray-200">
 						<CardContent className="text-center">
-							<Download className="mx-auto mb-4 h-8 w-8 text-black" />
+							<Download className="mx-auto mb-4 h-8 w-8 text-black"/>
 							<h3 className="text-xl font-semibold mb-2">Easy Export</h3>
 							<p className="text-gray-700">
 								Download clean SVG files or copy code for seamless integration.
@@ -108,14 +113,14 @@ export default function HomePage() {
 			</section>
 
 			{/* 4. Example Gallery Section */}
-			<section className="py-16 px-6">
+			<section className="py-16 px-16">
 				<h2 className="text-3xl font-bold text-center mb-12">Example Gallery</h2>
 				<div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
 					{/* Placeholder squares for generated SVG previews */}
 					{[...Array(8)].map((_, i) => (
 						<div
 							key={i}
-							className="border border-gray-200 rounded-lg h-32 flex items-center justify-center text-gray-400"
+							className="border border-gray-200 rounded-lg h-48 w-48 flex items-center justify-center text-gray-400"
 						>
 							SVG Preview
 						</div>
@@ -131,9 +136,11 @@ export default function HomePage() {
 					Start generating SVGs now
 				</h2>
 				<div className="flex justify-center gap-4">
-					<Button size="lg" className="bg-white text-black hover:bg-gray-200">
-						Try It Free
-					</Button>
+					<Link key={"Sign in"} href={"/login"} passHref>
+						<Button size="lg" className="bg-white text-black hover:bg-gray-200 cursor-pointer">
+							Get started for free
+						</Button>
+					</Link>
 				</div>
 			</section>
 

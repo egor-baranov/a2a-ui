@@ -1,11 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
+import {CardElement, Elements, PaymentRequestButtonElement, useStripe} from "@stripe/react-stripe-js";
+import {loadStripe, Stripe, PaymentRequest} from "@stripe/stripe-js";
+import {Switch} from "@/components/ui/switch"
 
 type Tier = {
 	id: string;
 	name: string;
-	price: number; // 0 means free
+	price: number;
 	description: string;
 	features: string[];
 };
@@ -38,8 +41,8 @@ const tiers: Tier[] = [
 	},
 	{
 		id: "pro",
-		name: "Pro ($20/mo)",
-		price: 20,
+		name: "Pro ($30/mo)",
+		price: 30,
 		description: "Full access for professionals and teams",
 		features: [
 			"Unlimited SVG generation",
@@ -52,9 +55,54 @@ const tiers: Tier[] = [
 	},
 ];
 
+// Replace with your real publishable key
+const stripePromise = loadStripe("pk_test_51RowYbPubqePCQoUUq1HwYfxtfCjTo0XeElMC6ZjwmtFJnrLmIgVVXTDpRKAiFbnvbpuj9dBq6zHPaFQJdVgktWd00SaBLGDeu");
+
+// Component to render Apple Pay / Google Pay button
+const PaymentRequestButton: React.FC = () => {
+	const stripe = useStripe() as Stripe | null;
+	const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | null>(null);
+
+	useEffect(() => {
+		if (!stripe) return;
+
+		const pr = stripe.paymentRequest({
+			country: "US",
+			currency: "usd",
+			total: {label: "Demo Purchase", amount: 1000},
+			requestPayerName: true,
+			requestPayerEmail: true,
+		});
+
+		// Only show the button if the user can pay
+		pr.canMakePayment().then((result) => {
+			if (result && (result.applePay || result.googlePay)) {
+				setPaymentRequest(pr);
+			}
+		});
+
+		// Optionally handle paymentmethod event (demo only)
+		pr.on("paymentmethod", (ev) => {
+			console.log("Selected payment method:", ev.paymentMethod.type);
+			// ev.complete('success');
+		});
+	}, [stripe]);
+
+	if (!paymentRequest) return null;
+
+	return (
+		<PaymentRequestButtonElement
+			options={{paymentRequest}}
+			className="stripe-payment-request-button mb-4"
+		/>
+	);
+};
+
+
 export default function Paywall() {
 	const [selectedTier, setSelectedTier] = useState<string>("free");
 	const [loading, setLoading] = useState(false);
+	const [isAnnual, setIsAnnual] = React.useState(false);
 
 	const handleSubscribe = (tierId: string) => {
 		if (tierId === selectedTier) return;
@@ -73,13 +121,29 @@ export default function Paywall() {
 			<h2 className="text-3xl font-extrabold text-center text-black mb-10">
 				Choose Your Plan
 			</h2>
+
+			<div className="flex items-center space-x-4 w-full justify-center pb-4">
+				<span className={!isAnnual ? "font-semibold text-primary text-xl" : "font-semibold text-muted-foreground text-xl"}>
+					Monthly
+				</span>
+				<Switch
+					checked={isAnnual}
+					onCheckedChange={setIsAnnual}
+					id="billing-toggle"
+					className="scale-120 cursor-pointer"
+				/>
+				<span className={isAnnual ? "font-semibold text-primary text-xl" : "font-semibold text-muted-foreground text-xl"}>
+					Annually
+				</span>
+			</div>
+
 			<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-				{tiers.map(({ id, name, description, features }) => {
+				{tiers.map(({id, name, description, features}) => {
 					const isSelected = id === selectedTier;
 					return (
 						<div
 							key={id}
-							className={`border border-black rounded-lg p-8 flex flex-col justify-between
+							className={`border border-1 rounded-lg p-8 flex flex-col justify-between
                 ${isSelected ? "bg-black text-white" : "bg-white text-black"}
               `}
 						>
@@ -98,8 +162,8 @@ export default function Paywall() {
 								className={`mt-auto py-3 rounded-md font-semibold w-full
                   ${isSelected
 									? "bg-gray-700 cursor-default text-white"
-									: "bg-black hover:bg-gray-900 text-white"}
-                  disabled:opacity-50 disabled:cursor-not-allowed
+									: "bg-gray-50 border-1 hover:bg-gray-100 text-black"}
+                  disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer
                 `}
 							>
 								{isSelected ? "Current Plan" : loading ? "Processing..." : "Subscribe"}
@@ -107,6 +171,22 @@ export default function Paywall() {
 						</div>
 					);
 				})}
+
+				<Elements stripe={stripePromise}>
+					<div>
+						<h2 className="text-xl font-semibold mb-4">Payment</h2>
+
+						<div className="p-4 border rounded mb-4">
+							<label className="block text-sm font-medium mb-2">Card Details</label>
+							<CardElement/>
+						</div>
+
+						<div className="p-4 border rounded">
+							<label className="block text-sm font-medium mb-2">Apple/Google Pay</label>
+							<PaymentRequestButton/>
+						</div>
+					</div>
+				</Elements>
 			</div>
 		</div>
 	);

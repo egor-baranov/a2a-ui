@@ -194,14 +194,14 @@ export default function CreatePage() {
 			{previewResult === null &&
 				(<div className="w-full max-w-5xl space-y-4 pt-16">
 					{/* Controls */}
-					<div className="flex flex-wrap items-start gap-2">
-						<div className="relative flex-1">
+					<div className="flex flex-wrap items-start gap-2 border-1 rounded-2xl shadow-sm">
+						<div className="relative flex-1 rounded-3xl">
 							<Popover>
 								<PopoverTrigger asChild>
 									<Button
 										size="icon"
 										variant="ghost"
-										className="absolute bottom-2 left-2 h-8 w-8 p-0 rounded-full"
+										className="absolute bottom-2 left-2 h-8 w-8 p-0 rounded-full bg-white hover:bg-gray-100 border-0 shadow-none cursor-pointer"
 										aria-label="Settings"
 									>
 										<Settings2 className="h-4 w-4"/>
@@ -262,8 +262,8 @@ export default function CreatePage() {
 							<Button
 								onClick={handleEnhance}
 								size="icon"
-								variant="ghost"
-								className="absolute bottom-2 right-12 rounded-full h-8 w-8 p-0"
+								variant="outline"
+								className="absolute bottom-2 right-12  h-8 w-8 p-0 rounded-full bg-white hover:bg-gray-100 border-0 shadow-none cursor-pointer"
 								aria-label="Enhance Prompt"
 							>
 								<Wand2 className="h-4 w-4"/>
@@ -274,14 +274,14 @@ export default function CreatePage() {
 								placeholder="Enter your instructions"
 								value={newMessage}
 								onChange={(e) => setNewMessage(e.target.value)}
-								className="bg-gray-100 shadow-none w-full pr-10 pt-4 px-4 pb-12 rounded-2xl focus:outline-none focus-visible:ring-0 max-h-80 resize-none"
+								className="bg-white shadow-none w-full pr-10 pt-4 px-4 pb-12 rounded-2xl focus:outline-none focus-visible:ring-0 max-h-80 resize-none"
 							/>
 
 							{/* Send Button */}
 							<Button
 								onClick={handleSend}
-								size="icon"
-								className="absolute bottom-2 right-2 rounded-full h-8 w-8 p-0"
+								size="default"
+								className="absolute bottom-2 right-2 rounded-full h-8 w-8 p-0 cursor-pointer"
 								aria-label="Send"
 							>
 								<ArrowUp className="h-4 w-4"/>
@@ -292,7 +292,7 @@ export default function CreatePage() {
 					{/* Presets */}
 					<div className="flex flex-wrap justify-center gap-3">
 						{presets.map((p, i) => (
-							<Badge key={i} variant="outline" className="cursor-pointer text-sm px-2 py-1 rounded-2xl"
+							<Badge key={i} variant="outline" className="cursor-pointer text-sm px-2 py-1 rounded-2xl hover:bg-gray-50"
 										 onClick={() => setNewMessage(p)}>{p}</Badge>
 						))}
 					</div>
@@ -326,7 +326,7 @@ export default function CreatePage() {
 						<button
 							onClick={() => copyToClipboard(previewResult.prompt)}
 							aria-label="Copy Prompt"
-							className="p-1 hover:bg-gray-200 rounded cursor-pointer"
+							className="p-1 hover:bg-gray-100 rounded cursor-pointer"
 						>
 							<Copy className="w-4 h-4 text-gray-500" />
 						</button>

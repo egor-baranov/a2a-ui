@@ -63,7 +63,7 @@ export default function SvgGrid({ svgResults, loading, onSelect }: SvgGridProps)
 								<div key={key} className="flex flex-col items-center">
 									<div
 										onClick={() => handleTap(key, svg, prompt)}
-										className="group aspect-square w-full rounded-2xl bg-gray-50 border overflow-hidden p-4 flex items-center justify-center relative cursor-pointer"
+										className="group aspect-square w-full rounded-2xl bg-white border overflow-hidden p-4 flex items-center justify-center relative cursor-pointer"
 									>
 										{!svg ? (
 											<div className="w-full h-full animate-pulse bg-gray-200" />
