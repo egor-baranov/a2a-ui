@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Textarea} from "@/components/ui/textarea";
 import {Button} from "@/components/ui/button";
 import {
@@ -22,6 +22,8 @@ import type {components} from "@/types/api-types";
 import {optimize} from "svgo/browser";
 import {PopoverContent, PopoverTrigger} from "@radix-ui/react-popover";
 import {Popover} from "@/components/ui/popover";
+import {useAuth} from "@/providers/AuthProvider";
+import {useRouter} from "next/navigation";
 
 
 // Preset prompts, styles, and quantity options
@@ -64,8 +66,15 @@ export default function CreatePage() {
 	const [loading, setLoading] = useState(false);
 	const [previewResult, setPreviewResult] = useState<{ svg: string; prompt: string } | null>(null);
 
+	const {auth, logout} = useAuth();
+	const router = useRouter();
+
 	// enhance prompt helper
 	const handleEnhance = async () => {
+		if (auth?.token == null) {
+			router.push("/login");
+		}
+
 		const prompt = newMessage.trim();
 		if (!prompt) return;
 		try {
@@ -145,6 +154,10 @@ export default function CreatePage() {
 	};
 
 	const handleSend = async () => {
+		if (auth?.token == null) {
+			router.push("/login");
+		}
+
 		const prompt = newMessage.trim();
 		if (!prompt) return;
 
@@ -279,7 +292,11 @@ export default function CreatePage() {
 
 							{/* Send Button */}
 							<Button
-								onClick={handleSend}
+								onClick={
+									() => {
+										handleSend().then();
+									}
+								}
 								size="default"
 								className="absolute bottom-2 right-2 rounded-full h-8 w-8 p-0 cursor-pointer"
 								aria-label="Send"
@@ -328,7 +345,7 @@ export default function CreatePage() {
 							aria-label="Copy Prompt"
 							className="p-1 hover:bg-gray-100 rounded cursor-pointer"
 						>
-							<Copy className="w-4 h-4 text-gray-500" />
+							<Copy className="w-4 h-4 text-gray-500"/>
 						</button>
 					</div>
 
@@ -338,7 +355,7 @@ export default function CreatePage() {
 							className="gap-2 cursor-pointer"
 							onClick={() => navigator.clipboard.writeText(previewResult?.svg)}
 						>
-							<Copy className="w-4 h-4" />
+							<Copy className="w-4 h-4"/>
 							Copy
 						</Button>
 
@@ -346,11 +363,11 @@ export default function CreatePage() {
 							variant="outline"
 							className="gap-2 cursor-pointer"
 							onClick={() => {
-								const blob = new Blob([previewResult?.svg], { type: "image/svg+xml" });
+								const blob = new Blob([previewResult?.svg], {type: "image/svg+xml"});
 								const url = URL.createObjectURL(blob);
 								window.open(url, "_blank");
-							}}						>
-							<ExternalLink className="w-4 h-4" />
+							}}>
+							<ExternalLink className="w-4 h-4"/>
 							Open
 						</Button>
 
@@ -358,7 +375,7 @@ export default function CreatePage() {
 							variant="outline"
 							className="gap-2 cursor-pointer"
 							onClick={() => {
-								const blob = new Blob([previewResult?.svg], { type: "image/svg+xml" });
+								const blob = new Blob([previewResult?.svg], {type: "image/svg+xml"});
 								const link = document.createElement("a");
 								link.href = URL.createObjectURL(blob);
 								link.download = "icon.svg";
@@ -367,7 +384,7 @@ export default function CreatePage() {
 								document.body.removeChild(link);
 							}}
 						>
-							<Download className="w-4 h-4" />
+							<Download className="w-4 h-4"/>
 							Download
 						</Button>
 					</div>

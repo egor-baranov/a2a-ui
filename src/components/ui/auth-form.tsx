@@ -7,6 +7,7 @@ import {PinInput} from "@/components/ui/pin-input";
 import {useAuth} from "@/providers/AuthProvider";
 import {useRouter} from "next/navigation";
 import type {components} from "@/types/api-types";
+import {initiateXLogin} from "@/utils/xAuth";
 
 const buttonBaseStyle =
 	'w-full flex items-center justify-center gap-2 py-2 px-4 border border-gray-300 rounded-lg hover:bg-gray-100 transition';
@@ -23,8 +24,7 @@ type EmailVerificationCodeRequest = components["schemas"]["EmailVerificationCode
 
 
 export default function AuthForm() {
-	const [formType, setFormType] = useState<'login' | 'signup'>('login');
-	const [formState, setFormState] = useState<'base' | 'email' | 'confirm-email' | 'username'>('base');
+	const [formState, setFormState] = useState<'base' | 'email' | 'confirm-email'>('base');
 
 	const [email, setEmail] = useState<string>("");
 	const [verificationCode, setVerificationCode] = useState<string>("");
@@ -53,53 +53,58 @@ export default function AuthForm() {
 		window.location.href = `https://appleid.apple.com/auth/authorize?${params.toString()}`;
 	};
 
-	const handleEmail = async () => {
-		const email = "".trim();
-		if (!email) return;
+	const handleEmail = async (): Promise<boolean> => {
+		const emailText = email.trim();
+		if (!emailText) return false;
 		try {
 			const emailVerificationRequest: EmailVerificationRequest = {
-				email: email,
+				email: emailText,
 			};
 
 			const res = await fetch(
-				"https://svgen-backend-production.up.railway.app/v1/enhance-prompt",
+				"https://svgen-backend-production.up.railway.app/auth/send-verification-code",
 				{
 					method: "POST",
 					headers: {"Content-Type": "application/json"},
 					body: JSON.stringify(emailVerificationRequest),
 				}
 			);
-			if (!res.ok) throw new Error("Enhance request failed");
+			if (!res.ok) throw new Error(`Send email verification code failed, ${(res.status)}`);
 
 			const {message, success} = (await res.json()) as EmailVerificationResponse;
+			return success;
 		} catch (e) {
 			console.error("Prompt enhancement failed", e);
+			return false;
 		}
 	};
 
-	const handleVerifyEmail = async () => {
-		const email = "".trim();
+	const handleVerifyEmail = async (): Promise<boolean> => {
+		const emailText = email.trim();
 		const code = verificationCode.trim();
-		if (!email) return;
+		if (!emailText) return false;
 		try {
 			const emailVerificationCodeRequest: EmailVerificationCodeRequest = {
-				email: email,
+				email: emailText,
 				code: code
 			};
 
 			const res = await fetch(
-				"https://svgen-backend-production.up.railway.app/v1/enhance-prompt",
+				"https://svgen-backend-production.up.railway.app/auth/verify-code",
 				{
 					method: "POST",
 					headers: {"Content-Type": "application/json"},
 					body: JSON.stringify(emailVerificationCodeRequest),
 				}
 			);
-			if (!res.ok) throw new Error("Enhance request failed");
+
+			if (!res.ok) throw new Error("Email verification failed");
 
 			const {message, success} = (await res.json()) as EmailVerificationResponse;
+			return success;
 		} catch (e) {
 			console.error("Prompt enhancement failed", e);
+			return false;
 		}
 	};
 
@@ -149,14 +154,7 @@ export default function AuthForm() {
 					<button
 						type="button"
 						onClick={() => {
-							useGoogleLogin({
-								onSuccess: (codeResponse: CodeResponse) => {
-									console.log('Google auth code:', codeResponse.code);
-									// TODO: POST codeResponse.code to your backend
-								},
-								onError: () => console.error('Google login failed'),
-								flow: 'auth-code',  // use auth-code for redirect to consent screen
-							});
+							initiateXLogin().then(r => {});
 						}}
 						className="flex items-center gap-2 w-full justify-center cursor-pointer"
 					>
@@ -190,40 +188,63 @@ export default function AuthForm() {
 	}
 
 	function emailForm() {
-		return <div className="px-6 pt-6 w-full max-w-md mx-auto">
+		return <div className="px-6 pt-6 w-full max-w-md mx-auto space-y-6">
 			<h2 className="text-xl font-semibold mb-8">
 				{'Enter your email'}
 			</h2>
 
-			<form className="space-y-4" onSubmit={() => {
-				login("token", "John Doe", true);
-				router.push("/account");
-			}}>
-				{/* Email */}
-				<div>
-					{/*<label htmlFor="email" className="block text-sm font-medium mb-1">Email</label>*/}
-					<input
-						id="email"
-						type="email"
-						className="w-full px-4 py-2 border rounded-lg bg-white shadow-none focus:outline-none focus:ring focus:ring-blue-200"
-						placeholder="Email address"
-						onChange={(e) => setEmail(e.target.value)}
-					/>
-				</div>
+			<div>
+				{/*<label htmlFor="email" className="block text-sm font-medium mb-1">Email</label>*/}
+				<input
+					id="email"
+					type="email"
+					className="w-full px-4 py-2 border rounded-lg bg-white shadow-none focus:outline-none focus:ring focus:ring-blue-200"
+					placeholder="Email address"
+					onChange={(e) => setEmail(e.target.value)}
+				/>
+			</div>
 
-				{/* Code */}
-				{formState == 'email' &&
-            <div className={"items-center justify-center width-full"}><PinInput length={6} onComplete={(e) =>
-							setVerificationCode(e)
-						}/></div>}
-
-				<button type="submit"
-								className="cursor-pointer w-full py-2 px-4 bg-black text-white rounded-lg hover:bg-gray-800 transition">
-					Create account
-				</button>
-			</form>
+			<button
+				onClick={() => {
+					handleEmail().then(e => {
+						if (e) {
+							setFormState('confirm-email');
+						}
+					});
+				}}
+				type="submit"
+				className="cursor-pointer w-full py-2 px-4 bg-black text-white rounded-lg hover:bg-gray-800 transition">
+				Next
+			</button>
 		</div>
 	}
+
+	function verifyEmailForm() {
+		return <div className="px-6 pt-6 w-full max-w-md mx-auto space-y-6">
+			<h2 className="text-xl font-semibold mb-8">
+				{'Enter verification code'}
+			</h2>
+
+			<div className={"items-center justify-center width-full"}><PinInput length={6} onComplete={(e) =>
+				setVerificationCode(e)
+			}/></div>
+
+			<button onClick={
+				() => {
+					handleVerifyEmail().then(r => {
+						if (r) {
+							login("token", "John Doe", true);
+							router.push("/account");
+						}
+					});
+				}
+			}
+							className="cursor-pointer w-full py-2 px-4 bg-black text-white rounded-lg hover:bg-gray-800 transition">
+				Create account
+			</button>
+		</div>
+	}
+
 
 	return (
 		<GoogleOAuthProvider clientId={"400757642320-b8dpifok0n8dn44hakv6gfduka1oo16g.apps.googleusercontent.com"}>
@@ -232,7 +253,11 @@ export default function AuthForm() {
 			}
 
 			{
-				(formState == 'email' || formState == 'confirm-email') && emailForm()
+				formState == 'email' && emailForm()
+			}
+
+			{
+				formState == 'confirm-email' && verifyEmailForm()
 			}
 		</GoogleOAuthProvider>
 	);
