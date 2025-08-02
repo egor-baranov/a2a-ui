@@ -10,6 +10,7 @@ import {useAuth} from "@/providers/AuthProvider";
 const navItems = [
 	{label: "Create", href: "/create"},
 	{label: "Explore", href: "/explore"},
+	{label: "Plans", href: "/plans"},
 	{label: "Sign In", href: "/login"},
 	{label: "Account", href: "/account"},
 ];
@@ -22,13 +23,15 @@ export default function Header() {
 	const {auth, logout} = useAuth();
 
 	useEffect(() => {
+		if (auth == null) return;
 		if (auth?.token != null && pathname === "/login") {
 			router.push("/account");
 		}
 	}, [auth?.token, pathname, router]);
 
 	useEffect(() => {
-		if (auth?.token == null && pathname === "/account") {
+		if (auth == null) return;
+		if (auth?.token == null && (pathname === "/account" || pathname === "/create")) {
 			router.push("/login");
 		}
 	}, [auth?.token, pathname, router]);

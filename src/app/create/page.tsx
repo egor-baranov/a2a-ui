@@ -3,18 +3,7 @@
 import React, {useEffect, useState} from "react";
 import {Textarea} from "@/components/ui/textarea";
 import {Button} from "@/components/ui/button";
-import {
-	ArrowLeft,
-	ArrowUp,
-	Copy,
-	Download,
-	Edit,
-	ExternalLink,
-	Paperclip,
-	Settings,
-	Settings2,
-	Wand2
-} from "lucide-react";
+import {ArrowLeft, ArrowUp, Copy, Download, ExternalLink, Settings2, Wand2} from "lucide-react";
 import {Badge} from "@/components/ui/badge";
 import SvgGrid from "@/components/SvgGrid";
 import type {components} from "@/types/api-types";
@@ -55,6 +44,9 @@ const quantities = [1, 2, 3, 5, 7, 10];
 
 type SVGGenerationRequest = components["schemas"]["SVGGenerationRequest"];
 type PromptEnhanceRequest = components["schemas"]["PromptEnhanceRequest"];
+type SVGsResponse = components["schemas"]["SVGResponse"][];
+type GenerationResponse = components["schemas"]["GenerationResponse"];
+
 type Result = { svgs: string[]; prompt: string };
 
 export default function CreatePage() {
@@ -88,7 +80,10 @@ export default function CreatePage() {
 				"https://svgen-backend-production.up.railway.app/v1/enhance-prompt",
 				{
 					method: "POST",
-					headers: {"Content-Type": "application/json"},
+					headers: {
+						"Content-Type": "application/json",
+						"Authorization": `Bearer ${auth?.token}`,
+					},
 					body: JSON.stringify(enhancePayload),
 				}
 			);
@@ -112,20 +107,23 @@ export default function CreatePage() {
 	};
 
 	// helper that returns one SVG string (or throws)
-	const fetchOneSvg = async (prompt: string): Promise<string> => {
+	const fetchSvgs = async (prompt: string): Promise<GenerationResponse> => {
 		const payload: SVGGenerationRequest = {
 			prompt,
 			size: "1024x1024",
 			style,
 			aspect_ratio: "Not set",
-			quantity: 1,
+			count: quantity,
 		} as any;
 
 		const res = await fetch(
 			"https://svgen-backend-production.up.railway.app/v1/svg",
 			{
 				method: "POST",
-				headers: {"Content-Type": "application/json"},
+				headers: {
+					"Content-Type": "application/json",
+					"Authorization": `Bearer ${auth?.token}`,
+				},
 				body: JSON.stringify(payload),
 			}
 		);
@@ -133,21 +131,57 @@ export default function CreatePage() {
 			const txt = await res.text().catch(() => "<unable to read>");
 			throw new Error(`HTTP ${res.status}: ${txt}`);
 		}
-		const json = await res.json();
-		const rawSvg = Array.isArray(json.svg) ? json.svg[0] : json.svg;
 
-		// optimize if enabled
-		if (optimizeSvg) {
-			try {
-				const optimized = optimize(rawSvg as string, {multipass: true});
-				return optimized.data;
-			} catch {
-				return rawSvg as string;
+		return await res.json() as GenerationResponse;
+
+		// // optimize if enabled
+		// if (optimizeSvg) {
+		// 	try {
+		// 		const optimized = optimize(rawSvg as string, {multipass: true});
+		// 		return optimized.data;
+		// 	} catch {
+		// 		return rawSvg as string;
+		// 	}
+		// }
+	};
+
+	const fetchGenerations = async (): Promise<GenerationResponse[]> => {
+		const res = await fetch(
+			"https://svgen-backend-production.up.railway.app/generations/me",
+			{
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+					"Authorization": `Bearer ${auth?.token}`,
+				},
 			}
+		);
+
+		if (!res.ok) {
+			const txt = await res.text().catch(() => "<unable to read>");
+			throw new Error(`HTTP ${res.status}: ${txt} and token ${auth?.token}`);
 		}
 
-		return rawSvg as string;
+		return await res.json() as GenerationResponse[];
 	};
+
+	useEffect(() => {
+		if (!auth?.token) return;
+		fetchGenerations().then(
+			res => {
+				setSvgResults(
+					res.filter((v) => v.svgs.length > 0)
+						.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime() )
+						.map((v) => (
+							{
+								prompt: v.prompt,
+								svgs: v.svgs.map((s) => s.content)
+							}
+						) as Result)
+				);
+			}
+		);
+	}, [auth]);
 
 	const copyToClipboard = (text: string) => {
 		navigator.clipboard.writeText(text);
@@ -170,23 +204,15 @@ export default function CreatePage() {
 			{prompt, svgs: Array(quantity).fill("")}
 		]);
 
-		try {
-			const svgs = await Promise.all(
-				Array.from({length: quantity}, () =>
-					fetchOneSvg(prompt).catch(() =>
-						`<svg xmlns="http://www.w3.org/2000/svg"><text x="0" y="15">Error</text></svg>`
-					)
-				)
-			);
-
-			// replace the last placeholder with the real svgs
-			setSvgResults(current => {
-				const newResults = [...current];
-				newResults[newResults.length - 1] = {prompt, svgs};
-				return newResults;
-			});
-		} catch {
-			// on error, fill with error svgs
+		await fetchSvgs(prompt).then(
+			(generation) => {
+				setSvgResults(current => {
+					const newResults = [...current];
+					newResults[newResults.length - 1] = {prompt: generation.prompt, svgs: generation.svgs.map((v) => v.content)};
+					return newResults;
+				});
+			}
+		).catch(() => {
 			setSvgResults(current => {
 				const newResults = [...current];
 				newResults[newResults.length - 1] = {
@@ -197,15 +223,14 @@ export default function CreatePage() {
 				};
 				return newResults;
 			});
-		} finally {
-			setLoading(false);
-		}
+		}).finally(() => setLoading(false));
+		// replace the last placeholder with the real svgs
 	};
 
 	return (
 		<div className="w-full max-w-5xl mx-auto px-4">
 			{previewResult === null &&
-				(<div className="w-full max-w-5xl space-y-4 pt-16">
+				(<div className="w-full max-w-5xl space-y-4 pt-4">
 					{/* Controls */}
 					<div className="flex flex-wrap items-start gap-2 border-1 rounded-2xl shadow-sm">
 						<div className="relative flex-1 rounded-3xl">

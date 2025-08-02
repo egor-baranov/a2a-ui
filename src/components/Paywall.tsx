@@ -118,8 +118,8 @@ export default function Paywall() {
 
 	return (
 		<div className="max-w-7xl mx-auto px-6 py-12">
-			<h2 className="text-3xl font-extrabold text-center text-black mb-10">
-				Choose Your Plan
+			<h2 className="text-4xl font-extrabold text-center text-black mb-10">
+				Available Plans
 			</h2>
 
 			<div className="flex items-center space-x-4 w-full justify-center pb-4">

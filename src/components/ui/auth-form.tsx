@@ -19,7 +19,7 @@ function OAuthButtonWrapper({children}: { children: React.ReactNode }) {
 
 
 type EmailVerificationRequest = components["schemas"]["EmailVerificationRequest"];
-type EmailVerificationResponse = components["schemas"]["EmailVerificationResponse"];
+type AuthResponse = components["schemas"]["AuthResponse"];
 type EmailVerificationCodeRequest = components["schemas"]["EmailVerificationCodeRequest"];
 
 
@@ -70,19 +70,17 @@ export default function AuthForm() {
 				}
 			);
 			if (!res.ok) throw new Error(`Send email verification code failed, ${(res.status)}`);
-
-			const {message, success} = (await res.json()) as EmailVerificationResponse;
-			return success;
+			return res.status >= 200 && res.status < 300;
 		} catch (e) {
 			console.error("Prompt enhancement failed", e);
 			return false;
 		}
 	};
 
-	const handleVerifyEmail = async (): Promise<boolean> => {
+	const handleVerifyEmail = async (): Promise<AuthResponse | null> => {
 		const emailText = email.trim();
 		const code = verificationCode.trim();
-		if (!emailText) return false;
+		if (!emailText) return null;
 		try {
 			const emailVerificationCodeRequest: EmailVerificationCodeRequest = {
 				email: emailText,
@@ -98,13 +96,11 @@ export default function AuthForm() {
 				}
 			);
 
-			if (!res.ok) throw new Error("Email verification failed");
-
-			const {message, success} = (await res.json()) as EmailVerificationResponse;
-			return success;
+			if (!res.ok) throw new Error(`Email verification failed: ${res.status} for request ${JSON.stringify(emailVerificationCodeRequest)}`);
+			return (await res.json()) as AuthResponse;
 		} catch (e) {
 			console.error("Prompt enhancement failed", e);
-			return false;
+			return null;
 		}
 	};
 
@@ -233,7 +229,7 @@ export default function AuthForm() {
 				() => {
 					handleVerifyEmail().then(r => {
 						if (r) {
-							login("token", "John Doe", true);
+							login(r.access_token, r.user.username, true);
 							router.push("/account");
 						}
 					});

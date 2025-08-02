@@ -6,6 +6,7 @@ import {Card, CardContent} from "@/components/ui/card";
 import {Copy, Download, Edit} from "lucide-react";
 import Paywall from "@/components/Paywall";
 import Link from "next/link";
+import {Textarea} from "@/components/ui/textarea";
 
 
 export default function HomePage() {
@@ -13,21 +14,33 @@ export default function HomePage() {
 	return (
 		<div className="bg-white text-black">
 			{/* 1. Hero Section */}
-			<section className="py-24 px-6 text-center">
-				<h1 className="text-5xl font-extrabold mb-4">svgen</h1>
+			<section className="pt-24 pb-16 px-6 text-center justify-center items-center">
+				<h1 className="text-7xl font-extrabold mb-0">Generate thousands of icons</h1>
+				<h1 className="text-7xl font-extrabold mb-4">in seconds with svgen</h1>
 				<p className="max-w-2xl mx-auto text-lg text-gray-700 mb-8">
-					Instantly generate and customize SVG icons & logos with our clean,
-					monochrome interface—focus on creativity.
+					Explore the limitless opportunities via industry-leading vector graphics generation superpowered by AI
 				</p>
+
+				<div className="flex items-center justify-center max-w-full mb-4">
+					<div className="flex flex-wrap gap-2 border-1 rounded-2xl shadow-sm min-w-200">
+						<div className="relative flex-1 rounded-3xl">
+							<Textarea
+								placeholder="Enter your instructions"
+								className="bg-white shadow-none w-full pr-10 pt-4 px-4 pb-4 rounded-2xl focus:outline-none focus-visible:ring-0 max-h-40 resize-none"
+							/>
+						</div>
+					</div>
+				</div>
+
 				<div className="flex justify-center gap-4">
-					<Link key={"Sign in"} href={"/login"} passHref>
+					<Link key={"Sign in"} href={"/create"} passHref>
 						<Button size="lg" className="bg-black text-white hover:bg-gray-800 cursor-pointer">
 							Get started for free
 						</Button>
 					</Link>
 					<Link key={"Explore"} href={"/explore"} passHref>
 						<Button size="lg" variant="outline" className="border-1 text-black hover:bg-gray-100 cursor-pointer">
-							Explore
+							Explore icons
 						</Button>
 					</Link>
 				</div>
@@ -35,9 +48,12 @@ export default function HomePage() {
 
 			{/* 2. Core Features Section */}
 			<section className="py-16 px-6">
-				<h2 className="text-3xl font-bold text-center mb-12">Core Features</h2>
+				<h2 className="text-4xl font-bold text-center mb-4">Need a suitable icon? Just generate it!</h2>
+				<p className="max-w-2xl mx-auto text-lg text-gray-700 mb-8 text-center">
+					No more searching for specific icon for your needs – now in just a several clicks you can make assets with lots of styles for any task
+				</p>
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-					<Card className="border border-gray-200">
+					<Card className="border border-gray-200 shadow-none hover:border-gray-300 hover:shadow-sm cursor-pointer">
 						<CardContent className="text-center">
 							<Copy className="mx-auto mb-4 h-8 w-8 text-black"/>
 							<h3 className="text-xl font-semibold mb-2">Instant Icons</h3>
@@ -48,7 +64,7 @@ export default function HomePage() {
 						</CardContent>
 					</Card>
 
-					<Card className="border border-gray-200">
+					<Card className="border border-gray-200 shadow-none hover:border-gray-300 hover:shadow-sm cursor-pointer">
 						<CardContent className="text-center">
 							<Edit className="mx-auto mb-4 h-8 w-8 text-black"/>
 							<h3 className="text-xl font-semibold mb-2">Logo Designer</h3>
@@ -58,7 +74,47 @@ export default function HomePage() {
 						</CardContent>
 					</Card>
 
-					<Card className="border border-gray-200">
+					<Card className="border border-gray-200 shadow-none hover:border-gray-300 hover:shadow-sm cursor-pointer">
+						<CardContent className="text-center">
+							<Download className="mx-auto mb-4 h-8 w-8 text-black"/>
+							<h3 className="text-xl font-semibold mb-2">Easy Export</h3>
+							<p className="text-gray-700">
+								Download clean SVG files or copy code for seamless integration.
+							</p>
+						</CardContent>
+					</Card>
+				</div>
+			</section>
+
+			{/* 2. Core Features Section */}
+			<section className="py-16 px-6">
+				<h2 className="text-4xl font-bold text-center mb-4">Custom icons made for you by AI</h2>
+				<p className="max-w-2xl mx-auto text-lg text-gray-700 mb-8 text-center">
+					No more searching for specific icon for your needs – now in just a several clicks you can make assets with lots of styles for any task
+				</p>
+				<div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+					<Card className="border border-gray-200 shadow-none hover:border-gray-300 hover:shadow-sm cursor-pointer">
+						<CardContent className="text-center">
+							<Copy className="mx-auto mb-4 h-8 w-8 text-black"/>
+							<h3 className="text-xl font-semibold mb-2">Instant Icons</h3>
+							<p className="text-gray-700">
+								Generate SVG icons instantly via AI-driven prompts, styled to your
+								needs.
+							</p>
+						</CardContent>
+					</Card>
+
+					<Card className="border border-gray-200 shadow-none hover:border-gray-300 hover:shadow-sm cursor-pointer">
+						<CardContent className="text-center">
+							<Edit className="mx-auto mb-4 h-8 w-8 text-black"/>
+							<h3 className="text-xl font-semibold mb-2">Logo Designer</h3>
+							<p className="text-gray-700">
+								Customize shapes, fonts, and layouts for professional logos.
+							</p>
+						</CardContent>
+					</Card>
+
+					<Card className="border border-gray-200 shadow-none hover:border-gray-300 hover:shadow-sm cursor-pointer">
 						<CardContent className="text-center">
 							<Download className="mx-auto mb-4 h-8 w-8 text-black"/>
 							<h3 className="text-xl font-semibold mb-2">Easy Export</h3>
@@ -76,10 +132,7 @@ export default function HomePage() {
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
 					{/* Step 1 */}
 					<div className="flex flex-col items-center text-center space-y-4">
-						<div className="flex items-center justify-center w-12 h-12 rounded-full bg-black text-white mb-2">
-							1
-						</div>
-						<h3 className="text-xl font-semibold">Define Your Style</h3>
+						<h3 className="text-xl font-semibold">Write a prompt</h3>
 						<p className="text-gray-700">
 							Enter a prompt or pick one of our curated templates to set the mood
 							and style for your icon or logo.
@@ -88,10 +141,7 @@ export default function HomePage() {
 
 					{/* Step 2 */}
 					<div className="flex flex-col items-center text-center space-y-4">
-						<div className="flex items-center justify-center w-12 h-12 rounded-full bg-black text-white mb-2">
-							2
-						</div>
-						<h3 className="text-xl font-semibold">Customize & Preview</h3>
+						<h3 className="text-xl font-semibold">View generated icons</h3>
 						<p className="text-gray-700">
 							Tweak shapes, colors, and typography in real‑time. Preview variants
 							side‑by‑side until you’re happy.
@@ -100,10 +150,7 @@ export default function HomePage() {
 
 					{/* Step 3 */}
 					<div className="flex flex-col items-center text-center space-y-4">
-						<div className="flex items-center justify-center w-12 h-12 rounded-full bg-black text-white mb-2">
-							3
-						</div>
-						<h3 className="text-xl font-semibold">Export & Integrate</h3>
+						<h3 className="text-xl font-semibold">Export & Use</h3>
 						<p className="text-gray-700">
 							Download your SVG or copy the markup to paste directly into your
 							projects—no extra tools needed.
@@ -136,7 +183,7 @@ export default function HomePage() {
 					Start generating SVGs now
 				</h2>
 				<div className="flex justify-center gap-4">
-					<Link key={"Sign in"} href={"/login"} passHref>
+					<Link key={"Create"} href={"/create"} passHref>
 						<Button size="lg" className="bg-white text-black hover:bg-gray-200 cursor-pointer">
 							Get started for free
 						</Button>
@@ -148,10 +195,10 @@ export default function HomePage() {
 			<footer className="py-8 px-6 text-center text-gray-600">
 				<p className="mb-2">&copy; {new Date().getFullYear()} svgen. All rights reserved.</p>
 				<div className="space-x-4">
-					<a href="#" className="hover:text-black">
+					<a href="/privacy" className="hover:text-black">
 						Privacy Policy
 					</a>
-					<a href="#" className="hover:text-black">
+					<a href="/terms-of-service" className="hover:text-black">
 						Terms of Service
 					</a>
 				</div>

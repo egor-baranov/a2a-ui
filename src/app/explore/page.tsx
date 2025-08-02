@@ -1,7 +1,9 @@
 "use client";
 
-import React from "react";
-import { Copy, Edit, Download } from "lucide-react";
+import React, {useState} from "react";
+import {Copy, Edit, Download} from "lucide-react";
+import {Textarea} from "@/components/ui/textarea";
+import SvgGrid from "@/components/SvgGrid";
 
 const sampleSVGs = [
 	`<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="black"><circle cx="12" cy="12" r="10" stroke-width="2" /></svg>`,
@@ -12,63 +14,23 @@ const sampleSVGs = [
 ];
 
 export default function ExplorePage() {
-	const copyToClipboard = (svg: string) => {
-		navigator.clipboard.writeText(svg);
-	};
-
-	const downloadSVG = (svg: string, filename = "icon.svg") => {
-		const blob = new Blob([svg], { type: "image/svg+xml" });
-		const link = document.createElement("a");
-		link.href = URL.createObjectURL(blob);
-		link.download = filename;
-		document.body.appendChild(link);
-		link.click();
-		document.body.removeChild(link);
-	};
-
-	const handleEdit = (svg: string) => {
-		alert("Edit feature not implemented yet.");
-	};
+	const [searchQuery, setSearchQuery] = useState("");
 
 	return (
-		<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-			{sampleSVGs.map((svg, idx) => (
-				<div
-					key={idx}
-					className="group aspect-square rounded-2xl bg-gray-50 border overflow-hidden p-4 flex items-center justify-center relative"
-				>
-					<object
-						type="image/svg+xml"
-						data={`data:image/svg+xml;utf8,${encodeURIComponent(svg)}`}
-						className="max-w-full max-h-full"
+		<div className="w-full max-w-5xl mx-auto px-4 pt-4 space-y-6">
+			<div className="flex flex-wrap items-start gap-2 border-1 rounded-2xl shadow-sm">
+				<div className="relative flex-1 rounded-3xl">
+					<Textarea
+						placeholder="Enter search query"
+						value={searchQuery}
+						onChange={(e) => setSearchQuery(e.target.value)}
+						className="bg-white shadow-none w-full pr-10 pt-4 px-4 pb-4 rounded-2xl focus:outline-none focus-visible:ring-0 max-h-40 resize-none"
 					/>
-					<div
-						className="absolute bottom-2 right-2 flex gap-2 bg-white bg-opacity-80 rounded-md p-1 shadow opacity-0 group-hover:opacity-100 transition-opacity"
-					>
-						<button
-							onClick={() => copyToClipboard(svg)}
-							className="p-1 hover:bg-gray-200 rounded"
-							aria-label="Copy"
-						>
-							<Copy className="w-4 h-4" />
-						</button>
-						<button
-							onClick={() => handleEdit(svg)}
-							className="p-1 hover:bg-gray-200 rounded"
-							aria-label="Edit"
-						>
-							<Edit className="w-4 h-4" />
-						</button>
-						<button
-							onClick={() => downloadSVG(svg, `icon-${idx + 1}.svg`)}
-							className="p-1 hover:bg-gray-200 rounded"
-							aria-label="Download"
-						>
-							<Download className="w-4 h-4" />
-						</button>
-					</div>
 				</div>
-			))}
+			</div>
+
+			<SvgGrid svgResults={[{svgs: sampleSVGs, prompt: "Samples"}]}/>
+
 		</div>
 	);
 }
