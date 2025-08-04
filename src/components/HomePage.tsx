@@ -34,7 +34,7 @@ export default function HomePage() {
 					<Button
 						onClick={
 							() => {
-								router.push("/login");
+								router.push("/auth");
 							}
 						}
 						size="default"

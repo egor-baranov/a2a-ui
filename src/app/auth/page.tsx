@@ -4,7 +4,7 @@
 import React from "react";
 import AuthForm from "@/components/ui/auth-form";
 
-export default function LoginPage() {
+export default function AuthPage() {
 	return (
 		<div className="max-w-md mx-auto pt-16 space-y-8">
 			<AuthForm />

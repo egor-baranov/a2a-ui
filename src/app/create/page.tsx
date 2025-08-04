@@ -64,7 +64,7 @@ export default function CreatePage() {
 
 	const handleEnhance = async () => {
 		if (auth?.token == null) {
-			router.push("/login");
+			router.push("/auth");
 		}
 
 		const prompt = newMessage.trim();
@@ -214,7 +214,7 @@ export default function CreatePage() {
 
 	const handleSend = async () => {
 		if (auth?.token == null) {
-			router.push("/login");
+			router.push("/auth");
 		}
 
 		const prompt = newMessage.trim();

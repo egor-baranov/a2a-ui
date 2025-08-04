@@ -11,7 +11,7 @@ const navItems = [
 	{label: "Create", href: "/create"},
 	{label: "Explore", href: "/explore"},
 	{label: "Plans", href: "/plans"},
-	{label: "Sign In", href: "/login"},
+	{label: "Sign In", href: "/auth"},
 	{label: "Account", href: "/account"},
 ];
 
@@ -24,7 +24,7 @@ export default function Header() {
 
 	useEffect(() => {
 		if (auth == null) return;
-		if (auth?.token != null && pathname === "/login") {
+		if (auth?.token != null && pathname === "/auth") {
 			router.push("/account");
 		}
 	}, [auth?.token, pathname, router]);
@@ -32,7 +32,7 @@ export default function Header() {
 	useEffect(() => {
 		if (auth == null) return;
 		if (auth?.token == null && (pathname === "/account" || pathname === "/create")) {
-			router.push("/login");
+			router.push("/auth");
 		}
 	}, [auth?.token, pathname, router]);
 
