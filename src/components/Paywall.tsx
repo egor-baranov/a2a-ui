@@ -182,7 +182,7 @@ export default function Paywall() {
 						</div>
 
 						<div className="p-4 border rounded">
-							<label className="block text-sm font-medium mb-2">Apple/Google Pay</label>
+							<label className="block text-sm font-medium mb-2">Google Pay</label>
 							<PaymentRequestButton/>
 						</div>
 					</div>

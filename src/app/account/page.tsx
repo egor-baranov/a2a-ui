@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/providers/AuthProvider";
 import type { components } from "@/types/api-types";
+import {router} from "next/client";
 
 // Schemas for clarity
 type UserWithRelations = components["schemas"]["UserWithRelations"];
@@ -17,9 +18,12 @@ export default function AccountPage() {
 	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
+		if (!auth) return;
+
 		if (!auth?.token) {
 			setError("Not authenticated");
 			setLoading(false);
+			router.push("/login").then();
 			return;
 		}
 
