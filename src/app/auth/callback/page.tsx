@@ -1,4 +1,4 @@
-// File: app/auth/callback/page.tsx (Next.js 13 app directory)
+// File: app/auth/callback/page.tsx
 
 'use client';
 
@@ -11,37 +11,42 @@ export default function AuthCallbackPage() {
 	const { login } = useAuth();
 
 	useEffect(() => {
-		// Parse token from URL query string
-		const params = new URLSearchParams(window.location.search);
-		const token = params.get('token');
+		async function processCallback() {
+			const params = new URLSearchParams(window.location.search);
+			const token = params.get('token');
 
-		if (!token) {
-			console.error('No token found in callback URL');
-			// Optionally redirect to login
-			router.replace('/auth');
-			return;
+			if (!token) {
+				console.error('No token found in callback URL');
+				router.replace('/auth');
+				return;
+			}
+
+			try {
+				// Decode JWT to get username (optional)
+				const [, payload] = token.split('.');
+				const decoded = JSON.parse(atob(payload));
+				const username = decoded.email || decoded.user_id || '';
+
+				// Persist the token
+				localStorage.setItem('auth_token', token);
+
+				// Update React context
+				login(token, username, true);
+
+				// Try client-side push
+				router.push('/account');
+
+				// If router.push didn’t navigate, fallback to full reload
+				if (window.location.pathname !== '/account') {
+					window.location.href = '/account';
+				}
+			} catch (err) {
+				console.error('Failed to process auth callback:', err);
+				router.replace('/auth');
+			}
 		}
 
-		try {
-			// Decode payload if needed, or just store token
-			// e.g., parse JWT payload
-			const [, payload] = token.split('.');
-			const decoded = JSON.parse(atob(payload));
-			const username = decoded.email || decoded.user_id || null;
-
-			// Persist token in your chosen storage
-			// e.g., localStorage or secure cookie
-			localStorage.setItem('auth_token', token);
-
-			// Call your AuthProvider login method
-			login(token, username, true);
-
-			// Clean up URL to remove token param
-			router.replace('/account');
-		} catch (err) {
-			console.error('Failed to process auth callback:', err);
-			router.replace('/auth');
-		}
+		processCallback().then();
 	}, [login, router]);
 
 	return (
