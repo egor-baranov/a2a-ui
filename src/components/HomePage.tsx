@@ -3,11 +3,12 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {ArrowUp, Copy, Download, Edit} from "lucide-react";
+import {ArrowRight, ArrowUp, Copy, Download, Edit} from "lucide-react";
 import Paywall from "@/components/Paywall";
 import Link from "next/link";
 import { Textarea } from "@/components/ui/textarea";
 import {useRouter} from "next/navigation";
+import {Label} from "@/components/ui/label";
 
 export default function HomePage() {
 
@@ -26,9 +27,9 @@ export default function HomePage() {
 
 				<div className="flex justify-center mb-6 w-full max-w-full border-1 sm:max-w-md md:max-w-lg lg:max-w-3xl items-center justify-items-center shadow-sm rounded-2xl">
 					<Textarea
-						placeholder="Enter your instructions"
-						className="rounded-2xl border-1 border-gray-500 px-4 py-3 focus:outline-none focus-visible:ring-0 resize-none border-none shadow-none"
-						rows={2}
+						placeholder="Create icons, logos and vector images in seconds"
+						className="rounded-2xl border-1 border-gray-500 px-4 py-3 focus:outline-none focus-visible:ring-0 resize-none border-none shadow-none min-h-10"
+						rows={1}
 					/>
 
 					<Button
@@ -38,10 +39,11 @@ export default function HomePage() {
 							}
 						}
 						size="default"
-						className="relative top-2 right-2 rounded-full h-8 w-8 p-0 cursor-pointer"
+						className="relative bottom-0.3 right-2 rounded-md h-8 p-0 cursor-pointer bg-gradient-to-br from-[#FAF59F] to-[#F788D7]"
 						aria-label="Send"
 					>
-						<ArrowUp className="h-4 w-4"/>
+						<Label className="cursor-pointer text-black">Generate now</Label>
+						<ArrowRight className="h-4 w-4 text-black font-bold"/>
 					</Button>
 				</div>
 
@@ -105,17 +107,15 @@ export default function HomePage() {
 			</section>
 
 			{/* 4. Example Gallery Section */}
-			<section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
+			<section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 items-center justify-items-center">
 				<h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-8">Example Gallery</h2>
 				<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
-					{[...Array(8)].map((_, i) => (
-						<div
-							key={i}
-							className="border border-gray-200 rounded-lg h-32 sm:h-40 flex items-center justify-center text-gray-400 text-sm"
-						>
-							SVG Preview
+					{[...Array(8)].map((_, i) => {
+						return <div className="items-center justify-items-center">
+							<img src={`/samples/sample-${i}.svg`} alt={`Sample-${i}`} className="w-32 h-32"/>
+							<div>{`Sample-${i}`}</div>
 						</div>
-					))}
+					})}
 				</div>
 			</section>
 

@@ -391,7 +391,7 @@ export default function CreatePage() {
 							className="h-8 w-8 p-0 rounded-md cursor-pointer"
 							aria-label="Settings"
 						>
-							<ArrowLeft className="h-4 w-4"/>
+							<ArrowLeft className="h-8 w-8"/>
 						</Button>
 					</div>
 

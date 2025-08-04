@@ -156,18 +156,18 @@ export default function AuthForm() {
 				</OAuthButtonWrapper>
 
 				{/* Apple Login Styled */}
-				<OAuthButtonWrapper>
-					<button
-						type="button"
-						onClick={() => {
-							handleAppleLogin();
-						}}
-						className="flex items-center gap-2 w-full justify-center cursor-pointer"
-					>
-						<img src="/apple-icon.svg" alt="Apple" className="w-5 h-5"/>
-						Continue with Apple
-					</button>
-				</OAuthButtonWrapper>
+				{/*<OAuthButtonWrapper>*/}
+				{/*	<button*/}
+				{/*		type="button"*/}
+				{/*		onClick={() => {*/}
+				{/*			handleAppleLogin();*/}
+				{/*		}}*/}
+				{/*		className="flex items-center gap-2 w-full justify-center cursor-pointer"*/}
+				{/*	>*/}
+				{/*		<img src="/apple-icon.svg" alt="Apple" className="w-5 h-5"/>*/}
+				{/*		Continue with Apple*/}
+				{/*	</button>*/}
+				{/*</OAuthButtonWrapper>*/}
 
 				<OAuthButtonWrapper>
 					<button

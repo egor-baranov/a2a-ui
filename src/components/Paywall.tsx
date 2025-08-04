@@ -28,7 +28,7 @@ const tiers: Tier[] = [
 	},
 	{
 		id: "basic",
-		name: "Basic ($10/mo)",
+		name: "Basic",
 		price: 10,
 		description: "Enhanced features for casual users",
 		features: [
@@ -41,7 +41,7 @@ const tiers: Tier[] = [
 	},
 	{
 		id: "pro",
-		name: "Pro ($30/mo)",
+		name: "Pro",
 		price: 30,
 		description: "Full access for professionals and teams",
 		features: [
@@ -119,7 +119,7 @@ export default function Paywall() {
 	return (
 		<div className="max-w-7xl mx-auto px-6 py-12">
 			<h2 className="text-3xl font-bold text-center text-black mb-10">
-				Available Plans
+				Supercharge your productivity with our flexible generation plans
 			</h2>
 
 			<div className="flex items-center space-x-4 w-full justify-center pb-4">
@@ -138,7 +138,7 @@ export default function Paywall() {
 			</div>
 
 			<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-				{tiers.map(({id, name, description, features}) => {
+				{tiers.map(({id, name, description, features, price}) => {
 					const isSelected = id === selectedTier;
 					return (
 						<div
@@ -148,7 +148,7 @@ export default function Paywall() {
               `}
 						>
 							<div>
-								<h3 className="text-2xl font-bold mb-2">{name}</h3>
+								<h3 className="text-2xl font-bold mb-2">{`${name} ($${price * (isAnnual ? 12 : 1)}/${isAnnual ? "year" : "month"})`}</h3>
 								<p className="mb-6 text-sm font-medium">{description}</p>
 								<ul className="mb-6 space-y-2 list-disc list-inside text-sm">
 									{features.map((feature, i) => (
@@ -166,7 +166,7 @@ export default function Paywall() {
                   disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer
                 `}
 							>
-								{isSelected ? "Current Plan" : loading ? "Processing..." : "Subscribe"}
+								{isSelected ? "Current Plan" : loading ? "Processing..." : `Go ${name}`}
 							</button>
 						</div>
 					);

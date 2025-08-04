@@ -6,11 +6,12 @@ import {usePathname, useRouter} from "next/navigation";
 import {Button} from "@/components/ui/button";
 import {SparklesIcon, MenuIcon, XIcon} from "lucide-react";
 import {useAuth} from "@/providers/AuthProvider";
+import {cn} from "@/lib/utils";
 
 const navItems = [
 	{label: "Create", href: "/create"},
 	{label: "Explore", href: "/explore"},
-	{label: "Plans", href: "/plans"},
+	{label: "Pricing", href: "/pricing"},
 	{label: "Sign In", href: "/auth"},
 	{label: "Account", href: "/account"},
 ];
@@ -56,8 +57,13 @@ export default function Header() {
 				}).map(({label, href}) => (
 					<Link key={href} href={href} passHref>
 						<Button
-							variant={pathname === href ? "default" : "ghost"}
-							className="cursor-pointer"
+							variant={(pathname === href || label === "Sign In") ? "default" : "ghost"}
+							className={cn(
+								"cursor-pointer",
+								label === "Sign In"
+									? "bg-gradient-to-br from-[#FAF59F] to-[#F788D7] text-black font-semibold"
+									: ""
+							)}
 						>
 							{label}
 						</Button>
