@@ -19,7 +19,6 @@ export default function AccountPage() {
 
 	function performLogout() {
 		logout();
-		router.push("/auth").then();
 	}
 
 	useEffect(() => {
@@ -60,7 +59,7 @@ export default function AccountPage() {
 				<p>Loading your account...</p>
 				<button
 					onClick={performLogout}
-					className="w-full py-2 px-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+					className="w-full py-2 px-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition cursor-pointer"
 				>
 					Log Out
 				</button>
@@ -74,7 +73,7 @@ export default function AccountPage() {
 				<p className="text-red-500">{error}</p>
 				<button
 					onClick={performLogout}
-					className="w-full py-2 px-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+					className="w-full py-2 px-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition cursor-pointer"
 				>
 					Log Out
 				</button>
@@ -197,7 +196,7 @@ export default function AccountPage() {
 
 			<button
 				onClick={performLogout}
-				className="w-full py-2 px-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+				className="w-full py-2 px-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition cursor-pointer"
 			>
 				Log Out
 			</button>

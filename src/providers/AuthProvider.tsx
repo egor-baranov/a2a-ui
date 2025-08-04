@@ -60,7 +60,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, maxAge = 3
 		destroyCookie(null, 'auth_token');
 		destroyCookie(null, 'auth_username');
 		setAuth(null);
-		router.push("/auth").then();
+		router.replace('/auth').then();
 	};
 
 	return (
