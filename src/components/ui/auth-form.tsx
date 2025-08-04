@@ -54,6 +54,25 @@ export default function AuthForm() {
 		}
 	};
 
+	const handleXLogin = async () => {
+		try {
+			const res = await fetch(
+				"https://svgen-backend-production.up.railway.app/auth/twitter/login",
+				{ method: "GET" }
+			);
+			if (!res.ok) throw new Error(res.statusText);
+			const { auth_url, state } = (await res.json()) as {
+				auth_url: string;
+				state: string;
+			};
+			sessionStorage.setItem("oauth_state", state);
+			window.location.href = auth_url;
+		} catch (err) {
+			console.error("Could not start X flow:", err);
+		}
+	};
+
+
 	const handleAppleLogin = () => {
 		const params = new URLSearchParams({
 			response_type: 'code id_token',
@@ -153,9 +172,7 @@ export default function AuthForm() {
 				<OAuthButtonWrapper>
 					<button
 						type="button"
-						onClick={() => {
-							initiateXLogin().then(r => {});
-						}}
+						onClick={handleXLogin}
 						className="flex items-center gap-2 w-full justify-center cursor-pointer"
 					>
 						<img src="/x-icon.png" alt="Google" className="w-5 h-5"/>

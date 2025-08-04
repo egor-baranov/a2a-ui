@@ -118,7 +118,7 @@ export default function Paywall() {
 
 	return (
 		<div className="max-w-7xl mx-auto px-6 py-12">
-			<h2 className="text-4xl font-extrabold text-center text-black mb-10">
+			<h2 className="text-3xl font-bold text-center text-black mb-10">
 				Available Plans
 			</h2>
 
@@ -172,21 +172,21 @@ export default function Paywall() {
 					);
 				})}
 
-				<Elements stripe={stripePromise}>
-					<div>
-						<h2 className="text-xl font-semibold mb-4">Payment</h2>
+				{/*<Elements stripe={stripePromise}>*/}
+				{/*	<div>*/}
+				{/*		<h2 className="text-xl font-semibold mb-4">Payment</h2>*/}
 
-						<div className="p-4 border rounded mb-4">
-							<label className="block text-sm font-medium mb-2">Card Details</label>
-							<CardElement/>
-						</div>
+				{/*		<div className="p-4 border rounded mb-4">*/}
+				{/*			<label className="block text-sm font-medium mb-2">Card Details</label>*/}
+				{/*			<CardElement/>*/}
+				{/*		</div>*/}
 
-						<div className="p-4 border rounded">
-							<label className="block text-sm font-medium mb-2">Google Pay</label>
-							<PaymentRequestButton/>
-						</div>
-					</div>
-				</Elements>
+				{/*		<div className="p-4 border rounded">*/}
+				{/*			<label className="block text-sm font-medium mb-2">Google Pay</label>*/}
+				{/*			<PaymentRequestButton/>*/}
+				{/*		</div>*/}
+				{/*	</div>*/}
+				{/*</Elements>*/}
 			</div>
 		</div>
 	);

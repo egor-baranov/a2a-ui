@@ -61,6 +61,43 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/twitter/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Twitter Login
+         * @description Initiate Twitter OAuth login flow
+         */
+        get: operations["twitter_login_auth_twitter_login_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/twitter/callback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Twitter Callback */
+        get: operations["twitter_callback_auth_twitter_callback_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/google/login": {
         parameters: {
             query?: never;
@@ -382,6 +419,13 @@ export interface components {
             token_type: string;
             user: components["schemas"]["UserResponse"];
         };
+        /** AuthStateResponse */
+        AuthStateResponse: {
+            /** Auth Url */
+            auth_url: string;
+            /** State */
+            state: string;
+        };
         /** EmailVerificationCodeRequest */
         EmailVerificationCodeRequest: {
             /**
@@ -439,13 +483,6 @@ export interface components {
              * @default []
              */
             svgs: components["schemas"]["SVGResponse"][];
-        };
-        /** GoogleAuthStateResponse */
-        GoogleAuthStateResponse: {
-            /** Auth Url */
-            auth_url: string;
-            /** State */
-            state: string;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -736,6 +773,58 @@ export interface operations {
             };
         };
     };
+    twitter_login_auth_twitter_login_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthStateResponse"];
+                };
+            };
+        };
+    };
+    twitter_callback_auth_twitter_callback_get: {
+        parameters: {
+            query: {
+                code: string;
+                state: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     google_login_auth_google_login_get: {
         parameters: {
             query?: never;
@@ -751,7 +840,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["GoogleAuthStateResponse"];
+                    "application/json": components["schemas"]["AuthStateResponse"];
                 };
             };
         };
