@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { setCookie, parseCookies, destroyCookie } from 'nookies';
+import {router} from "next/client";
 
 // Define shape of authentication data
 interface AuthData {
@@ -59,6 +60,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, maxAge = 3
 		destroyCookie(null, 'auth_token');
 		destroyCookie(null, 'auth_username');
 		setAuth(null);
+		router.push("/auth").then();
 	};
 
 	return (
