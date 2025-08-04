@@ -3,16 +3,20 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Copy, Download, Edit } from "lucide-react";
+import {ArrowUp, Copy, Download, Edit} from "lucide-react";
 import Paywall from "@/components/Paywall";
 import Link from "next/link";
 import { Textarea } from "@/components/ui/textarea";
+import {useRouter} from "next/navigation";
 
 export default function HomePage() {
+
+	const router = useRouter();
+
 	return (
 		<div className="bg-white text-black">
 			{/* 1. Hero Section */}
-			<section className="pt-20 pb-12 px-4 sm:px-6 lg:px-8 text-center items-center">
+			<section className="pt-20 pb-12 px-4 sm:px-6 lg:px-8 text-center items-center justify-items-center">
 				<h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-2">
 					Generate thousands of icons in seconds with svgen
 				</h1>
@@ -20,17 +24,30 @@ export default function HomePage() {
 					Explore limitless opportunities via industry-leading vector graphics generation superpowered by AI.
 				</p>
 
-				<div className="flex justify-center mb-6 px-2 w-full max-w-full">
+				<div className="flex justify-center mb-6 w-full max-w-full border-1 sm:max-w-md md:max-w-lg lg:max-w-3xl items-center justify-items-center shadow-sm rounded-2xl">
 					<Textarea
 						placeholder="Enter your instructions"
-						className="w-full max-w-full sm:max-w-md md:max-w-lg lg:max-w-3xl bg-white rounded-2xl border-1 px-4 py-3 focus:ring-0 focus:border-gray-300 resize-none"
+						className="rounded-2xl border-1 border-gray-500 px-4 py-3 focus:outline-none focus-visible:ring-0 resize-none border-none shadow-none"
 						rows={2}
 					/>
+
+					<Button
+						onClick={
+							() => {
+								router.push("/login");
+							}
+						}
+						size="default"
+						className="relative top-2 right-2 rounded-full h-8 w-8 p-0 cursor-pointer"
+						aria-label="Send"
+					>
+						<ArrowUp className="h-4 w-4"/>
+					</Button>
 				</div>
 
 				<div className="flex flex-col sm:flex-row justify-center gap-3">
 					<Link href="/create" passHref>
-						<Button size="lg" className="bg-black text-white hover:bg-gray-800 w-full sm:w-auto">
+						<Button size="lg" className="bg-black text-white hover:bg-gray-800 w-full sm:w-auto cursor-pointer">
 							Get started for free
 						</Button>
 					</Link>
@@ -38,7 +55,7 @@ export default function HomePage() {
 						<Button
 							size="lg"
 							variant="outline"
-							className="border-gray-300 text-black hover:bg-gray-100 w-full sm:w-auto"
+							className="border-gray-300 text-black hover:bg-gray-100 w-full sm:w-auto cursor-pointer"
 						>
 							Explore icons
 						</Button>
@@ -108,7 +125,7 @@ export default function HomePage() {
 			<section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-black text-white text-center">
 				<h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-6">Start generating SVGs now</h2>
 				<Link href="/create" passHref>
-					<Button size="lg" className="bg-white text-black hover:bg-gray-200 w-full sm:w-auto">
+					<Button size="lg" className="bg-white text-black hover:bg-gray-200 w-full sm:w-auto cursor-pointer">
 						Get started for free
 					</Button>
 				</Link>
