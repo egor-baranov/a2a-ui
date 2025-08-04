@@ -61,6 +61,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/google/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Google Login
+         * @description Initiate Google OAuth login flow
+         */
+        get: operations["google_login_auth_google_login_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/google/callback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Google Callback
+         * @description Handle Google OAuth callback
+         */
+        get: operations["google_callback_auth_google_callback_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/presets": {
         parameters: {
             query?: never;
@@ -215,7 +255,12 @@ export interface paths {
         get: operations["get_svg_by_id_svgs__svg_id__get"];
         put?: never;
         post?: never;
-        delete?: never;
+        /**
+         * Delete Svg
+         * @description Delete a specific SVG.
+         *     Only the owner of the generation containing this SVG can delete it.
+         */
+        delete: operations["delete_svg_svgs__svg_id__delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -360,6 +405,7 @@ export interface components {
             /**
              * Query
              * @description Search query
+             * @default
              */
             query: string;
             /**
@@ -393,6 +439,13 @@ export interface components {
              * @default []
              */
             svgs: components["schemas"]["SVGResponse"][];
+        };
+        /** GoogleAuthStateResponse */
+        GoogleAuthStateResponse: {
+            /** Auth Url */
+            auth_url: string;
+            /** State */
+            state: string;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -683,6 +736,58 @@ export interface operations {
             };
         };
     };
+    google_login_auth_google_login_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GoogleAuthStateResponse"];
+                };
+            };
+        };
+    };
+    google_callback_auth_google_callback_get: {
+        parameters: {
+            query: {
+                code: string;
+                state: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_presets_presets_get: {
         parameters: {
             query?: never;
@@ -878,6 +983,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SVGResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_svg_svgs__svg_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                svg_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
                 };
             };
             /** @description Validation Error */

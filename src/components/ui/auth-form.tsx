@@ -32,13 +32,26 @@ export default function AuthForm() {
 	const {login} = useAuth();
 	const router = useRouter();
 
-	const handleGoogleSuccess = (response: CredentialResponse) => {
-		console.log('Google credential:', response.credential);
-		// TODO: POST response.credential to your backend
-	};
-
-	const handleGoogleError = () => {
-		console.error('Google login failed');
+	/**
+	 * Step 1: Request the Google OAuth URL and state from backend,
+	 * then redirect browser to it.
+	 */
+	const handleGoogleLogin = async () => {
+		try {
+			const res = await fetch(
+				"https://svgen-backend-production.up.railway.app/auth/google/login",
+				{ method: "GET" }
+			);
+			if (!res.ok) throw new Error(res.statusText);
+			const { auth_url, state } = (await res.json()) as {
+				auth_url: string;
+				state: string;
+			};
+			sessionStorage.setItem("oauth_state", state);
+			window.location.href = auth_url;
+		} catch (err) {
+			console.error("Could not start Google flow:", err);
+		}
 	};
 
 	const handleAppleLogin = () => {
@@ -115,16 +128,7 @@ export default function AuthForm() {
 				<OAuthButtonWrapper>
 					<button
 						type="button"
-						onClick={() => {
-							useGoogleLogin({
-								onSuccess: (codeResponse: CodeResponse) => {
-									console.log('Google auth code:', codeResponse.code);
-									// TODO: POST codeResponse.code to your backend
-								},
-								onError: () => console.error('Google login failed'),
-								flow: 'auth-code',  // use auth-code for redirect to consent screen
-							});
-						}}
+						onClick={handleGoogleLogin}
 						className="flex items-center gap-2 w-full justify-center cursor-pointer"
 					>
 						<img src="/google-icon.svg" alt="Google" className="w-5 h-5"/>
