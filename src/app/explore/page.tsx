@@ -1,20 +1,66 @@
 "use client";
 
 import React, {useState} from "react";
-import {Copy, Edit, Download} from "lucide-react";
+import {Search} from "lucide-react";
 import {Textarea} from "@/components/ui/textarea";
 import SvgGrid from "@/components/SvgGrid";
+import type {components} from "@/types/api-types";
+import {Button} from "@/components/ui/button";
 
-const sampleSVGs = [
-	`<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="black"><circle cx="12" cy="12" r="10" stroke-width="2" /></svg>`,
-	`<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="black"><rect x="4" y="4" width="16" height="16" stroke-width="2" /></svg>`,
-	`<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="black"><line x1="4" y1="20" x2="20" y2="4" stroke-width="2" /></svg>`,
-	`<svg xmlns="http://www.w3.org/2000/svg" fill="black" viewBox="0 0 24 24"><path d="M12 2L2 12h10V2z" /></svg>`,
-	`<svg xmlns="http://www.w3.org/2000/svg" fill="black" viewBox="0 0 24 24"><path d="M2 2h20v20H2z" /></svg>`,
-];
+type GenerationResponse = components["schemas"]["GenerationResponse"];
+type ExploreRequest = components["schemas"]["ExploreRequest"];
+
+type Result = { svgs: string[]; prompt: string };
 
 export default function ExplorePage() {
 	const [searchQuery, setSearchQuery] = useState("");
+	const [svgResults, setSvgResults] = useState<Result[]>([]);
+
+	const fetchExplore = async (prompt: string): Promise<GenerationResponse[]> => {
+		const payload: ExploreRequest = {
+			query: prompt,
+			limit: 100
+		} as any;
+
+		const res = await fetch(
+			"https://svgen-backend-production.up.railway.app/explore",
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(payload),
+			}
+		);
+
+		if (!res.ok) {
+			const txt = await res.text().catch(() => "<unable to read>");
+			throw new Error(`HTTP ${res.status}: ${txt}`);
+		}
+
+		return await res.json() as GenerationResponse[];
+	};
+
+	function fetchData(query: string) {
+		if (query.length == 0) {
+			return;
+		}
+
+		(fetchExplore(query)).then(
+			res => {
+				setSvgResults(
+					res.filter((v) => v.svgs.length > 0)
+						.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime() )
+						.map((v) => (
+							{
+								prompt: v.prompt,
+								svgs: v.svgs.map((s) => s.content)
+							}
+						) as Result)
+				);
+			}
+		);
+	}
 
 	return (
 		<div className="w-full max-w-5xl mx-auto px-4 pt-4 space-y-6">
@@ -23,14 +69,28 @@ export default function ExplorePage() {
 					<Textarea
 						placeholder="Enter search query"
 						value={searchQuery}
-						onChange={(e) => setSearchQuery(e.target.value)}
+						onChange={(e) => {
+							setSearchQuery(e.target.value)
+						}}
 						className="bg-white shadow-none w-full pr-10 pt-4 px-4 pb-4 rounded-2xl focus:outline-none focus-visible:ring-0 max-h-40 resize-none"
 					/>
+
+					<Button
+						onClick={
+							() => {
+								fetchData(searchQuery);
+							}
+						}
+						size="default"
+						className="absolute bottom-2 right-2 rounded-full h-8 w-8 p-0 cursor-pointer"
+						aria-label="Send"
+					>
+						<Search className="h-4 w-4"/>
+					</Button>
 				</div>
 			</div>
 
-			<SvgGrid svgResults={[{svgs: sampleSVGs, prompt: "Samples"}]}/>
-
+			<SvgGrid svgResults={svgResults}/>
 		</div>
 	);
 }

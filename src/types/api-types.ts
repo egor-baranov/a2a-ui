@@ -241,6 +241,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/explore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Explore Generations
+         * @description Search for public SVG generations based on a query.
+         *     Searches through prompts, styles, and labels.
+         */
+        post: operations["explore_generations_explore_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/generations/me": {
         parameters: {
             query?: never;
@@ -333,6 +354,26 @@ export interface components {
              * Format: email
              */
             email: string;
+        };
+        /** ExploreRequest */
+        ExploreRequest: {
+            /**
+             * Query
+             * @description Search query
+             */
+            query: string;
+            /**
+             * Limit
+             * @description Maximum number of results
+             * @default 20
+             */
+            limit: number;
+            /**
+             * Offset
+             * @description Offset for pagination
+             * @default 0
+             */
+            offset: number;
         };
         /** GenerationResponse */
         GenerationResponse: {
@@ -428,7 +469,7 @@ export interface components {
             /**
              * Public
              * @description Whether the SVG should be public
-             * @default false
+             * @default true
              */
             public: boolean;
             /**
@@ -870,6 +911,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PromptEnhanceResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    explore_generations_explore_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExploreRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GenerationResponse"][];
                 };
             };
             /** @description Validation Error */

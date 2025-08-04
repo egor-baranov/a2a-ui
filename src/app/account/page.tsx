@@ -7,58 +7,50 @@ import type { components } from "@/types/api-types";
 
 // Schemas for clarity
 type UserWithRelations = components["schemas"]["UserWithRelations"];
-type SubscriptionResponse = components["schemas"]["SubscriptionResponse"];
+type UserStatistics = components["schemas"]["UserStatistics"];
 
 export default function AccountPage() {
 	const { auth, logout } = useAuth();
 	const [user, setUser] = useState<UserWithRelations | null>(null);
+	const [stats, setStats] = useState<UserStatistics | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
-		async function fetchAccount() {
-			console.log("Auth with token:", auth?.token);
-			try {
-				const res = await fetch(
-					"https://svgen-backend-production.up.railway.app/users/me",
-					{
-						method: "GET",
-						headers: {
-							"Content-Type": "application/json",
-							"Authorization": `Bearer ${auth?.token}`,
-						},
-					}
-				);
-				if (!res.ok) {
-					throw new Error(`Fetch failed: ${await res.text()} for token: ${auth?.token}`);
-				}
-				const data = (await res.json()) as UserWithRelations;
-				setUser(data);
-			} catch (err: any) {
-				console.error("User data fetch failed", err);
-				setError(err.message || "Unknown error");
-			} finally {
-				setLoading(false);
-			}
-		}
-
-		if (auth?.token) {
-			fetchAccount();
-		} else {
-
-			setLoading(false);
+		if (!auth?.token) {
 			setError("Not authenticated");
+			setLoading(false);
+			return;
 		}
+
+		const headers = {
+			"Content-Type": "application/json",
+			Authorization: `Bearer ${auth.token}`,
+		};
+
+		Promise.all([
+			fetch("https://svgen-backend-production.up.railway.app/users/me", { headers }),
+			fetch("https://svgen-backend-production.up.railway.app/users/me/statistics", { headers }),
+		])
+			.then(async ([userRes, statsRes]) => {
+				if (!userRes.ok) throw new Error(`User fetch failed: ${await userRes.text()}`);
+				if (!statsRes.ok) throw new Error(`Stats fetch failed: ${await statsRes.text()}`);
+				setUser((await userRes.json()) as UserWithRelations);
+				setStats((await statsRes.json()) as UserStatistics);
+			})
+			.catch((err: any) => {
+				console.error("Data fetch failed", err);
+				setError(err.message || "Unknown error");
+			})
+			.finally(() => setLoading(false));
 	}, [auth]);
 
 	if (loading) {
 		return (
 			<div className="max-w-md mx-auto pt-16">
 				<p>Loading your account...</p>
-
 				<button
-					onClick={() => logout()}
-					type="button"
+					onClick={logout}
 					className="w-full py-2 px-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
 				>
 					Log Out
@@ -71,15 +63,36 @@ export default function AccountPage() {
 		return (
 			<div className="max-w-md mx-auto pt-16">
 				<p className="text-red-500">{error}</p>
+				<button
+					onClick={logout}
+					className="w-full py-2 px-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+				>
+					Log Out
+				</button>
 			</div>
 		);
 	}
 
-	if (!user) {
-		return null;
-	}
+	if (!user || !stats) return null;
 
-	const { username, email, generation_limit, private_limit, created_at, subscription } = user;
+	const {
+		username,
+		email,
+		generation_limit,
+		private_limit,
+		created_at,
+		subscription,
+	} = user;
+
+	// percentages of limits used
+	const genPct = Math.min(
+		100,
+		Math.round((stats.total_generations / generation_limit) * 100)
+	);
+	const privPct = Math.min(
+		100,
+		Math.round((stats.private_svgs / private_limit) * 100)
+	);
 
 	return (
 		<div className="max-w-md mx-auto pt-16 space-y-6">
@@ -95,14 +108,36 @@ export default function AccountPage() {
 				<p>{email}</p>
 			</div>
 
+			{/* Generation Limit with Progress Bar */}
 			<div>
-				<Label>Generation Limit</Label>
-				<p>{generation_limit}</p>
+				<div className="flex justify-between mb-1">
+					<Label>Generation Limit</Label>
+					<span>
+            {stats.total_generations} / {generation_limit} ({genPct}%)
+          </span>
+				</div>
+				<div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+					<div
+						className="h-2 rounded-full"
+						style={{ width: `${genPct}%`, backgroundColor: "#3B82F6" }}
+					/>
+				</div>
 			</div>
 
+			{/* Private Limit with Progress Bar */}
 			<div>
-				<Label>Private Limit</Label>
-				<p>{private_limit}</p>
+				<div className="flex justify-between mb-1">
+					<Label>Private Limit</Label>
+					<span>
+            {stats.private_svgs} / {private_limit} ({privPct}%)
+          </span>
+				</div>
+				<div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+					<div
+						className="h-2 rounded-full"
+						style={{ width: `${privPct}%`, backgroundColor: "#10B981" }}
+					/>
+				</div>
 			</div>
 
 			<div>
@@ -130,9 +165,29 @@ export default function AccountPage() {
 				</div>
 			)}
 
+			{/* Usage Statistics remains unchanged */}
+			<div className="pt-4 border-t space-y-2">
+				<h2 className="text-xl font-medium">Usage Statistics</h2>
+				<div>
+					<Label>Total Generations</Label>
+					<p>{stats.total_generations}</p>
+				</div>
+				<div>
+					<Label>Total SVGs</Label>
+					<p>{stats.total_svgs}</p>
+				</div>
+				<div>
+					<Label>Public SVGs</Label>
+					<p>{stats.public_svgs}</p>
+				</div>
+				<div>
+					<Label>Private SVGs</Label>
+					<p>{stats.private_svgs}</p>
+				</div>
+			</div>
+
 			<button
-				onClick={() => logout()}
-				type="button"
+				onClick={logout}
 				className="w-full py-2 px-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
 			>
 				Log Out

@@ -15,8 +15,6 @@ import {useAuth} from "@/providers/AuthProvider";
 import {useRouter} from "next/navigation";
 
 
-// Preset prompts, styles, and quantity options
-const presets = ["App Logo", "Search Icon", "SVG Image"];
 const styles = [
 	"vector_illustration",
 	"vector_illustration/cartoon",
@@ -46,6 +44,7 @@ type SVGGenerationRequest = components["schemas"]["SVGGenerationRequest"];
 type PromptEnhanceRequest = components["schemas"]["PromptEnhanceRequest"];
 type SVGsResponse = components["schemas"]["SVGResponse"][];
 type GenerationResponse = components["schemas"]["GenerationResponse"];
+type PresetResponse = components["schemas"]["PresetResponse"][];
 
 type Result = { svgs: string[]; prompt: string };
 
@@ -57,11 +56,12 @@ export default function CreatePage() {
 	const [svgResults, setSvgResults] = useState<Result[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [previewResult, setPreviewResult] = useState<{ svg: string; prompt: string } | null>(null);
+	const [presets, setPresets] = useState<string[]>([]);
+
 
 	const {auth, logout} = useAuth();
 	const router = useRouter();
 
-	// enhance prompt helper
 	const handleEnhance = async () => {
 		if (auth?.token == null) {
 			router.push("/login");
@@ -99,6 +99,29 @@ export default function CreatePage() {
 		}
 	};
 
+	const fetchPresets = async (): Promise<string[]> => {
+		try {
+			const res = await fetch(
+				"https://svgen-backend-production.up.railway.app/presets",
+				{
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+						"Authorization": `Bearer ${auth?.token}`,
+					},
+				}
+			);
+
+			if (!res.ok) throw new Error("Enhance request failed");
+
+			const response = (await res.json()) as PresetResponse;
+			return response.map((v) => v.prompt);
+		} catch (e) {
+			console.error("Prompt enhancement failed", e);
+			return [];
+		}
+	}
+
 	const handleSvgSelect = (item: { svg: string; prompt: string }) => {
 		console.log("User clicked SVG from prompt:", item.prompt);
 		console.log("SVG content is:", item.svg);
@@ -133,16 +156,6 @@ export default function CreatePage() {
 		}
 
 		return await res.json() as GenerationResponse;
-
-		// // optimize if enabled
-		// if (optimizeSvg) {
-		// 	try {
-		// 		const optimized = optimize(rawSvg as string, {multipass: true});
-		// 		return optimized.data;
-		// 	} catch {
-		// 		return rawSvg as string;
-		// 	}
-		// }
 	};
 
 	const fetchGenerations = async (): Promise<GenerationResponse[]> => {
@@ -167,20 +180,32 @@ export default function CreatePage() {
 
 	useEffect(() => {
 		if (!auth?.token) return;
-		fetchGenerations().then(
-			res => {
-				setSvgResults(
-					res.filter((v) => v.svgs.length > 0)
-						.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime() )
-						.map((v) => (
-							{
-								prompt: v.prompt,
-								svgs: v.svgs.map((s) => s.content)
-							}
-						) as Result)
+		// load presets
+		fetchPresets().then((list) => setPresets(list));
+		// load past generations
+		(async () => {
+			try {
+				const res = await fetch(
+					"https://svgen-backend-production.up.railway.app/generations/me",
+					{
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${auth?.token}`,
+						},
+					}
 				);
+				if (!res.ok) throw new Error("Failed to fetch generations");
+				const data = (await res.json()) as GenerationResponse[];
+				const filtered = data
+					.filter((v) => v.svgs.length > 0)
+					.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+					.map((v) => ({ prompt: v.prompt, svgs: v.svgs.map((s) => s.content) }));
+				setSvgResults(filtered);
+			} catch (e) {
+				console.error(e);
 			}
-		);
+		})();
 	}, [auth]);
 
 	const copyToClipboard = (text: string) => {
@@ -332,12 +357,19 @@ export default function CreatePage() {
 					</div>
 
 					{/* Presets */}
-					<div className="flex flex-wrap justify-center gap-3">
+					<div className="flex flex-nowrap overflow-x-auto space-x-3 pb-2">
 						{presets.map((p, i) => (
-							<Badge key={i} variant="outline" className="cursor-pointer text-sm px-2 py-1 rounded-2xl hover:bg-gray-50"
-										 onClick={() => setNewMessage(p)}>{p}</Badge>
+							<Badge
+								key={i}
+								variant="outline"
+								className="cursor-pointer text-sm px-2 py-1 rounded-2xl hover:bg-gray-50 whitespace-nowrap"
+								onClick={() => setNewMessage(p)}
+							>
+								{p}
+							</Badge>
 						))}
 					</div>
+
 
 					<div className={"pt-4"}/>
 
