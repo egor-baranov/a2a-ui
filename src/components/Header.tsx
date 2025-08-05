@@ -38,7 +38,14 @@ export default function Header() {
 	}, [auth?.token, pathname, router]);
 
 	return (
-		<header className="bg-white border-b p-4 flex items-center justify-between md:justify-start md:gap-8">
+		<header
+			className="
+        fixed top-0 left-0 w-full z-50
+        bg-white/70 backdrop-blur-md
+        border-b p-4
+        flex items-center justify-between md:justify-start md:gap-8
+      "
+		>
 			{/* Logo */}
 			<div
 				className="flex items-center gap-2 pl-2 cursor-pointer"

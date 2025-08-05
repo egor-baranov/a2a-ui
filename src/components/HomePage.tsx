@@ -16,6 +16,47 @@ export default function HomePage() {
 
 	return (
 		<div className="bg-white text-black">
+
+			<div className="relative isolate px-6 pt-28 lg:px-8">
+				<div
+					aria-hidden="true"
+					className="absolute inset-x-0 -top-100 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
+				>
+					<div
+						style={{
+							clipPath:
+								'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
+						}}
+						className="relative left-[calc(50%-11rem)] aspect-1155/678 w-144.5 -translate-x-1/2 rotate-30 bg-linear-to-tr from-[#FAF59F] to-[#F788D7] opacity-30 sm:left-[calc(50%-30rem)] sm:w-288.75"
+					/>
+				</div>
+				<div
+					aria-hidden="true"
+					className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
+				>
+					<div
+						style={{
+							clipPath:
+								'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
+						}}
+						className="relative left-[calc(50%+3rem)] aspect-1155/678 w-144.5 -translate-x-1/2 bg-linear-to-tr from-[#FAF59F] to-[#F788D7] opacity-30 sm:left-[calc(50%+36rem)] sm:w-288.75"
+					/>
+				</div>
+			</div>
+
+			<div
+				aria-hidden="true"
+				className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
+			>
+				<div
+					style={{
+						clipPath:
+							'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
+					}}
+					className="relative left-[calc(50%+3rem)] aspect-1155/678 w-144.5 -translate-x-1/2 bg-linear-to-tr from-[#FAF59F] to-[#F788D7] opacity-30 sm:left-[calc(50%+36rem)] sm:w-288.75"
+				/>
+			</div>
+
 			{/* 1. Hero Section */}
 			<section className="pt-20 pb-12 px-4 sm:px-6 lg:px-8 text-center items-center justify-items-center">
 				<h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-2">
@@ -25,10 +66,10 @@ export default function HomePage() {
 					Explore limitless opportunities via industry-leading vector graphics generation superpowered by AI.
 				</p>
 
-				<div className="flex justify-center mb-6 w-full max-w-full border-1 sm:max-w-md md:max-w-lg lg:max-w-3xl items-center justify-items-center shadow-sm rounded-2xl">
+				<div className="bg-white flex justify-center mb-6 w-full max-w-full border-1 sm:max-w-md md:max-w-lg lg:max-w-3xl items-center justify-items-center shadow-sm rounded-2xl">
 					<Textarea
 						placeholder="Create icons, logos and vector images in seconds"
-						className="rounded-2xl border-1 border-gray-500 px-4 py-3 focus:outline-none focus-visible:ring-0 resize-none border-none shadow-none min-h-10"
+						className="rounded-2xl border-1 border-gray-500 px-4 py-4 focus:outline-none focus-visible:ring-0 resize-none border-none shadow-none min-h-12"
 						rows={1}
 					/>
 

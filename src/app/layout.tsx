@@ -38,7 +38,7 @@ export default function RootLayout({
 
 			{/* Main content */}
 
-			<main>{children}</main>
+			<main className="mt-16">{children}</main>
 		</AuthProvider>
 		</body>
 		</html>

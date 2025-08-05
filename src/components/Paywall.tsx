@@ -133,7 +133,7 @@ export default function Paywall() {
 					className="scale-120 cursor-pointer"
 				/>
 				<span className={isAnnual ? "font-semibold text-primary text-xl" : "font-semibold text-muted-foreground text-xl"}>
-					Annually
+					Yearly (20% off)
 				</span>
 			</div>
 
@@ -148,7 +148,7 @@ export default function Paywall() {
               `}
 						>
 							<div>
-								<h3 className="text-2xl font-bold mb-2">{`${name} ($${price * (isAnnual ? 12 : 1)}/${isAnnual ? "year" : "month"})`}</h3>
+								<h3 className="text-2xl font-bold mb-2">{`${name} ($${Math.round(price * (isAnnual ? 12 * 0.8 : 1))}/${isAnnual ? "year" : "month"})`}</h3>
 								<p className="mb-6 text-sm font-medium">{description}</p>
 								<ul className="mb-6 space-y-2 list-disc list-inside text-sm">
 									{features.map((feature, i) => (
