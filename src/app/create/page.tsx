@@ -253,7 +253,7 @@ export default function CreatePage() {
 	};
 
 	return (
-		<div className="w-full max-w-5xl mx-auto px-4">
+		<div className="w-full max-w-5xl mx-auto px-4 pt-24">
 			{previewResult === null &&
 				(<div className="w-full max-w-5xl space-y-4 pt-4">
 					{/* Controls */}

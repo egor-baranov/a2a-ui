@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Copy, Edit, Download } from "lucide-react";
+import {TiltEffect} from "@/utils/TiltEffect";
 
 interface SvgGridProps {
 	svgResults: { svgs: string[]; prompt: string }[];
@@ -59,61 +60,64 @@ export default function SvgGrid({ svgResults, loading, onSelect }: SvgGridProps)
 					<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
 						{svgs.map((svg, svgIdx) => {
 							const key = `${groupIdx}-${svgIdx}`;
+
 							return (
-								<div key={key} className="flex flex-col items-center">
-									<div
-										onClick={() => handleTap(key, svg, prompt)}
-										className="group aspect-square w-full rounded-2xl bg-white border overflow-hidden p-4 flex items-center justify-center relative cursor-pointer"
-									>
-										{!svg ? (
-											<div className="w-full h-full animate-pulse bg-gray-200" />
-										) : (
-											<>
-												<object
-													type="image/svg+xml"
-													data={`data:image/svg+xml;utf8,${encodeURIComponent(svg)}`}
-													className="max-w-full max-h-full flex-grow pointer-events-none"
-												/>
-												<div
-													className={`absolute bottom-2 right-2 flex gap-2 bg-white bg-opacity-80 rounded-md p-1 shadow-md transition-opacity duration-200 opacity-0 group-hover:opacity-100 ${
-														activeKey === key ? "opacity-100" : ""
-													}`}
-												>
-													<button
-														onClick={(e) => {
-															e.stopPropagation();
-															copyToClipboard(svg);
-														}}
-														aria-label="Copy SVG"
-														className="p-1 hover:bg-gray-200 rounded"
+								<TiltEffect key={key}>
+									<div className="flex flex-col items-center">
+										<div
+											onClick={() => handleTap(key, svg, prompt)}
+											className="hover:shadow-xl shadow-gray-100 group aspect-square w-full rounded-2xl bg-white border overflow-hidden flex items-center justify-center relative cursor-pointer"
+										>
+											{!svg ? (
+												<div className="w-full h-full animate-pulse bg-gray-200" />
+											) : (
+												<>
+													<object
+														type="image/svg+xml"
+														data={`data:image/svg+xml;utf8,${encodeURIComponent(svg)}`}
+														className="max-w-full max-h-full flex-grow pointer-events-none"
+													/>
+													<div
+														className={`absolute bottom-2 right-2 flex gap-2 bg-white bg-opacity-80 rounded-md p-1 shadow-md transition-opacity duration-200 opacity-0 group-hover:opacity-100 ${
+															activeKey === key ? "opacity-100" : ""
+														}`}
 													>
-														<Copy className="w-4 h-4" />
-													</button>
-													<button
-														onClick={(e) => {
-															e.stopPropagation();
-															handleEdit(svg);
-														}}
-														aria-label="Edit SVG"
-														className="p-1 hover:bg-gray-200 rounded"
-													>
-														<Edit className="w-4 h-4" />
-													</button>
-													<button
-														onClick={(e) => {
-															e.stopPropagation();
-															downloadSVG(svg);
-														}}
-														aria-label="Download SVG"
-														className="p-1 hover:bg-gray-200 rounded"
-													>
-														<Download className="w-4 h-4" />
-													</button>
-												</div>
-											</>
-										)}
+														<button
+															onClick={(e) => {
+																e.stopPropagation();
+																copyToClipboard(svg);
+															}}
+															aria-label="Copy SVG"
+															className="p-1 hover:bg-gray-200 rounded"
+														>
+															<Copy className="w-4 h-4" />
+														</button>
+														<button
+															onClick={(e) => {
+																e.stopPropagation();
+																handleEdit(svg);
+															}}
+															aria-label="Edit SVG"
+															className="p-1 hover:bg-gray-200 rounded"
+														>
+															<Edit className="w-4 h-4" />
+														</button>
+														<button
+															onClick={(e) => {
+																e.stopPropagation();
+																downloadSVG(svg);
+															}}
+															aria-label="Download SVG"
+															className="p-1 hover:bg-gray-200 rounded"
+														>
+															<Download className="w-4 h-4" />
+														</button>
+													</div>
+												</>
+											)}
+										</div>
 									</div>
-								</div>
+								</TiltEffect>
 							);
 						})}
 					</div>

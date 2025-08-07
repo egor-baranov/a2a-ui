@@ -12,6 +12,7 @@
   "dependencies": {
     "@genkit-ai/googleai": "^1.4.0",
     "@genkit-ai/vertexai": "^1.4.0",
+    "@heroicons/react": "^2.2.0",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-popover": "^1.1.14",
     "@radix-ui/react-scroll-area": "^1.2.4",

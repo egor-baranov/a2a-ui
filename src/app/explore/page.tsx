@@ -63,7 +63,7 @@ export default function ExplorePage() {
 	}
 
 	return (
-		<div className="w-full max-w-5xl mx-auto px-4 pt-4 space-y-6">
+		<div className="w-full max-w-5xl mx-auto px-4 space-y-6 pt-28">
 			<div className="flex flex-wrap items-start gap-2 border-1 rounded-2xl shadow-sm">
 				<div className="relative flex-1 rounded-3xl">
 					<Textarea
