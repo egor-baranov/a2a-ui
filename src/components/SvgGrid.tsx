@@ -78,8 +78,8 @@ export default function SvgGrid({ svgResults, loading, onSelect }: SvgGridProps)
 														className="max-w-full max-h-full flex-grow pointer-events-none"
 													/>
 													<div
-														className={`absolute bottom-2 right-2 flex gap-2 bg-white bg-opacity-80 rounded-md p-1 shadow-md transition-opacity duration-200 opacity-0 group-hover:opacity-100 ${
-															activeKey === key ? "opacity-100" : ""
+														className={`absolute bottom-2 right-2 flex gap-2 bg-white/30 backdrop-blur-sm rounded-md p-1 shadow-md transition-opacity duration-200 opacity-0 group-hover:opacity-100 ${
+															activeKey === key ? "opacity-100 bg-white/30 cursor-pointer" : ""
 														}`}
 													>
 														<button
@@ -88,7 +88,7 @@ export default function SvgGrid({ svgResults, loading, onSelect }: SvgGridProps)
 																copyToClipboard(svg);
 															}}
 															aria-label="Copy SVG"
-															className="p-1 hover:bg-gray-200 rounded"
+															className="p-1 hover:bg-gray-200 rounded cursor-pointer"
 														>
 															<Copy className="w-4 h-4" />
 														</button>
@@ -98,7 +98,7 @@ export default function SvgGrid({ svgResults, loading, onSelect }: SvgGridProps)
 																handleEdit(svg);
 															}}
 															aria-label="Edit SVG"
-															className="p-1 hover:bg-gray-200 rounded"
+															className="p-1 hover:bg-gray-200 rounded cursor-pointer"
 														>
 															<Edit className="w-4 h-4" />
 														</button>
@@ -108,7 +108,7 @@ export default function SvgGrid({ svgResults, loading, onSelect }: SvgGridProps)
 																downloadSVG(svg);
 															}}
 															aria-label="Download SVG"
-															className="p-1 hover:bg-gray-200 rounded"
+															className="p-1 hover:bg-gray-200 rounded cursor-pointer"
 														>
 															<Download className="w-4 h-4" />
 														</button>

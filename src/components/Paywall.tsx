@@ -4,6 +4,7 @@ import React, {useEffect, useState} from "react";
 import {CardElement, Elements, PaymentRequestButtonElement, useStripe} from "@stripe/react-stripe-js";
 import {loadStripe, Stripe, PaymentRequest} from "@stripe/stripe-js";
 import {Switch} from "@/components/ui/switch"
+import { TiltEffect } from "@/utils/TiltEffect";
 
 type Tier = {
 	id: string;
@@ -154,34 +155,36 @@ export default function Paywall() {
 				{tiers.map(({id, name, description, features, price}) => {
 					const isSelected = id === selectedTier;
 					return (
-						<div
-							key={id}
-							className={`border border-1 rounded-lg p-8 flex flex-col justify-between
+						<TiltEffect>
+							<div
+								key={id}
+								className={`border border-1 rounded-lg p-8 flex flex-col justify-between hover:shadow-xl hover:shadow-gray-100
                 ${isSelected ? "bg-black text-white" : "bg-white text-black"}
               `}
-						>
-							<div>
-								<h3 className="text-2xl font-bold mb-2">{`${name} ($${Math.round(price * (isAnnual ? 12 * 0.8 : 1))}/${isAnnual ? "year" : "month"})`}</h3>
-								<p className="mb-6 text-sm font-medium">{description}</p>
-								<ul className="mb-6 space-y-2 list-disc list-inside text-sm">
-									{features.map((feature, i) => (
-										<li key={i}>{feature}</li>
-									))}
-								</ul>
-							</div>
-							<button
-								disabled={loading || isSelected}
-								onClick={() => handleSubscribe(id)}
-								className={`mt-auto py-3 rounded-md font-semibold w-full
+							>
+								<div>
+									<h3 className="text-2xl font-bold mb-2">{`${name} ($${Math.round(price * (isAnnual ? 12 * 0.8 : 1))}/${isAnnual ? "year" : "month"})`}</h3>
+									<p className="mb-6 text-sm font-medium">{description}</p>
+									<ul className="mb-6 space-y-2 list-disc list-inside text-sm">
+										{features.map((feature, i) => (
+											<li key={i}>{feature}</li>
+										))}
+									</ul>
+								</div>
+								<button
+									disabled={loading || isSelected}
+									onClick={() => handleSubscribe(id)}
+									className={`mt-auto py-3 rounded-md font-semibold w-full
                   ${isSelected
-									? "bg-gray-700 cursor-default text-white"
-									: "bg-gray-50 border-1 hover:bg-gray-100 text-black"}
+										? "bg-gray-700 cursor-default text-white"
+										: "bg-gray-50 border-1 hover:bg-gray-100 text-black"}
                   disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer
                 `}
-							>
-								{isSelected ? "Current Plan" : loading ? "Processing..." : `Go ${name}`}
-							</button>
-						</div>
+								>
+									{isSelected ? "Current Plan" : loading ? "Processing..." : `Go ${name}`}
+								</button>
+							</div>
+						</TiltEffect>
 					);
 				})}
 

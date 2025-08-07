@@ -11,6 +11,7 @@ import {useRouter} from "next/navigation";
 import {Label} from "@/components/ui/label";
 
 import {CloudArrowUpIcon, LockClosedIcon, ServerIcon} from '@heroicons/react/20/solid'
+import SvgGrid from "@/components/SvgGrid";
 
 function Bento() {
 	return (
@@ -363,10 +364,10 @@ export default function HomePage() {
 				</p>
 
 				<div
-					className="bg-white flex justify-center mb-6 w-full max-w-full sm:max-w-md md:max-w-lg lg:max-w-3xl items-center shadow-sm rounded-2xl
-             focus-within:ring-2 border-1 focus-within:ring-transparent focus-within:bg-gradient-to-br from-[#FAF59F] to-[#F788D7] p-[2px]">
+					className="flex justify-center mb-6 w-full max-w-full sm:max-w-md md:max-w-lg lg:max-w-3xl items-center shadow-sm rounded-2xl
+             focus-within:ring-2 border-1 focus-within:ring-transparent">
 
-					<div className="bg-white rounded-2xl flex w-full items-center px-2">
+					<div className="bg-white/30 backdrop-blur-sm rounded-2xl flex w-full items-center px-2">
 						<Textarea
 							placeholder="Create icons, logos and vector images in seconds"
 							className="rounded-2xl border-none px-4 py-4 focus:outline-none focus-visible:ring-0 resize-none shadow-none min-h-12 w-full"
@@ -412,23 +413,16 @@ export default function HomePage() {
 			{/* 4. Example Gallery Section */}
 			<section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 items-center justify-items-center">
 				<h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-8">Example Gallery</h2>
-				<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
-					{[...Array(8)].map((_, i) => {
-						return <div className="items-center justify-items-center">
-							<img src={`/samples/sample-${i}.svg`} alt={`Sample-${i}`} className="w-32 h-32"/>
-							<div>{`Sample-${i}`}</div>
-						</div>
-					})}
-				</div>
+				<SvgGrid svgResults={[]}/>
 			</section>
 
 			<Paywall/>
 
 			{/* 5. Call to Action Section */}
-			<section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-black text-white text-center">
-				<h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-6">Start generating SVGs now</h2>
+			<section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-linear-to-r from-[#F788D7] to-[#FAF59F] text-black text-center">
+				<h2 className="text-xl sm:text-2xl md:text-3xl font-semibold mb-6">Start generating SVGs now</h2>
 				<Link href="/create" passHref>
-					<Button size="lg" className="bg-white text-black hover:bg-gray-200 w-full sm:w-auto cursor-pointer">
+					<Button size="lg" className="bg-black text-white hover:bg-gray-800 w-full sm:w-auto cursor-pointer">
 						Get started for free
 					</Button>
 				</Link>

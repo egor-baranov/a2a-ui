@@ -28,8 +28,8 @@ export const TiltEffect: React.FC<TiltEffectProps> = ({ children }) => {
 			const y = e.clientY - top;
 			const centerX = width / 2;
 			const centerY = height / 2;
-			const rotateX = (y - centerY) / 6;
-			const rotateY = (centerX - x) / 6;
+			const rotateX = (y - centerY) / 32;
+			const rotateY = (centerX - x) / 32;
 
 			setRotate({ x: rotateX, y: rotateY });
 		}, 100),

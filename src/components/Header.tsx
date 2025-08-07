@@ -46,21 +46,17 @@ function Banner() {
 			</div>
 			<div className="flex flex-wrap items-center gap-x-4 gap-y-2">
 				<p className="text-sm/6 text-gray-900">
-					<strong className="font-semibold">svgen.io</strong>
-					<svg viewBox="0 0 2 2" aria-hidden="true" className="mx-2 inline size-0.5 fill-current">
-						<circle r={1} cx={1} cy={1} />
-					</svg>
-					Explore market-leading logo & icon generation available now.
+					Logo & icon generation available now
 				</p>
 				<a
 					href="/create"
-					className="flex-none rounded-full bg-gray-900 px-3.5 py-1 text-sm font-semibold text-white shadow-xs hover:bg-gray-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
+					className="flex-none rounded-full bg-gray-900 px-3.5 py-1 text-xs font-semibold text-white shadow-xs hover:bg-gray-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900"
 				>
 					Try now <span aria-hidden="true">&rarr;</span>
 				</a>
 			</div>
 			<div className="flex flex-1 justify-end">
-				<button type="button" className="-m-3 p-3 focus-visible:-outline-offset-4">
+				<button type="button" className="-m-3 lg:p-3 sm:p-1 focus-visible:-outline-offset-4">
 					<span className="sr-only">Dismiss</span>
 					<XMarkIcon aria-hidden="true" className="size-5 text-gray-900" />
 				</button>
@@ -94,14 +90,12 @@ export default function Header() {
 		<header
 			className="
         fixed top-0 left-0 w-full z-50
-        bg-white/70 backdrop-blur-md
-        border-b
       "
 		>
 
 			<Banner/>
 
-			<div className="flex items-center justify-between md:justify-start md:gap-8 p-4">
+			<div className="flex items-center justify-between md:justify-start bg-white/20 backdrop-blur-sm shadow-sm rounded-xl border-b m-4 md:gap-8 p-4">
 				{/* Logo */}
 				<div
 					className="flex items-center gap-2 pl-2 cursor-pointer"
@@ -124,8 +118,8 @@ export default function Header() {
 								className={cn(
 									"cursor-pointer",
 									label === "Sign In"
-										? "bg-gradient-to-br from-[#FAF59F] to-[#F788D7] text-black font-semibold"
-										: ""
+										? "text-md bg-gradient-to-br from-[#FAF59F] to-[#F788D7] text-black font-semibold"
+										: "text-md hover:text-black hover:bg-transparent text-gray-600 bg-transparent border-none shadow-none"
 								)}
 							>
 								{label}
