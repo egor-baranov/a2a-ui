@@ -19,7 +19,8 @@ const navItems = [
 
 function Banner() {
 	return (
-		<div className="relative isolate flex items-center gap-x-6 overflow-hidden bg-gray-50 px-6 py-2.5 sm:px-3.5 sm:before:flex-1">
+		<div
+			className="relative isolate flex items-center gap-x-0 overflow-hidden bg-gray-50 px-5 py-2.5 sm:px-3.5 sm:before:flex-1">
 			<div
 				aria-hidden="true"
 				className="absolute top-1/2 left-[max(-7rem,calc(50%-52rem))] -z-10 -translate-y-1/2 transform-gpu blur-2xl"
@@ -44,7 +45,7 @@ function Banner() {
 					className="aspect-577/310 w-144.25 bg-linear-to-r from-[#F788D7] to-[#FAF59F] opacity-30"
 				/>
 			</div>
-			<div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+			<div className="flex flex-wrap items-center gap-x-2 gap-y-2">
 				<p className="text-sm/6 text-gray-900">
 					Logo & icon generation available now
 				</p>
@@ -56,9 +57,9 @@ function Banner() {
 				</a>
 			</div>
 			<div className="flex flex-1 justify-end">
-				<button type="button" className="-m-3 lg:p-3 sm:p-1 focus-visible:-outline-offset-4">
+				<button type="button" className="-m-3 lg:p-3 sm:p-1 md:p-1 focus-visible:-outline-offset-4">
 					<span className="sr-only">Dismiss</span>
-					<XMarkIcon aria-hidden="true" className="size-5 text-gray-900" />
+					<XMarkIcon aria-hidden="true" className="size-5 text-gray-900"/>
 				</button>
 			</div>
 		</div>
@@ -95,7 +96,12 @@ export default function Header() {
 
 			<Banner/>
 
-			<div className="flex items-center justify-between md:justify-start bg-white/20 backdrop-blur-sm shadow-sm rounded-xl border-b m-4 md:gap-8 p-4">
+			<div className={
+				cn("flex items-center justify-between md:justify-start backdrop-blur-sm shadow-sm rounded-t-xl border-b m-4 md:gap-8 p-4",
+					mobileMenuOpen ? "bg-white" : "bg-white/20",
+					mobileMenuOpen ? "rounded-b-none" : "rounded-b-xl",
+				)
+			}>
 				{/* Logo */}
 				<div
 					className="flex items-center gap-2 pl-2 cursor-pointer"
@@ -139,12 +145,17 @@ export default function Header() {
 
 				{/* Mobile Nav */}
 				{mobileMenuOpen && (
-					<div className="absolute top-16 left-0 w-full bg-white border-t shadow-md flex flex-col z-50 md:hidden">
-						{navItems.map(({label, href}) => (
+					<div
+						className="absolute top-16 left-0 w-full p-2 bg-white backdrop-blur-xl shadow-md flex flex-col z-50 md:hidden rounded-b-xl">
+						{navItems.filter((v) => {
+							if (v.label == "Sign In") return auth?.token == null;
+							if (v.label == "Account") return auth?.token != null;
+							return true;
+						}).map(({label, href}) => (
 							<Link key={href} href={href} passHref>
 								<Button
 									variant={pathname === href ? "default" : "ghost"}
-									className="w-full justify-start"
+									className="w-full justify-start backdrop-blur-xl p-4 rounded-xl"
 									onClick={() => setMobileMenuOpen(false)}
 								>
 									{label}

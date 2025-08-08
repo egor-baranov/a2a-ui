@@ -103,7 +103,7 @@ export default function AccountPage() {
 	);
 
 	return (
-		<div className="max-w-md mx-auto pt-16 space-y-6">
+		<div className="max-w-md mx-auto p-8 pt-24 space-y-6">
 			<h1 className="text-2xl font-semibold">Account Details</h1>
 
 			<div>

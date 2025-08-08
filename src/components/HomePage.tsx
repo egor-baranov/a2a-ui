@@ -355,9 +355,9 @@ export default function HomePage() {
 			</div>
 
 			{/* 1. Hero Section */}
-			<section className="pt-20 pb-12 px-4 sm:px-6 lg:px-8 text-center items-center justify-items-center">
-				<h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-2">
-					Generate thousands of icons in seconds with svgen
+			<section className="pt-20 pb-12 px-6 sm:px-6 lg:px-8 text-center items-center justify-items-center">
+				<h1 className="text-4xl sm:text-4xl md:text-6xl lg:text-7xl font-semibold mb-2">
+					Create thousands of icons in seconds using AI
 				</h1>
 				<p className="max-w-md sm:max-w-xl md:max-w-2xl mx-auto text-base sm:text-lg text-gray-700 mb-6">
 					Explore limitless opportunities via industry-leading vector graphics generation superpowered by AI.
@@ -367,7 +367,7 @@ export default function HomePage() {
 					className="flex justify-center mb-6 w-full max-w-full sm:max-w-md md:max-w-lg lg:max-w-3xl items-center shadow-sm rounded-2xl
              focus-within:ring-2 border-1 focus-within:ring-transparent">
 
-					<div className="bg-white/30 backdrop-blur-sm rounded-2xl flex w-full items-center px-2">
+					<div className="bg-white/30 backdrop-blur-sm rounded-2xl flex sm:flex-row flex-col w-full items-end px-2">
 						<Textarea
 							placeholder="Create icons, logos and vector images in seconds"
 							className="rounded-2xl border-none px-4 py-4 focus:outline-none focus-visible:ring-0 resize-none shadow-none min-h-12 w-full"
@@ -377,18 +377,18 @@ export default function HomePage() {
 						<Button
 							onClick={() => router.push("/auth")}
 							size="default"
-							className="relative bottom-0.3 right-2 rounded-md h-8 p-0 cursor-pointer bg-gradient-to-br from-[#FAF59F] to-[#F788D7]"
+							className="relative bottom-2 flex justify-items-end right-0 rounded-md h-8 p-0 cursor-pointer bg-gradient-to-br from-[#FAF59F] to-[#F788D7]"
 							aria-label="Send"
 						>
 							<Label className="cursor-pointer text-black">Generate now</Label>
-							<ArrowRight className="h-4 w-4 text-black font-bold"/>
+							<ArrowRight className="h-4 w-4 text-black font-bold flex justify-end"/>
 						</Button>
 					</div>
 				</div>
 
-				<div className="flex flex-col sm:flex-row justify-center gap-3">
+				<div className="flex flex-row justify-center gap-3">
 					<Link href="/create" passHref>
-						<Button size="lg" className="bg-black text-white hover:bg-gray-800 w-full sm:w-auto cursor-pointer">
+						<Button size="lg" className="text-md py-6 bg-black text-white hover:bg-gray-800 w-full sm:w-auto cursor-pointer">
 							Get started for free
 						</Button>
 					</Link>
@@ -396,7 +396,7 @@ export default function HomePage() {
 						<Button
 							size="lg"
 							variant="outline"
-							className="border-gray-300 text-black hover:bg-gray-100 w-full sm:w-auto cursor-pointer"
+							className="text-md py-6 border-gray-300 text-black hover:bg-gray-100 w-full sm:w-auto cursor-pointer"
 						>
 							Explore icons
 						</Button>

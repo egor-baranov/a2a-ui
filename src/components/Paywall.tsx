@@ -5,6 +5,7 @@ import {CardElement, Elements, PaymentRequestButtonElement, useStripe} from "@st
 import {loadStripe, Stripe, PaymentRequest} from "@stripe/stripe-js";
 import {Switch} from "@/components/ui/switch"
 import { TiltEffect } from "@/utils/TiltEffect";
+import BillingToggle from "@/components/ui/billing-toggle";
 
 type Tier = {
 	id: string;
@@ -132,23 +133,14 @@ export default function Paywall() {
 				/>
 			</div>
 
-			<h2 className="text-5xl font-semibold text-center text-black mb-10">
-				Explore generation plans
+			<h2 className="text-5xl font-medium text-center text-black mb-10">
+				Available plans
 			</h2>
 
 			<div className="flex items-center space-x-4 w-full justify-center pb-4">
-				<span className={!isAnnual ? "font-semibold text-primary text-xl" : "font-semibold text-muted-foreground text-xl"}>
-					Monthly
-				</span>
-				<Switch
-					checked={isAnnual}
-					onCheckedChange={setIsAnnual}
-					id="billing-toggle"
-					className="scale-120 cursor-pointer"
+				<BillingToggle
+					onChange={(mode) => setIsAnnual(mode == "annually")}
 				/>
-				<span className={isAnnual ? "font-semibold text-primary text-xl" : "font-semibold text-muted-foreground text-xl"}>
-					Yearly (20% off)
-				</span>
 			</div>
 
 			<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
