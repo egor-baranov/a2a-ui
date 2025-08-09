@@ -6,6 +6,7 @@ import {loadStripe, Stripe, PaymentRequest} from "@stripe/stripe-js";
 import {Switch} from "@/components/ui/switch"
 import { TiltEffect } from "@/utils/TiltEffect";
 import BillingToggle from "@/components/ui/billing-toggle";
+import {useRouter} from "next/navigation";
 
 type Tier = {
 	id: string;
@@ -105,6 +106,7 @@ export default function Paywall() {
 	const [selectedTier, setSelectedTier] = useState<string>("free");
 	const [loading, setLoading] = useState(false);
 	const [isAnnual, setIsAnnual] = React.useState(false);
+	const router = useRouter();
 
 	const handleSubscribe = (tierId: string) => {
 		if (tierId === selectedTier) return;
@@ -112,18 +114,21 @@ export default function Paywall() {
 
 		// Simulate async subscription process
 		setTimeout(() => {
-			setSelectedTier(tierId);
-			setLoading(false);
-			alert(`Subscribed to ${tierId} plan!`);
+			if (tierId == "basic") {
+				router.push("https://buy.stripe.com/test_aFacN5eYg9Nt1OL9medwc01");
+			}
+
+			if (tierId == "pro") {
+				router.push("https://buy.stripe.com/test_aFaaEX03m8Jpctpbumdwc02");
+			}
+
+			// setLoading(false);
+			// setSelectedTier(tierId);
 		}, 1000);
 	};
 
 	return (
-		<div className="max-w-7xl mx-auto px-6 py-12 pt-24">
-			<h2 className="text-5xl font-medium text-center text-black mb-10">
-				Available plans
-			</h2>
-
+		<div className="max-w-7xl mx-auto px-6">
 			<div className="flex items-center space-x-4 w-full justify-center pb-4">
 				<BillingToggle
 					onChange={(mode) => setIsAnnual(mode == "annually")}
@@ -138,7 +143,7 @@ export default function Paywall() {
 							<div
 								key={id}
 								className={`border border-1 rounded-lg p-8 flex flex-col justify-between hover:shadow-xl hover:shadow-gray-100
-                ${isSelected ? "bg-black text-white" : "bg-white/20 backdrop-blur text-black"}
+                ${isSelected ? "bg-gradient-to-r from-[#FBDAEC] to-[#F5EDA4] text-black" : "bg-white/20 backdrop-blur text-black"}
               `}
 							>
 								<div>
@@ -155,7 +160,7 @@ export default function Paywall() {
 									onClick={() => handleSubscribe(id)}
 									className={`mt-auto py-3 rounded-md font-semibold w-full
                   ${isSelected
-										? "bg-gray-700 cursor-default text-white"
+										? "bg-gray-400 cursor-default text-black"
 										: "bg-gray-50 border-1 hover:bg-gray-100 text-black"}
                   disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer
                 `}
@@ -166,22 +171,6 @@ export default function Paywall() {
 						</TiltEffect>
 					);
 				})}
-
-				{/*<Elements stripe={stripePromise}>*/}
-				{/*	<div>*/}
-				{/*		<h2 className="text-xl font-semibold mb-4">Payment</h2>*/}
-
-				{/*		<div className="p-4 border rounded mb-4">*/}
-				{/*			<label className="block text-sm font-medium mb-2">Card Details</label>*/}
-				{/*			<CardElement/>*/}
-				{/*		</div>*/}
-
-				{/*		<div className="p-4 border rounded">*/}
-				{/*			<label className="block text-sm font-medium mb-2">Google Pay</label>*/}
-				{/*			<PaymentRequestButton/>*/}
-				{/*		</div>*/}
-				{/*	</div>*/}
-				{/*</Elements>*/}
 			</div>
 		</div>
 	);

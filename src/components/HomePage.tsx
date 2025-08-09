@@ -12,6 +12,7 @@ import {Label} from "@/components/ui/label";
 
 import {CloudArrowUpIcon, LockClosedIcon, ServerIcon} from '@heroicons/react/20/solid'
 import SvgGrid from "@/components/SvgGrid";
+import GradientRoundedFooter from "@/components/ui/rounded-footer";
 
 function Bento() {
 	return (
@@ -377,7 +378,7 @@ export default function HomePage() {
 						<Button
 							onClick={() => router.push("/auth")}
 							size="default"
-							className="relative bottom-2 flex justify-items-end right-0 rounded-md h-8 p-0 cursor-pointer bg-gradient-to-br from-[#FAF59F] to-[#F788D7]"
+							className="relative bottom-2 flex justify-items-end right-0 rounded-md h-8 p-0 cursor-pointer bg-gradient-to-r from-[#FBDAEC] to-[#F5EDA4]"
 							aria-label="Send"
 						>
 							<Label className="cursor-pointer text-black">Generate now</Label>
@@ -412,34 +413,16 @@ export default function HomePage() {
 
 			{/* 4. Example Gallery Section */}
 			<section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 items-center justify-items-center">
-				<h2 className="text-5xl font-medium text-center mb-8">Example Gallery</h2>
+				<h2 className="text-5xl font-medium text-center mb-4">Example Gallery</h2>
 				<SvgGrid svgResults={[]}/>
 			</section>
 
-			<Paywall/>
-
-			{/* 5. Call to Action Section */}
-			<section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-linear-to-r from-[#F788D7] to-[#FAF59F] text-black text-center">
-				<h2 className="text-xl sm:text-2xl md:text-3xl font-semibold mb-6">Start generating SVGs now</h2>
-				<Link href="/create" passHref>
-					<Button size="lg" className="bg-black text-white hover:bg-gray-800 w-full sm:w-auto cursor-pointer">
-						Get started for free
-					</Button>
-				</Link>
+			<section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 items-center justify-items-center">
+				<h2 className="text-5xl font-medium text-center mb-8">Subscription plans</h2>
+				<Paywall/>
 			</section>
 
-			{/* Footer */}
-			<footer className="py-6 sm:py-8 px-4 sm:px-6 lg:px-8 text-center text-gray-600 text-sm">
-				<p className="mb-2">&copy; {new Date().getFullYear()} svgen. All rights reserved.</p>
-				<div className="space-x-4">
-					<a href="/privacy" className="hover:text-black">
-						Privacy Policy
-					</a>
-					<a href="/terms-of-service" className="hover:text-black">
-						Terms of Service
-					</a>
-				</div>
-			</footer>
+			<GradientRoundedFooter className="pt-16"/>
 		</div>
 	);
 }

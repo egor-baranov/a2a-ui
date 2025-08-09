@@ -25,6 +25,8 @@ export default function PrivacyPage() {
 				/>
 			</div>
 
+			<h1 className="text-4xl font-medium pt-32 flex justify-center">Subscription plans</h1>
+
 			<Paywall/>
 		</div>
 	);
