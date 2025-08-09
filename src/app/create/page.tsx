@@ -257,24 +257,42 @@ export default function CreatePage() {
 
 	return (
 		<SidebarProvider open={sidebarOpen} onOpenChange={setSidebarOpen}>
+			<div
+				aria-hidden="true"
+				className="absolute inset-x-0 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
+			>
+				<div
+					style={{
+						clipPath:
+							'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
+					}}
+					className="relative left-[calc(50%-11rem)] aspect-1155/678 w-144.5 -translate-x-1/2 rotate-30 bg-linear-to-tr from-[#FAF59F] to-[#F788D7] opacity-30 sm:left-[calc(50%-30rem)] sm:w-288.75"
+				/>
+			</div>
+
 			<div className="w-full max-w-5xl mx-auto px-4 pt-24">
 				{previewResult === null &&
 					(<div className="w-full max-w-5xl space-y-4 pt-4">
 						{/* Controls */}
-						<div className="flex flex-wrap items-start gap-2 border-1 rounded-2xl shadow-sm">
-							<div className="relative flex-1 rounded-3xl">
+						<div className="flex flex-wrap items-start gap-2 border-none"
+								 style={{
+									 position: "sticky",
+									 top: 144,
+									 zIndex: 5,
+								 }}>
+							<div className="relative flex-1 rounded-2xl border-1">
 								<Popover>
 									<PopoverTrigger asChild>
 										<Button
 											size="icon"
 											variant="ghost"
-											className="absolute bottom-2 left-2 h-8 w-8 p-0 rounded-full bg-white hover:bg-gray-100 border-0 shadow-none cursor-pointer"
+											className="absolute left-2 bottom-2 h-8 w-8 p-0 rounded-full bg-white hover:bg-gray-100 border-0 shadow-none cursor-pointer"
 											aria-label="Settings"
 										>
 											<Settings2 className="h-4 w-4"/>
 										</Button>
 									</PopoverTrigger>
-									<PopoverContent className="w-48 bg-white border-1 border-gray-200 rounded-lg p-2 shadow-md z-[1000]">
+									<PopoverContent className="w-48 bg-white/80 backdrop-blur-md border-1 border-gray-200 rounded-lg p-2 shadow-md z-[1000]">
 										<div className="space-y-4">
 											{/* Optimize checkbox */}
 											<label className="flex items-center justify-between text-sm">
@@ -341,7 +359,7 @@ export default function CreatePage() {
 									placeholder="Enter your instructions"
 									value={newMessage}
 									onChange={(e) => setNewMessage(e.target.value)}
-									className="bg-white shadow-none w-full pr-10 pt-4 px-4 pb-12 rounded-2xl focus:outline-none focus-visible:ring-0 max-h-80 resize-none"
+									className="bg-white/80 backdrop-blur-md shadow-none w-full pr-10 pt-4 px-4 pb-12 rounded-2xl focus:outline-none focus-visible:ring-0 max-h-80 resize-none"
 								/>
 
 								{/* Send Button */}
@@ -358,22 +376,26 @@ export default function CreatePage() {
 									<ArrowUp className="h-4 w-4"/>
 								</Button>
 							</div>
-						</div>
+							{/* Presets */}
+							<div className="flex flex-nowrap overflow-x-auto space-x-3 pb-2 ">
+								{presets.map((p, i) => (
+									<Badge
+										key={i}
+										variant="outline"
+										className="cursor-pointer text-sm px-2 py-1 rounded-2xl hover:bg-gray-50 bg-white/80 backdrop-blur-xl whitespace-normal overflow-hidden"
+										style={{
+											display: '-webkit-box',
+											WebkitLineClamp: 3,
+											WebkitBoxOrient: 'vertical',
+										}}
+										onClick={() => setNewMessage(p)}
+									>
+										{p}
+									</Badge>
+								))}
+							</div>
 
-						{/* Presets */}
-						<div className="flex flex-nowrap overflow-x-auto space-x-3 pb-2">
-							{presets.map((p, i) => (
-								<Badge
-									key={i}
-									variant="outline"
-									className="cursor-pointer text-sm px-2 py-1 rounded-2xl hover:bg-gray-50 whitespace-nowrap"
-									onClick={() => setNewMessage(p)}
-								>
-									{p}
-								</Badge>
-							))}
 						</div>
-
 
 						<div className={"pt-4"}/>
 
@@ -383,14 +405,14 @@ export default function CreatePage() {
 				}
 			</div>
 
-			<Sidebar side={"right"} variant={"inset"} className={"pt-32 bg-white/80 backdrop-blur-lg"}>
+			<Sidebar side={"right"} variant={"inset"} className={"pt-32 bg-white/80 backdrop-blur-md"}>
 				{selectedSvg && (
 					<div className="p-4 flex flex-col h-full">
 						<button
 							onClick={() => setSidebarOpen(false)}
 							className="mb-4 text-left text-sm  cursor-pointer"
 						>
-							<XIcon className="h-5 w-5 text-gray-600" />
+							<XIcon className="h-5 w-5 text-gray-600"/>
 						</button>
 
 						<h3 className="text-lg font-semibold mb-2">{selectedSvg.prompt}</h3>
@@ -400,7 +422,7 @@ export default function CreatePage() {
 								className="btn-outline btn-sm"
 								onClick={() => navigator.clipboard.writeText(selectedSvg.svg)}
 							>
-								<CopyIcon className="h-5 w-5 text-gray-600 cursor-pointer" />
+								<CopyIcon className="h-5 w-5 text-gray-600 cursor-pointer"/>
 							</button>
 							<button
 								className="btn-outline btn-sm"
@@ -410,7 +432,7 @@ export default function CreatePage() {
 									window.open(url, "_blank");
 								}}
 							>
-								<ExternalLink className="h-5 w-5 text-gray-600 cursor-pointer" />
+								<ExternalLink className="h-5 w-5 text-gray-600 cursor-pointer"/>
 							</button>
 							<button
 								className="btn-outline btn-sm"
@@ -424,7 +446,7 @@ export default function CreatePage() {
 									document.body.removeChild(link);
 								}}
 							>
-								<Download className="h-5 w-5 text-gray-600 cursor-pointer" />
+								<Download className="h-5 w-5 text-gray-600 cursor-pointer"/>
 							</button>
 						</div>
 

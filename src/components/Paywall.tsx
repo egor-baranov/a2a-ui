@@ -7,6 +7,7 @@ import {Switch} from "@/components/ui/switch"
 import {TiltEffect} from "@/utils/TiltEffect";
 import BillingToggle from "@/components/ui/billing-toggle";
 import {useRouter} from "next/navigation";
+import {useAuth} from "@/providers/AuthProvider";
 
 type Tier = {
 	id: string;
@@ -107,6 +108,8 @@ export default function Paywall() {
 	const [loading, setLoading] = useState(false);
 	const [isAnnual, setIsAnnual] = React.useState(false);
 	const router = useRouter();
+	const {auth, logout} = useAuth();
+
 
 	const handleSubscribe = (tierId: string) => {
 		if (tierId === selectedTier) return;
@@ -114,6 +117,11 @@ export default function Paywall() {
 
 		// Simulate async subscription process
 		setTimeout(() => {
+			if (auth?.token == null) {
+				router.push("/auth");
+				return;
+			}
+
 			if (tierId == "basic") {
 				router.push("https://buy.stripe.com/test_aFacN5eYg9Nt1OL9medwc01");
 			}

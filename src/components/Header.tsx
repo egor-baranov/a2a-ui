@@ -76,14 +76,14 @@ export default function Header() {
 
 	useEffect(() => {
 		if (auth == null) return;
-		if (auth?.token != null && pathname === "/auth") {
+		if (auth?.token != null && pathname == "/auth") {
 			router.push("/account");
 		}
 	}, [auth?.token, pathname, router]);
 
 	useEffect(() => {
 		if (auth == null) return;
-		if (auth?.token == null && (pathname === "/account" || pathname === "/create")) {
+		if (auth?.token == null && (pathname == "/account" || pathname == "/create")) {
 			router.push("/auth");
 		}
 	}, [auth?.token, pathname, router]);

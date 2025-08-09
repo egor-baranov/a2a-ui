@@ -32,7 +32,6 @@ export default function SvgGrid({ svgResults, loading, onSelect }: SvgGridProps)
 	};
 
 	const handleTap = (key: string, svg: string, prompt: string) => {
-		setActiveKey((prev) => (prev === key ? null : key));
 		onSelect?.({ svg, prompt });
 	};
 
