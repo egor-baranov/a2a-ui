@@ -8,6 +8,7 @@ import {SparklesIcon, MenuIcon, XIcon} from "lucide-react";
 import {useAuth} from "@/providers/AuthProvider";
 import {cn} from "@/lib/utils";
 import {XMarkIcon} from "@heroicons/react/16/solid";
+import Hamburger from "@/components/ui/hamburger";
 
 const navItems = [
 	{label: "Create", href: "/create"},
@@ -134,14 +135,11 @@ export default function Header() {
 					))}
 				</nav>
 
-				{/* Mobile Menu Button */}
-				<button
-					className="md:hidden p-2 ml-auto"
+				<Hamburger
+					isOpen={mobileMenuOpen}
 					onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-					aria-label="Toggle menu"
-				>
-					{mobileMenuOpen ? <XIcon className="w-5 h-5"/> : <MenuIcon className="w-5 h-5"/>}
-				</button>
+					className="md:hidden ml-auto"
+				/>
 
 				{/* Mobile Nav */}
 				{mobileMenuOpen && (

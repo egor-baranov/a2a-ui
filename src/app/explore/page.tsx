@@ -42,10 +42,6 @@ export default function ExplorePage() {
 	};
 
 	function fetchData(query: string) {
-		if (query.length == 0) {
-			return;
-		}
-
 		(fetchExplore(query)).then(
 			res => {
 				setSvgResults(

@@ -412,7 +412,7 @@ export default function HomePage() {
 
 			{/* 4. Example Gallery Section */}
 			<section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 items-center justify-items-center">
-				<h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-8">Example Gallery</h2>
+				<h2 className="text-5xl font-medium text-center mb-8">Example Gallery</h2>
 				<SvgGrid svgResults={[]}/>
 			</section>
 
