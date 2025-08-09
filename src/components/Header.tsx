@@ -138,13 +138,13 @@ export default function Header() {
 				<Hamburger
 					isOpen={mobileMenuOpen}
 					onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-					className="md:hidden ml-auto"
+					className="md:hidden p-2 ml-auto"
 				/>
 
 				{/* Mobile Nav */}
 				{mobileMenuOpen && (
 					<div
-						className="absolute top-16 left-0 w-full p-2 bg-white backdrop-blur-xl shadow-md flex flex-col z-50 md:hidden rounded-b-xl">
+						className="absolute top-12 left-0 w-full p-2 bg-white backdrop-blur-xl shadow-md flex flex-col z-50 md:hidden rounded-b-xl">
 						{navItems.filter((v) => {
 							if (v.label == "Sign In") return auth?.token == null;
 							if (v.label == "Account") return auth?.token != null;

@@ -42,7 +42,7 @@ export const TiltEffect: React.FC<TiltEffectProps> = ({ children }) => {
 
 	return (
 		<div
-			className="card relative h-auto w-auto  rounded-xl bg-white transition-[all_400ms_cubic-bezier(0.03,0.98,0.52,0.99)_0s] will-change-transform"
+			className="card relative h-auto w-auto  rounded-xl bg-transparent transition-[all_400ms_cubic-bezier(0.03,0.98,0.52,0.99)_0s] will-change-transform"
 			onMouseMove={onMouseMove}
 			onMouseLeave={onMouseLeave}
 			style={{

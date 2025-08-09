@@ -63,7 +63,7 @@ export default function BillingToggle({
 				aria-label={ariaLabel}
 				onClick={toggle}
 				onKeyDown={onKeyDown}
-				className={`relative w-full h-full rounded-full flex items-center bg-slate-200/70 dark:bg-slate-700/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500 cursor-pointer`}
+				className={`relative w-full h-full rounded-full flex items-center border-1 bg-white/20 backdrop-blur dark:bg-slate-700/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500 cursor-pointer`}
 			>
 				{/* sliding thumb (absolute) */}
 				<span
