@@ -209,7 +209,7 @@ export default function AccountPage() {
 					{/* Sections - each section has data-section-id and a ref so we can scroll and observe it */}
 					<section
 						data-section-id="profile"
-						ref={(el) => (sectionRefs.current["profile"] = el)}
+						// ref={(el) => (sectionRefs.current["profile"] = el)}
 						className="outline-none"
 						tabIndex={-1}
 					>
@@ -230,7 +230,7 @@ export default function AccountPage() {
 
 					<section
 						data-section-id="limits"
-						ref={(el) => (sectionRefs.current["limits"] = el)}
+						// ref={(el) => (sectionRefs.current["limits"] = el)}
 						className="pt-6"
 						tabIndex={-1}
 					>
@@ -266,7 +266,7 @@ export default function AccountPage() {
 					{subscription && (
 						<section
 							data-section-id="subscription"
-							ref={(el) => (sectionRefs.current["subscription"] = el)}
+							// ref={(el) => (sectionRefs.current["subscription"] = el)}
 							className="pt-6"
 							tabIndex={-1}
 						>
@@ -294,7 +294,7 @@ export default function AccountPage() {
 
 					<section
 						data-section-id="usage"
-						ref={(el) => (sectionRefs.current["usage"] = el)}
+						// ref={(el) => (sectionRefs.current["usage"] = el)}
 						className="pt-6"
 						tabIndex={-1}
 					>
@@ -339,7 +339,7 @@ export default function AccountPage() {
 
 					<section
 						data-section-id="actions"
-						ref={(el) => (sectionRefs.current["actions"] = el)}
+						// ref={(el) => (sectionRefs.current["actions"] = el)}
 						className="pt-6 pb-12"
 						tabIndex={-1}
 					>
