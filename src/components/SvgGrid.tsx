@@ -62,7 +62,7 @@ export default function SvgGrid({ svgResults, loading, onSelect }: SvgGridProps)
 							const key = `${groupIdx}-${svgIdx}`;
 
 							return (
-								<TiltEffect key={key}>
+								<TiltEffect key={key} tilt={1/7.0}>
 									<div className="flex flex-col items-center">
 										<div
 											onClick={() => handleTap(key, svg, prompt)}

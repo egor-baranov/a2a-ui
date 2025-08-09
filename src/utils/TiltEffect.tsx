@@ -14,10 +14,11 @@ function throttle<T extends (...args: any[]) => any>(
 }
 
 interface TiltEffectProps {
-	children: ReactNode;
+	children: ReactNode,
+	tilt: number;
 }
 
-export const TiltEffect: React.FC<TiltEffectProps> = ({ children }) => {
+export const TiltEffect: React.FC<TiltEffectProps> = ({ children, tilt }) => {
 	const [rotate, setRotate] = useState({ x: 0, y: 0 });
 
 	const onMouseMove = useCallback(
@@ -28,8 +29,8 @@ export const TiltEffect: React.FC<TiltEffectProps> = ({ children }) => {
 			const y = e.clientY - top;
 			const centerX = width / 2;
 			const centerY = height / 2;
-			const rotateX = (y - centerY) / 32;
-			const rotateY = (centerX - x) / 32;
+			const rotateX = (y - centerY) * tilt;
+			const rotateY = (centerX - x) * tilt;
 
 			setRotate({ x: rotateX, y: rotateY });
 		}, 100),

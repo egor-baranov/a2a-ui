@@ -3,7 +3,7 @@
 import React, {useEffect, useState} from "react";
 import {Textarea} from "@/components/ui/textarea";
 import {Button} from "@/components/ui/button";
-import {ArrowLeft, ArrowUp, Copy, Download, ExternalLink, Settings2, Wand2} from "lucide-react";
+import {ArrowLeft, ArrowUp, Copy, CopyIcon, Download, ExternalLink, Settings2, Wand2, XIcon} from "lucide-react";
 import {Badge} from "@/components/ui/badge";
 import SvgGrid from "@/components/SvgGrid";
 import type {components} from "@/types/api-types";
@@ -13,6 +13,7 @@ import {PopoverContent, PopoverTrigger} from "@radix-ui/react-popover";
 import {Popover} from "@/components/ui/popover";
 import {useAuth} from "@/providers/AuthProvider";
 import {useRouter} from "next/navigation";
+import {Sidebar, SidebarProvider, SidebarTrigger} from "@/components/ui/sidebar";
 
 
 const styles = [
@@ -57,6 +58,9 @@ export default function CreatePage() {
 	const [loading, setLoading] = useState(false);
 	const [previewResult, setPreviewResult] = useState<{ svg: string; prompt: string } | null>(null);
 	const [presets, setPresets] = useState<string[]>([]);
+
+	const [sidebarOpen, setSidebarOpen] = useState(false);
+	const [selectedSvg, setSelectedSvg] = useState<{ svg: string; prompt: string } | null>(null);
 
 
 	const {auth, logout} = useAuth();
@@ -125,10 +129,9 @@ export default function CreatePage() {
 	const handleSvgSelect = (item: { svg: string; prompt: string }) => {
 		console.log("User clicked SVG from prompt:", item.prompt);
 		console.log("SVG content is:", item.svg);
-		// e.g. open in an editor, show details panel, etc.
-		setPreviewResult(item);
+		setSelectedSvg(item);
+		setSidebarOpen(true); // open sidebar instead of showing preview screen
 	};
-
 	// helper that returns one SVG string (or throws)
 	const fetchSvgs = async (prompt: string): Promise<GenerationResponse> => {
 		const payload: SVGGenerationRequest = {
@@ -200,7 +203,7 @@ export default function CreatePage() {
 				const filtered = data
 					.filter((v) => v.svgs.length > 0)
 					.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
-					.map((v) => ({ prompt: v.prompt, svgs: v.svgs.map((s) => s.content) }));
+					.map((v) => ({prompt: v.prompt, svgs: v.svgs.map((s) => s.content)}));
 				setSvgResults(filtered);
 			} catch (e) {
 				console.error(e);
@@ -253,208 +256,187 @@ export default function CreatePage() {
 	};
 
 	return (
-		<div className="w-full max-w-5xl mx-auto px-4 pt-24">
-			{previewResult === null &&
-				(<div className="w-full max-w-5xl space-y-4 pt-4">
-					{/* Controls */}
-					<div className="flex flex-wrap items-start gap-2 border-1 rounded-2xl shadow-sm">
-						<div className="relative flex-1 rounded-3xl">
-							<Popover>
-								<PopoverTrigger asChild>
-									<Button
-										size="icon"
-										variant="ghost"
-										className="absolute bottom-2 left-2 h-8 w-8 p-0 rounded-full bg-white hover:bg-gray-100 border-0 shadow-none cursor-pointer"
-										aria-label="Settings"
-									>
-										<Settings2 className="h-4 w-4"/>
-									</Button>
-								</PopoverTrigger>
-								<PopoverContent className="w-48 bg-white border-1 border-gray-200 rounded-lg p-2 shadow-md z-[1000]">
-									<div className="space-y-4">
-										{/* Optimize checkbox */}
-										<label className="flex items-center justify-between text-sm">
-											<span>Optimize SVG</span>
-											<input
-												type="checkbox"
-												checked={optimizeSvg}
-												onChange={(e) => setOptimizeSvg(e.target.checked)}
-												className="h-4 w-4 accent-blue-500"
-											/>
-										</label>
-
-										{/* Quantity selector */}
-										<div className="flex items-center justify-between">
-											<label htmlFor="quantity" className="text-sm">
-												Quantity
+		<SidebarProvider open={sidebarOpen} onOpenChange={setSidebarOpen}>
+			<div className="w-full max-w-5xl mx-auto px-4 pt-24">
+				{previewResult === null &&
+					(<div className="w-full max-w-5xl space-y-4 pt-4">
+						{/* Controls */}
+						<div className="flex flex-wrap items-start gap-2 border-1 rounded-2xl shadow-sm">
+							<div className="relative flex-1 rounded-3xl">
+								<Popover>
+									<PopoverTrigger asChild>
+										<Button
+											size="icon"
+											variant="ghost"
+											className="absolute bottom-2 left-2 h-8 w-8 p-0 rounded-full bg-white hover:bg-gray-100 border-0 shadow-none cursor-pointer"
+											aria-label="Settings"
+										>
+											<Settings2 className="h-4 w-4"/>
+										</Button>
+									</PopoverTrigger>
+									<PopoverContent className="w-48 bg-white border-1 border-gray-200 rounded-lg p-2 shadow-md z-[1000]">
+										<div className="space-y-4">
+											{/* Optimize checkbox */}
+											<label className="flex items-center justify-between text-sm">
+												<span>Optimize SVG</span>
+												<input
+													type="checkbox"
+													checked={optimizeSvg}
+													onChange={(e) => setOptimizeSvg(e.target.checked)}
+													className="h-4 w-4 accent-blue-500"
+												/>
 											</label>
-											<select
-												id="quantity"
-												value={quantity}
-												onChange={(e) => setQuantity(Number(e.target.value))}
-												className="h-8 w-16 rounded-md border border-gray-300 px-2 text-right text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-											>
-												{quantities.map((q) => (
-													<option key={q} value={q}>
-														{q}
-													</option>
-												))}
-											</select>
+
+											{/* Quantity selector */}
+											<div className="flex items-center justify-between">
+												<label htmlFor="quantity" className="text-sm">
+													Quantity
+												</label>
+												<select
+													id="quantity"
+													value={quantity}
+													onChange={(e) => setQuantity(Number(e.target.value))}
+													className="h-8 w-16 rounded-md border border-gray-300 px-2 text-right text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+												>
+													{quantities.map((q) => (
+														<option key={q} value={q}>
+															{q}
+														</option>
+													))}
+												</select>
+											</div>
+
+											{/* Style selector */}
+											<div className="flex items-center justify-between">
+												<select
+													id="style"
+													value={style}
+													onChange={(e) => setStyle(e.target.value)}
+													className="h-8 w-full rounded-md border border-gray-300 px-2 text-left text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+												>
+													{styles.map((s) => (
+														<option key={s} value={s}>
+															{s}
+														</option>
+													))}
+												</select>
+											</div>
 										</div>
+									</PopoverContent>
+								</Popover>
 
-										{/* Style selector */}
-										<div className="flex items-center justify-between">
-											<select
-												id="style"
-												value={style}
-												onChange={(e) => setStyle(e.target.value)}
-												className="h-8 w-full rounded-md border border-gray-300 px-2 text-left text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-											>
-												{styles.map((s) => (
-													<option key={s} value={s}>
-														{s}
-													</option>
-												))}
-											</select>
-										</div>
-									</div>
-								</PopoverContent>
-							</Popover>
+								{/* Attach Button */}
+								<Button
+									onClick={handleEnhance}
+									size="icon"
+									variant="outline"
+									className="absolute bottom-2 right-12  h-8 w-8 p-0 rounded-full bg-white hover:bg-gray-100 border-0 shadow-none cursor-pointer"
+									aria-label="Enhance Prompt"
+								>
+									<Wand2 className="h-4 w-4"/>
+								</Button>
 
-							{/* Attach Button */}
-							<Button
-								onClick={handleEnhance}
-								size="icon"
-								variant="outline"
-								className="absolute bottom-2 right-12  h-8 w-8 p-0 rounded-full bg-white hover:bg-gray-100 border-0 shadow-none cursor-pointer"
-								aria-label="Enhance Prompt"
-							>
-								<Wand2 className="h-4 w-4"/>
-							</Button>
+								{/* Textarea Input */}
+								<Textarea
+									placeholder="Enter your instructions"
+									value={newMessage}
+									onChange={(e) => setNewMessage(e.target.value)}
+									className="bg-white shadow-none w-full pr-10 pt-4 px-4 pb-12 rounded-2xl focus:outline-none focus-visible:ring-0 max-h-80 resize-none"
+								/>
 
-							{/* Textarea Input */}
-							<Textarea
-								placeholder="Enter your instructions"
-								value={newMessage}
-								onChange={(e) => setNewMessage(e.target.value)}
-								className="bg-white shadow-none w-full pr-10 pt-4 px-4 pb-12 rounded-2xl focus:outline-none focus-visible:ring-0 max-h-80 resize-none"
-							/>
-
-							{/* Send Button */}
-							<Button
-								onClick={
-									() => {
-										handleSend().then();
+								{/* Send Button */}
+								<Button
+									onClick={
+										() => {
+											handleSend().then();
+										}
 									}
-								}
-								size="default"
-								className="absolute bottom-2 right-2 rounded-full h-8 w-8 p-0 cursor-pointer"
-								aria-label="Send"
-							>
-								<ArrowUp className="h-4 w-4"/>
-							</Button>
+									size="default"
+									className="absolute bottom-2 right-2 rounded-full h-8 w-8 p-0 cursor-pointer"
+									aria-label="Send"
+								>
+									<ArrowUp className="h-4 w-4"/>
+								</Button>
+							</div>
 						</div>
-					</div>
 
-					{/* Presets */}
-					<div className="flex flex-nowrap overflow-x-auto space-x-3 pb-2">
-						{presets.map((p, i) => (
-							<Badge
-								key={i}
-								variant="outline"
-								className="cursor-pointer text-sm px-2 py-1 rounded-2xl hover:bg-gray-50 whitespace-nowrap"
-								onClick={() => setNewMessage(p)}
-							>
-								{p}
-							</Badge>
-						))}
-					</div>
+						{/* Presets */}
+						<div className="flex flex-nowrap overflow-x-auto space-x-3 pb-2">
+							{presets.map((p, i) => (
+								<Badge
+									key={i}
+									variant="outline"
+									className="cursor-pointer text-sm px-2 py-1 rounded-2xl hover:bg-gray-50 whitespace-nowrap"
+									onClick={() => setNewMessage(p)}
+								>
+									{p}
+								</Badge>
+							))}
+						</div>
 
 
-					<div className={"pt-4"}/>
+						<div className={"pt-4"}/>
 
-					{/* SVG Results Grid */}
-					<SvgGrid svgResults={svgResults} loading={loading} onSelect={handleSvgSelect}/>
-				</div>)
-			}
+						{/* SVG Results Grid */}
+						<SvgGrid svgResults={svgResults} loading={loading} onSelect={handleSvgSelect}/>
+					</div>)
+				}
+			</div>
 
-			{
-				previewResult != null && (<div className="w-full max-w-5xl space-y-2 flex flex-col pt-8">
-
-					<div className="flex flex-wrap items-start gap-4">
-						<Button
-							onClick={() => {
-								setPreviewResult(null);
-							}}
-							size="icon"
-							variant="ghost"
-							className="h-8 w-8 p-0 rounded-md cursor-pointer"
-							aria-label="Settings"
-						>
-							<ArrowLeft className="h-8 w-8"/>
-						</Button>
-					</div>
-
-					<div className="flex items-start justify-start space-x-2 mb-4 px-8">
-						<h3 className="text-lg font-semibold">{previewResult.prompt}</h3>
+			<Sidebar side={"right"} variant={"inset"} className={"pt-32 bg-white/80 backdrop-blur-lg"}>
+				{selectedSvg && (
+					<div className="p-4 flex flex-col h-full">
 						<button
-							onClick={() => copyToClipboard(previewResult.prompt)}
-							aria-label="Copy Prompt"
-							className="p-1 hover:bg-gray-100 rounded cursor-pointer"
+							onClick={() => setSidebarOpen(false)}
+							className="mb-4 text-left text-sm  cursor-pointer"
 						>
-							<Copy className="w-4 h-4 text-gray-500"/>
+							<XIcon className="h-5 w-5 text-gray-600" />
 						</button>
-					</div>
 
-					<div className="flex flex-row w-min items-start justify-start space-x-4 px-8">
-						<Button
-							variant="outline"
-							className="gap-2 cursor-pointer"
-							onClick={() => navigator.clipboard.writeText(previewResult?.svg)}
-						>
-							<Copy className="w-4 h-4"/>
-							Copy
-						</Button>
+						<h3 className="text-lg font-semibold mb-2">{selectedSvg.prompt}</h3>
 
-						<Button
-							variant="outline"
-							className="gap-2 cursor-pointer"
-							onClick={() => {
-								const blob = new Blob([previewResult?.svg], {type: "image/svg+xml"});
-								const url = URL.createObjectURL(blob);
-								window.open(url, "_blank");
-							}}>
-							<ExternalLink className="w-4 h-4"/>
-							Open
-						</Button>
+						<div className="flex gap-4 mb-4">
+							<button
+								className="btn-outline btn-sm"
+								onClick={() => navigator.clipboard.writeText(selectedSvg.svg)}
+							>
+								<CopyIcon className="h-5 w-5 text-gray-600 cursor-pointer" />
+							</button>
+							<button
+								className="btn-outline btn-sm"
+								onClick={() => {
+									const blob = new Blob([selectedSvg.svg], {type: "image/svg+xml"});
+									const url = URL.createObjectURL(blob);
+									window.open(url, "_blank");
+								}}
+							>
+								<ExternalLink className="h-5 w-5 text-gray-600 cursor-pointer" />
+							</button>
+							<button
+								className="btn-outline btn-sm"
+								onClick={() => {
+									const blob = new Blob([selectedSvg.svg], {type: "image/svg+xml"});
+									const link = document.createElement("a");
+									link.href = URL.createObjectURL(blob);
+									link.download = "icon.svg";
+									document.body.appendChild(link);
+									link.click();
+									document.body.removeChild(link);
+								}}
+							>
+								<Download className="h-5 w-5 text-gray-600 cursor-pointer" />
+							</button>
+						</div>
 
-						<Button
-							variant="outline"
-							className="gap-2 cursor-pointer"
-							onClick={() => {
-								const blob = new Blob([previewResult?.svg], {type: "image/svg+xml"});
-								const link = document.createElement("a");
-								link.href = URL.createObjectURL(blob);
-								link.download = "icon.svg";
-								document.body.appendChild(link);
-								link.click();
-								document.body.removeChild(link);
-							}}
-						>
-							<Download className="w-4 h-4"/>
-							Download
-						</Button>
-					</div>
-
-					<div className={"flex flex-col items-center justify-center px-8"}>
 						<object
 							type="image/svg+xml"
-							data={`data:image/svg+xml;utf8,${encodeURIComponent(previewResult.svg)}`}
-							className="max-w-full max-h-full flex-grow pointer-events-none"
+							data={`data:image/svg+xml;utf8,${encodeURIComponent(selectedSvg.svg)}`}
+							className="pointer-events-none"
 						/>
 					</div>
-				</div>)
-			}
-		</div>
+				)}
+			</Sidebar>
+
+		</SidebarProvider>
 	);
 }

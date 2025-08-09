@@ -10,7 +10,10 @@ import { Button } from "@/components/ui/button";
 import Paywall from "@/components/Paywall";
 import {CardElement, Elements} from "@stripe/react-stripe-js";
 import PaymentRequestButton from "@/components/ui/PaymentRequestButton";
-import {loadStripe} from "@stripe/stripe-js";
+import {loadStripe, TokenCreateParams} from "@stripe/stripe-js";
+import Account = TokenCreateParams.Account;
+
+import {BarChart3, Gauge, User, Zap} from 'lucide-react';
 
 // Schemas for clarity
 type UserWithRelations = components["schemas"]["UserWithRelations"];
@@ -125,11 +128,10 @@ export default function AccountPage() {
 
 	// build sections dynamically so sidebar can iterate
 	const sections = [
-		{ id: "profile", title: "Profile" },
-		{ id: "limits", title: "Limits" },
-		{ id: "usage", title: "Usage Statistics" },
-		{ id: "billing", title: "Billing" },
-		{ id: "actions", title: "Actions" },
+		{ id: "profile", title: "Profile", icon: User },
+		{ id: "limits", title: "Limits", icon: Gauge },
+		{ id: "usage", title: "Usage Statistics", icon: BarChart3 },
+		{ id: "actions", title: "Actions", icon: Zap },
 	];
 
 	function scrollToSection(id: string) {
@@ -160,13 +162,14 @@ export default function AccountPage() {
 									<li key={s.id}>
 										<button
 											onClick={() => scrollToSection(s.id)}
-											className={`w-full text-left rounded-lg px-3 py-2 transition flex items-center justify-between ${
+											className={`w-full text-left rounded-lg px-3 py-2 transition flex items-start justify-start cursor-pointer ${
 												activeSection === s.id
 													? "bg-black text-white shadow"
 													: "hover:bg-gray-100"
 											}`}
 											aria-current={activeSection === s.id ? "true" : undefined}
 										>
+											{s.icon && <s.icon className="w-5 h-5 mr-2" />}
 											<span className="font-medium">{s.title}</span>
 										</button>
 									</li>
@@ -181,11 +184,12 @@ export default function AccountPage() {
 									<button
 										key={s.id}
 										onClick={() => scrollToSection(s.id)}
-										className={`whitespace-nowrap rounded-full mx-1 py-2 flex-none text-sm font-medium transition ${
+										className={`whitespace-nowrap rounded-md mx-1 px-4 py-2 flex items-start text-sm font-medium transition cursor-pointer ${
 											activeSection === s.id ? "bg-black text-white" : "bg-white/90 ring-1 ring-gray-200"
 										}`}
 										aria-current={activeSection === s.id ? "true" : undefined}
 									>
+										{s.icon && <s.icon className="w-5 h-5 mr-2" />}
 										{s.title}
 									</button>
 								))}
@@ -215,7 +219,9 @@ export default function AccountPage() {
 					{/* Sections - each section has data-section-id and a ref so we can scroll and observe it */}
 					<section
 						data-section-id="profile"
-						// ref={(el) => (sectionRefs.current["profile"] = el)}
+						ref={(el) => {
+							sectionRefs.current["profile"] = el;
+						}}
 						className="outline-none"
 						tabIndex={-1}
 					>
@@ -236,13 +242,19 @@ export default function AccountPage() {
 						<div className="rounded-2xl bg-white/20 backdrop-blur p-4 shadow-sm ring-1 ring-gray-200 mt-4">
 							<Label className="text-sm">Subscription</Label>
 							<p className="mt-3 text-2xl font-semibold">Base</p>
-							<Button className="mt-4 cursor-pointer" onClick={() => router.push("/pricing")}>View plans</Button>
+
+							<div className="flex flex-row gap-2">
+								<Button className="mt-4 cursor-pointer" onClick={() => router.push("/pricing")}>Manage</Button>
+								<Button className="mt-4 cursor-pointer border-1" variant="ghost" onClick={() => router.push("/pricing")}>Cancel</Button>
+							</div>
 						</div>
 					</section>
 
 					<section
 						data-section-id="limits"
-						// ref={(el) => (sectionRefs.current["limits"] = el)}
+						ref={(el) => {
+							sectionRefs.current["limits"] = el;
+						}}
 						className="pt-6"
 						tabIndex={-1}
 					>
@@ -281,7 +293,9 @@ export default function AccountPage() {
 					{subscription && (
 						<section
 							data-section-id="subscription"
-							// ref={(el) => (sectionRefs.current["subscription"] = el)}
+							ref={(el) => {
+								sectionRefs.current["subscription"] = el;
+							}}
 							className="pt-6"
 							tabIndex={-1}
 						>
@@ -309,7 +323,9 @@ export default function AccountPage() {
 
 					<section
 						data-section-id="usage"
-						// ref={(el) => (sectionRefs.current["usage"] = el)}
+						ref={(el) => {
+							sectionRefs.current["usage"] = el;
+						}}
 						className="pt-6"
 						tabIndex={-1}
 					>
@@ -353,30 +369,10 @@ export default function AccountPage() {
 					</section>
 
 					<section
-						data-section-id="billing"
-						className="pt-6"
-						tabIndex={-1}>
-
-						<h2 className="text-4xl font-medium pb-4">Billing</h2>
-
-						<Elements stripe={stripePromise}>
-							<div>
-								<div className="p-4 border rounded mb-4">
-									<label className="block text-sm font-medium mb-2">Card Details</label>
-									<CardElement/>
-								</div>
-
-								<div className="p-4 border rounded">
-									<label className="block text-sm font-medium mb-2">Google Pay</label>
-									<PaymentRequestButton/>
-								</div>
-							</div>
-						</Elements>
-					</section>
-
-					<section
 						data-section-id="actions"
-						// ref={(el) => (sectionRefs.current["actions"] = el)}
+						ref={(el) => {
+							sectionRefs.current["actions"] = el;
+						}}
 						className="pt-6 pb-12"
 						tabIndex={-1}
 					>

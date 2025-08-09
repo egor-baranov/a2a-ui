@@ -4,7 +4,7 @@ import React, {useEffect, useState} from "react";
 import {CardElement, Elements, PaymentRequestButtonElement, useStripe} from "@stripe/react-stripe-js";
 import {loadStripe, Stripe, PaymentRequest} from "@stripe/stripe-js";
 import {Switch} from "@/components/ui/switch"
-import { TiltEffect } from "@/utils/TiltEffect";
+import {TiltEffect} from "@/utils/TiltEffect";
 import BillingToggle from "@/components/ui/billing-toggle";
 import {useRouter} from "next/navigation";
 
@@ -139,7 +139,7 @@ export default function Paywall() {
 				{tiers.map(({id, name, description, features, price}) => {
 					const isSelected = id === selectedTier;
 					return (
-						<TiltEffect>
+						<TiltEffect tilt={1 / 32.0}>
 							<div
 								key={id}
 								className={`border border-1 rounded-lg p-8 flex flex-col justify-between hover:shadow-xl hover:shadow-gray-100
@@ -147,7 +147,8 @@ export default function Paywall() {
               `}
 							>
 								<div>
-									<h3 className="text-2xl font-bold mb-2">{`${name}` + (name === "Free" ? '' : ` ($${Math.round(price * (isAnnual ? 12 * 0.8 : 1))}/${isAnnual ? "year" : "month"})`)}</h3>
+									<h3
+										className="text-2xl font-bold mb-2">{`${name}` + (name === "Free" ? '' : ` ($${Math.round(price * (isAnnual ? 12 * 0.8 : 1))}/${isAnnual ? "year" : "month"})`)}</h3>
 									<p className="mb-6 text-sm font-medium">{description}</p>
 									<ul className="mb-6 space-y-2 list-disc list-inside text-sm">
 										{features.map((feature, i) => (
