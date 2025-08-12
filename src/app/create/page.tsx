@@ -15,6 +15,16 @@ import {useAuth} from "@/providers/AuthProvider";
 import {useRouter} from "next/navigation";
 import {Sidebar, SidebarProvider, SidebarTrigger} from "@/components/ui/sidebar";
 
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectLabel,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select"
+
 
 const styles = [
 	"vector_illustration",
@@ -281,6 +291,7 @@ export default function CreatePage() {
 									 zIndex: 5,
 								 }}>
 							<div className="relative flex-1 rounded-2xl border-1">
+
 								<Popover>
 									<PopoverTrigger asChild>
 										<Button
@@ -292,7 +303,8 @@ export default function CreatePage() {
 											<Settings2 className="h-4 w-4"/>
 										</Button>
 									</PopoverTrigger>
-									<PopoverContent className="w-48 bg-white/80 backdrop-blur-md border-1 border-gray-200 rounded-lg p-2 shadow-md z-[1000]">
+									<PopoverContent
+										className="w-48 bg-white/80 backdrop-blur-md border-1 border-gray-200 rounded-lg p-2 shadow-md z-[1000]">
 										<div className="space-y-4">
 											{/* Optimize checkbox */}
 											<label className="flex items-center justify-between text-sm">
@@ -306,23 +318,6 @@ export default function CreatePage() {
 											</label>
 
 											{/* Quantity selector */}
-											<div className="flex items-center justify-between">
-												<label htmlFor="quantity" className="text-sm">
-													Quantity
-												</label>
-												<select
-													id="quantity"
-													value={quantity}
-													onChange={(e) => setQuantity(Number(e.target.value))}
-													className="h-8 w-16 rounded-md border border-gray-300 px-2 text-right text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-												>
-													{quantities.map((q) => (
-														<option key={q} value={q}>
-															{q}
-														</option>
-													))}
-												</select>
-											</div>
 
 											{/* Style selector */}
 											<div className="flex items-center justify-between">
@@ -343,23 +338,12 @@ export default function CreatePage() {
 									</PopoverContent>
 								</Popover>
 
-								{/* Attach Button */}
-								<Button
-									onClick={handleEnhance}
-									size="icon"
-									variant="outline"
-									className="absolute bottom-2 right-12  h-8 w-8 p-0 rounded-full bg-white hover:bg-gray-100 border-0 shadow-none cursor-pointer"
-									aria-label="Enhance Prompt"
-								>
-									<Wand2 className="h-4 w-4"/>
-								</Button>
-
 								{/* Textarea Input */}
 								<Textarea
 									placeholder="Enter your instructions"
 									value={newMessage}
 									onChange={(e) => setNewMessage(e.target.value)}
-									className="bg-white/80 backdrop-blur-md shadow-none w-full pr-10 pt-4 px-4 pb-12 rounded-2xl focus:outline-none focus-visible:ring-0 max-h-80 resize-none"
+									className="bg-white/80 backdrop-blur-md shadow-none w-full pr-10 pt-4 px-4 pb-12 rounded-xl focus:outline-none focus-visible:ring-0 max-h-80 resize-none"
 								/>
 
 								{/* Send Button */}
@@ -375,7 +359,67 @@ export default function CreatePage() {
 								>
 									<ArrowUp className="h-4 w-4"/>
 								</Button>
+
+								<Button
+									className="absolute bottom-2 left-2 w-[28px] h-[28px] cursor-pointer rounded-lg shadow-none bg-white/0 backdrop-blur-xl hover:bg-gray-100/80 border-1 text-black">
+									<Settings2 className="h-4 w-4"/>
+								</Button>
 							</div>
+
+							<div
+								className="flex flex-nowrap overflow-x-auto space-x-3 pb-2 w-full focus:outline-none focus-visible:ring-0">
+								<Select value={style} onValueChange={setStyle}>
+									{/* Trigger made ~2x smaller by reducing height and font-size */}
+									<SelectTrigger
+										className="cursor-pointer w-[240px] h-6 text-sm text-end bg-white/80 hover:bg-gray-100/80 backdrop-blur-xl focus:outline-none focus-visible:ring-0 rounded-xl">
+										<SelectValue placeholder="Select a style"/>
+									</SelectTrigger>
+
+									<SelectContent className="max-h-56 text-sm">
+										<SelectGroup>
+											<SelectLabel>Styles</SelectLabel>
+											{styles.map((s) => (
+												<SelectItem key={s} value={s} className="py-1 text-sm">
+													{s}
+												</SelectItem>
+											))}
+										</SelectGroup>
+									</SelectContent>
+								</Select>
+
+								<Select value={quantity.toString()} onValueChange={(v) => {
+									setQuantity(parseInt(v));
+								}}>
+									{/* Trigger made ~2x smaller by reducing height and font-size */}
+									<SelectTrigger
+										className="cursor-pointer w-[64px] h-6 text-sm text-end bg-white/80 hover:bg-gray-100/80 backdrop-blur-xl focus:outline-none focus-visible:ring-0 rounded-xl">
+										<SelectValue placeholder="Quantity"/>
+									</SelectTrigger>
+
+									<SelectContent className="max-h-56 text-sm">
+										<SelectGroup>
+											<SelectLabel>Quantities</SelectLabel>
+											{quantities.map((s) => (
+												<SelectItem key={s} value={s.toString()} className="py-1 text-sm">
+													{s}
+												</SelectItem>
+											))}
+										</SelectGroup>
+									</SelectContent>
+								</Select>
+
+								{/* Attach Button */}
+								<Button
+									onClick={handleEnhance}
+									size="icon"
+									variant="outline"
+									className="h-8 w-8 p-0 rounded-full bg-white hover:bg-gray-100 border-0 shadow-none cursor-pointer"
+									aria-label="Enhance Prompt"
+								>
+									<Wand2 className="h-4 w-4"/>
+								</Button>
+							</div>
+
 							{/* Presets */}
 							<div className="flex flex-nowrap overflow-x-auto space-x-3 pb-2 ">
 								{presets.map((p, i) => (

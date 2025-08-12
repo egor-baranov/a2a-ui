@@ -1,9 +1,6 @@
 "use client";
 
-import React, {useEffect, useState} from "react";
-import {CardElement, Elements, PaymentRequestButtonElement, useStripe} from "@stripe/react-stripe-js";
-import {loadStripe, Stripe, PaymentRequest} from "@stripe/stripe-js";
-import {Switch} from "@/components/ui/switch"
+import React, {useState} from "react";
 import {TiltEffect} from "@/utils/TiltEffect";
 import BillingToggle from "@/components/ui/billing-toggle";
 import {useRouter} from "next/navigation";
@@ -59,50 +56,6 @@ const tiers: Tier[] = [
 	},
 ];
 
-// Replace with your real publishable key
-const stripePromise = loadStripe("pk_test_51RowYbPubqePCQoUUq1HwYfxtfCjTo0XeElMC6ZjwmtFJnrLmIgVVXTDpRKAiFbnvbpuj9dBq6zHPaFQJdVgktWd00SaBLGDeu");
-
-// Component to render Apple Pay / Google Pay button
-const PaymentRequestButton: React.FC = () => {
-	const stripe = useStripe() as Stripe | null;
-	const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | null>(null);
-
-	useEffect(() => {
-		if (!stripe) return;
-
-		const pr = stripe.paymentRequest({
-			country: "US",
-			currency: "usd",
-			total: {label: "Demo Purchase", amount: 1000},
-			requestPayerName: true,
-			requestPayerEmail: true,
-		});
-
-		// Only show the button if the user can pay
-		pr.canMakePayment().then((result) => {
-			if (result && (result.applePay || result.googlePay)) {
-				setPaymentRequest(pr);
-			}
-		});
-
-		// Optionally handle paymentmethod event (demo only)
-		pr.on("paymentmethod", (ev) => {
-			console.log("Selected payment method:", ev.paymentMethod.type);
-			// ev.complete('success');
-		});
-	}, [stripe]);
-
-	if (!paymentRequest) return null;
-
-	return (
-		<PaymentRequestButtonElement
-			options={{paymentRequest}}
-			className="stripe-payment-request-button mb-4"
-		/>
-	);
-};
-
-
 export default function Paywall() {
 	const [selectedTier, setSelectedTier] = useState<string>("free");
 	const [loading, setLoading] = useState(false);
@@ -129,9 +82,6 @@ export default function Paywall() {
 			if (tierId == "pro") {
 				router.push("https://buy.stripe.com/test_aFaaEX03m8Jpctpbumdwc02");
 			}
-
-			// setLoading(false);
-			// setSelectedTier(tierId);
 		}, 1000);
 	};
 

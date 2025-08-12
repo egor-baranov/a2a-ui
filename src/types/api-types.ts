@@ -70,7 +70,7 @@ export interface paths {
         };
         /**
          * Twitter Login
-         * @description Initiate Twitter OAuth login flow
+         * @description Initiate Twitter OAuth login flow with PKCE
          */
         get: operations["twitter_login_auth_twitter_login_get"];
         put?: never;
@@ -88,7 +88,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Twitter Callback */
+        /**
+         * Twitter Callback
+         * @description Handle Twitter OAuth callback
+         */
         get: operations["twitter_callback_auth_twitter_callback_get"];
         put?: never;
         post?: never;
@@ -267,10 +270,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * Generate Svg
-         * @description Generate multiple SVGs using Replicate API and save to database
-         */
+        /** Generate Svg */
         post: operations["generate_svg_v1_svg_post"];
         delete?: never;
         options?: never;
@@ -620,7 +620,7 @@ export interface components {
             /** Username */
             username: string;
             /** Email */
-            email: string;
+            email: string | null;
             /** Generation Limit */
             generation_limit: number;
             /** Private Limit */
@@ -657,7 +657,7 @@ export interface components {
             /** Username */
             username: string;
             /** Email */
-            email: string;
+            email: string | null;
             /** Generation Limit */
             generation_limit: number;
             /** Private Limit */

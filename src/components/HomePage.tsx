@@ -33,14 +33,14 @@ function Bento() {
 									Mobile friendly
 								</p>
 								<p className="mt-2 max-w-lg text-sm/6 text-gray-600 max-lg:text-center">
-									Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo.
+									With svgen you can generate vector images anywhere with account synchronization across all your devices.
 								</p>
 							</div>
 							<div className="@container relative min-h-120 w-full grow max-lg:mx-auto max-lg:max-w-sm">
-								<div className="absolute inset-x-10 top-10 bottom-0 overflow-hidden rounded-t-[12cqw] border-x-[3cqw] border-t-[3cqw] border-gray-700 bg-gray-900 shadow-2xl">
+								<div className="absolute inset-x-10 top-10 bottom-0 overflow-hidden rounded-t-[12cqw] border-x-[3cqw] border-t-[3cqw] border-gray-900 bg-gray-900 shadow-2xl">
 									<img
 										alt=""
-										src="https://tailwindcss.com/plus-assets/img/component-images/bento-03-mobile-friendly.png"
+										src="/landing/screenshot-1.png"
 										className="size-full object-cover object-top"
 									/>
 								</div>
