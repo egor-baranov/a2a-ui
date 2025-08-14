@@ -33,7 +33,6 @@ export default function AccountPage() {
 
 	function performLogout() {
 		logout();
-		router.push("/auth");
 	}
 
 	useEffect(() => {
