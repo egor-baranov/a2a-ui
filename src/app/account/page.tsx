@@ -33,6 +33,7 @@ export default function AccountPage() {
 
 	function performLogout() {
 		logout();
+		router.push("/auth");
 	}
 
 	useEffect(() => {
@@ -41,7 +42,7 @@ export default function AccountPage() {
 		if (!auth?.token) {
 			setError("Not authenticated");
 			setLoading(false);
-			router.push("/login");
+			router.push("/auth");
 			return;
 		}
 

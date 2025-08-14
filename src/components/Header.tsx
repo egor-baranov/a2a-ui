@@ -109,7 +109,7 @@ export default function Header() {
 					onClick={() => router.push("/")}
 				>
 					<SparklesIcon className="w-5 h-5 text-primary"/>
-					<span className="text-xl font-bold">svgen.io</span>
+					<span className="text-xl font-bold">vectex.io</span>
 				</div>
 
 				{/* Desktop Nav */}
