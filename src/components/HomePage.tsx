@@ -3,7 +3,7 @@
 import React from "react";
 import {Button} from "@/components/ui/button";
 import {Card, CardContent} from "@/components/ui/card";
-import {ArrowRight, ArrowUp, Copy, Download, Edit} from "lucide-react";
+import {ArrowRight, ArrowUp, Copy, Download, Edit, RocketIcon, SearchIcon} from "lucide-react";
 import Paywall from "@/components/Paywall";
 import Link from "next/link";
 import {Textarea} from "@/components/ui/textarea";
@@ -142,7 +142,10 @@ function NeedASuitableIcon() {
 					className="lg:col-span-2 lg:col-start-1 lg:row-start-1 lg:mx-auto lg:grid lg:w-full lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
 					<div className="lg:pr-4">
 						<div className="lg:max-w-lg">
-							<p className="text-base/7 font-semibold text-black">Deploy faster</p>
+							<div className="flex flex-row items-center gap-2">
+								<RocketIcon className="w-4 h-4"/>
+								<p className="text-base/7 font-semibold text-black">Deploy faster</p>
+							</div>
 							<h1 className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl">
 								Advanced generation
 							</h1>
@@ -237,7 +240,10 @@ function NeedASuitableIcon2() {
 					className="lg:col-span-2 lg:col-start-2 lg:row-start-1 lg:mx-auto lg:grid lg:w-full lg:max-w-7xl lg:grid-cols-1 lg:gap-x-8 lg:px-8">
 					<div className="lg:pr-4">
 						<div className="lg:max-w-lg">
-							<p className="text-base/7 font-semibold text-black">Spend less time searching for icons</p>
+							<div className="flex flex-row items-center gap-2">
+								<SearchIcon className="w-4 h-4"/>
+								<p className="text-base/7 font-semibold text-black">Spend less time searching for icons</p>
+							</div>
 							<h1 className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl">
 								Explore thousands of icons
 							</h1>
@@ -356,7 +362,7 @@ export default function HomePage() {
 			</div>
 
 			{/* 1. Hero Section */}
-			<section className="pt-20 pb-12 px-6 sm:px-6 lg:px-8 text-center items-center justify-items-center">
+			<section className="pt-20 pb-12 px-6 sm:px-6 lg:px-40 text-center items-center justify-items-center">
 				<h1 className="text-4xl sm:text-4xl md:text-6xl lg:text-7xl font-semibold mb-2">
 					Create production-ready assets in seconds using AI
 				</h1>
@@ -365,13 +371,13 @@ export default function HomePage() {
 				</p>
 
 				<div
-					className="flex justify-center mb-6 w-full max-w-full sm:max-w-md md:max-w-lg lg:max-w-3xl justify-items-center justify-center items-center shadow-sm rounded-2xl
+					className="flex mb-6 w-full max-w-full sm:max-w-md md:max-w-lg lg:max-w-3xl justify-items-center justify-center items-center shadow-none rounded-2xl
              focus-within:ring-2 border-1 focus-within:ring-transparent">
 
 					<div className="bg-white/30 backdrop-blur-sm rounded-2xl flex sm:flex-row flex-col w-full items-end px-2">
 						<Textarea
 							placeholder="Create icons, logos and vector images in seconds"
-							className="rounded-2xl border-none px-4 py-4 focus:outline-none focus-visible:ring-0 resize-none shadow-none min-h-12 w-full"
+							className="rounded-2xl overscroll-none border-none px-4 py-4 focus:outline-none focus-visible:ring-0 resize-none shadow-none min-h-12 w-full"
 							rows={1}
 						/>
 
@@ -417,7 +423,7 @@ export default function HomePage() {
 				<SvgGrid svgResults={[]}/>
 			</section>
 
-			<section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 items-center justify-items-center">
+			<section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-48 items-center justify-items-center">
 				<h2 className="text-5xl font-medium text-center mb-8">Subscription plans</h2>
 				<Paywall/>
 			</section>
