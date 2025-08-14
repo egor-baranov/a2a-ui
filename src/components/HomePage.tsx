@@ -365,7 +365,7 @@ export default function HomePage() {
 				</p>
 
 				<div
-					className="flex justify-center mb-6 w-full max-w-full sm:max-w-md md:max-w-lg lg:max-w-3xl items-center shadow-sm rounded-2xl
+					className="flex justify-center mb-6 w-full max-w-full sm:max-w-md md:max-w-lg lg:max-w-3xl justify-items-center justify-center items-center shadow-sm rounded-2xl
              focus-within:ring-2 border-1 focus-within:ring-transparent">
 
 					<div className="bg-white/30 backdrop-blur-sm rounded-2xl flex sm:flex-row flex-col w-full items-end px-2">

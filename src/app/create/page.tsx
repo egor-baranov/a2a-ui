@@ -3,7 +3,7 @@
 import React, {useEffect, useState} from "react";
 import {Textarea} from "@/components/ui/textarea";
 import {Button} from "@/components/ui/button";
-import {ArrowLeft, ArrowUp, Copy, CopyIcon, Download, ExternalLink, Settings2, Wand2, XIcon} from "lucide-react";
+import {ArrowLeft, ArrowUp, Copy, CopyIcon, Download, ExternalLink, Mic, Settings2, Wand2, XIcon} from "lucide-react";
 import {Badge} from "@/components/ui/badge";
 import SvgGrid from "@/components/SvgGrid";
 import type {components} from "@/types/api-types";
@@ -14,6 +14,16 @@ import {Popover} from "@/components/ui/popover";
 import {useAuth} from "@/providers/AuthProvider";
 import {useRouter} from "next/navigation";
 import {Sidebar, SidebarProvider, SidebarTrigger} from "@/components/ui/sidebar";
+
+import {
+	Pagination,
+	PaginationContent,
+	PaginationEllipsis,
+	PaginationItem,
+	PaginationLink,
+	PaginationNext,
+	PaginationPrevious,
+} from "@/components/ui/pagination"
 
 import {
 	Select,
@@ -71,7 +81,16 @@ export default function CreatePage() {
 
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 	const [selectedSvg, setSelectedSvg] = useState<{ svg: string; prompt: string } | null>(null);
+	const [showSettings, setShowSettings] = useState<boolean>(true);
 
+	const [page, setPage] = useState(1);
+	const totalPages = 10;
+
+	const handlePageChange = (newPage: number) => {
+		if (newPage >= 1 && newPage <= totalPages) {
+			setPage(newPage);
+		}
+	};
 
 	const {auth, logout} = useAuth();
 	const router = useRouter();
@@ -171,26 +190,6 @@ export default function CreatePage() {
 		return await res.json() as GenerationResponse;
 	};
 
-	const fetchGenerations = async (): Promise<GenerationResponse[]> => {
-		const res = await fetch(
-			"https://svgen-backend-production.up.railway.app/generations/me",
-			{
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-					"Authorization": `Bearer ${auth?.token}`,
-				},
-			}
-		);
-
-		if (!res.ok) {
-			const txt = await res.text().catch(() => "<unable to read>");
-			throw new Error(`HTTP ${res.status}: ${txt} and token ${auth?.token}`);
-		}
-
-		return await res.json() as GenerationResponse[];
-	};
-
 	useEffect(() => {
 		if (!auth?.token) return;
 		// load presets
@@ -199,7 +198,7 @@ export default function CreatePage() {
 		(async () => {
 			try {
 				const res = await fetch(
-					"https://svgen-backend-production.up.railway.app/generations/me",
+					`https://svgen-backend-production.up.railway.app/generations/me?limit=5&offset=${page - 1}`,
 					{
 						method: "GET",
 						headers: {
@@ -219,7 +218,7 @@ export default function CreatePage() {
 				console.error(e);
 			}
 		})();
-	}, [auth]);
+	}, [auth, page]);
 
 	const copyToClipboard = (text: string) => {
 		navigator.clipboard.writeText(text);
@@ -280,11 +279,11 @@ export default function CreatePage() {
 				/>
 			</div>
 
-			<div className="w-full max-w-5xl mx-auto px-4 pt-24">
+			<div className="w-full max-w-full mx-auto pt-24">
 				{previewResult === null &&
-					(<div className="w-full max-w-5xl space-y-4 pt-4">
+					(<div className="w-full max-w-full space-y-4 pt-4">
 						{/* Controls */}
-						<div className="flex flex-wrap items-start gap-2 border-none"
+						<div className="flex flex-wrap items-start gap-2 border-none max-w-5xl mx-auto px-4"
 								 style={{
 									 position: "sticky",
 									 top: 144,
@@ -357,94 +356,146 @@ export default function CreatePage() {
 									className="absolute bottom-2 right-2 rounded-full h-8 w-8 p-0 cursor-pointer"
 									aria-label="Send"
 								>
-									<ArrowUp className="h-4 w-4"/>
+									{newMessage.length > 0 ? <ArrowUp className="h-4 w-4"/> : <Mic className="h-4 w-4"/>}
 								</Button>
 
 								<Button
+									onClick={() => {
+										setShowSettings(!showSettings);
+									}}
 									className="absolute bottom-2 left-2 w-[28px] h-[28px] cursor-pointer rounded-lg shadow-none bg-white/0 backdrop-blur-xl hover:bg-gray-100/80 border-1 text-black">
 									<Settings2 className="h-4 w-4"/>
 								</Button>
 							</div>
 
-							<div
-								className="flex flex-nowrap overflow-x-auto space-x-3 pb-2 w-full focus:outline-none focus-visible:ring-0">
-								<Select value={style} onValueChange={setStyle}>
-									{/* Trigger made ~2x smaller by reducing height and font-size */}
-									<SelectTrigger
-										className="cursor-pointer w-[240px] h-6 text-sm text-end bg-white/80 hover:bg-gray-100/80 backdrop-blur-xl focus:outline-none focus-visible:ring-0 rounded-xl">
-										<SelectValue placeholder="Select a style"/>
-									</SelectTrigger>
+							{showSettings && (
+								<div
+									className="flex flex-nowrap overflow-x-auto space-x-3 pb-2 w-full focus:outline-none focus-visible:ring-0">
+									<Select value={style} onValueChange={setStyle}>
+										<SelectTrigger
+											className="cursor-pointer max-w-[240px] w-auto h-6 text-sm text-end bg-white/80 hover:bg-gray-100/80 backdrop-blur-xl focus:outline-none focus-visible:ring-0 rounded-xl">
+											<SelectValue placeholder="Select a style"/>
+										</SelectTrigger>
 
-									<SelectContent className="max-h-56 text-sm">
-										<SelectGroup>
-											<SelectLabel>Styles</SelectLabel>
-											{styles.map((s) => (
-												<SelectItem key={s} value={s} className="py-1 text-sm">
-													{s}
-												</SelectItem>
-											))}
-										</SelectGroup>
-									</SelectContent>
-								</Select>
+										<SelectContent className="max-h-56 text-sm">
+											<SelectGroup>
+												<SelectLabel>Styles</SelectLabel>
+												{styles.map((s) => (
+													<SelectItem key={s} value={s} className="py-1 text-sm">
+														{s}
+													</SelectItem>
+												))}
+											</SelectGroup>
+										</SelectContent>
+									</Select>
 
-								<Select value={quantity.toString()} onValueChange={(v) => {
-									setQuantity(parseInt(v));
-								}}>
-									{/* Trigger made ~2x smaller by reducing height and font-size */}
-									<SelectTrigger
-										className="cursor-pointer w-[64px] h-6 text-sm text-end bg-white/80 hover:bg-gray-100/80 backdrop-blur-xl focus:outline-none focus-visible:ring-0 rounded-xl">
-										<SelectValue placeholder="Quantity"/>
-									</SelectTrigger>
+									<Select value={quantity.toString()} onValueChange={(v) => {
+										setQuantity(parseInt(v));
+									}}>
+										{/* Trigger made ~2x smaller by reducing height and font-size */}
+										<SelectTrigger
+											className="cursor-pointer w-[64px] h-6 text-sm text-end bg-white/80 hover:bg-gray-100/80 backdrop-blur-xl focus:outline-none focus-visible:ring-0 rounded-xl">
+											<SelectValue placeholder="Quantity"/>
+										</SelectTrigger>
 
-									<SelectContent className="max-h-56 text-sm">
-										<SelectGroup>
-											<SelectLabel>Quantities</SelectLabel>
-											{quantities.map((s) => (
-												<SelectItem key={s} value={s.toString()} className="py-1 text-sm">
-													{s}
-												</SelectItem>
-											))}
-										</SelectGroup>
-									</SelectContent>
-								</Select>
+										<SelectContent className="max-h-56 text-sm">
+											<SelectGroup>
+												<SelectLabel>Quantities</SelectLabel>
+												{quantities.map((s) => (
+													<SelectItem key={s} value={s.toString()} className="py-1 text-sm">
+														{s}
+													</SelectItem>
+												))}
+											</SelectGroup>
+										</SelectContent>
+									</Select>
 
-								{/* Attach Button */}
-								<Button
-									onClick={handleEnhance}
-									size="icon"
-									variant="outline"
-									className="h-8 w-8 p-0 rounded-full bg-white hover:bg-gray-100 border-0 shadow-none cursor-pointer"
-									aria-label="Enhance Prompt"
-								>
-									<Wand2 className="h-4 w-4"/>
-								</Button>
-							</div>
-
-							{/* Presets */}
-							<div className="flex flex-nowrap overflow-x-auto space-x-3 pb-2 ">
-								{presets.map((p, i) => (
-									<Badge
-										key={i}
+									{/* Attach Button */}
+									<Button
+										onClick={handleEnhance}
+										size="icon"
 										variant="outline"
-										className="cursor-pointer text-sm px-2 py-1 rounded-2xl hover:bg-gray-50 bg-white/80 backdrop-blur-xl whitespace-normal overflow-hidden"
-										style={{
-											display: '-webkit-box',
-											WebkitLineClamp: 3,
-											WebkitBoxOrient: 'vertical',
-										}}
-										onClick={() => setNewMessage(p)}
+										className="h-9 w-9 p-0 rounded-full bg-white hover:bg-gray-100 border-1 shadow-sm cursor-pointer"
+										aria-label="Enhance Prompt"
 									>
-										{p}
-									</Badge>
-								))}
-							</div>
+										<Wand2 className="h-4 w-4"/>
+									</Button>
+								</div>
+							)}
 
+						</div>
+
+						{/* Presets */}
+						<div className="flex w-full max-w-full flex-nowrap overflow-x-auto space-x-3 pb-2 px-2">
+							{presets.map((p, i) => (
+								<Badge
+									key={i}
+									variant="outline"
+									className="cursor-pointer text-sm px-2 py-1 rounded-2xl hover:bg-gray-50 bg-white/80 backdrop-blur-xl whitespace-normal overflow-hidden"
+									style={{
+										display: '-webkit-box',
+										WebkitLineClamp: 3,
+										WebkitBoxOrient: 'vertical',
+									}}
+									onClick={() => setNewMessage(p)}
+								>
+									{p}
+								</Badge>
+							))}
 						</div>
 
 						<div className={"pt-4"}/>
 
-						{/* SVG Results Grid */}
-						<SvgGrid svgResults={svgResults} loading={loading} onSelect={handleSvgSelect}/>
+						<div className="max-w-5xl mx-auto px-4">
+							<SvgGrid svgResults={svgResults} loading={loading} onSelect={handleSvgSelect}/>
+						</div>
+
+						<Pagination className="pt-8 pb-4">
+							<PaginationContent>
+								{page > 1 &&
+                    <PaginationItem>
+                        <PaginationPrevious
+                            href="#"
+                            onClick={(e) => {
+															e.preventDefault();
+															handlePageChange(page - 1);
+														}}
+                        />
+                    </PaginationItem>
+								}
+
+								{Array.from(page == 1 ? [page, page + 1, page + 2] : [page - 1, page, page + 1])
+									.slice(0, 3) // example: only show first 3 here, you could make it dynamic
+									.map((p) => (
+										<PaginationItem key={p}>
+											<PaginationLink
+												href="#"
+												isActive={page === p}
+												onClick={(e) => {
+													e.preventDefault();
+													handlePageChange(p);
+												}}
+											>
+												{p}
+											</PaginationLink>
+										</PaginationItem>
+									))}
+
+								<PaginationItem>
+									<PaginationEllipsis/>
+								</PaginationItem>
+
+								{page < totalPages && <PaginationItem>
+									<PaginationNext
+										href="#"
+										onClick={(e) => {
+											e.preventDefault();
+											handlePageChange(page + 1);
+										}}
+									/>
+								</PaginationItem>}
+							</PaginationContent>
+						</Pagination>
 					</div>)
 				}
 			</div>

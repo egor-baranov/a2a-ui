@@ -98,8 +98,8 @@ export default function Header() {
 			<Banner/>
 
 			<div className={
-				cn("flex items-center justify-between md:justify-start backdrop-blur-sm shadow-sm rounded-t-xl border-b m-4 md:gap-8 p-4",
-					mobileMenuOpen ? "bg-white" : "bg-white/20",
+				cn("flex items-center justify-between md:justify-start backdrop-blur-md shadow-sm rounded-t-xl border-b m-4 md:gap-8 p-4",
+					mobileMenuOpen ? "bg-white" : "bg-white",
 					mobileMenuOpen ? "rounded-b-none" : "rounded-b-xl",
 				)
 			}>
@@ -144,7 +144,7 @@ export default function Header() {
 				{/* Mobile Nav */}
 				{mobileMenuOpen && (
 					<div
-						className="absolute top-12 left-0 w-full p-2 bg-white backdrop-blur-xl shadow-md flex flex-col z-50 md:hidden rounded-b-xl">
+						className="absolute top-14 left-0 w-full p-2 bg-white shadow-md flex flex-col z-50 md:hidden rounded-b-xl">
 						{navItems.filter((v) => {
 							if (v.label == "Sign In") return auth?.token == null;
 							if (v.label == "Account") return auth?.token != null;
@@ -153,7 +153,7 @@ export default function Header() {
 							<Link key={href} href={href} passHref>
 								<Button
 									variant={pathname === href ? "default" : "ghost"}
-									className="w-full justify-start backdrop-blur-xl p-4 rounded-xl"
+									className="w-full justify-start p-4 rounded-xl"
 									onClick={() => setMobileMenuOpen(false)}
 								>
 									{label}

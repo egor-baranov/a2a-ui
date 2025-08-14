@@ -353,7 +353,7 @@ export interface paths {
         };
         /**
          * Get Current User Generations
-         * @description Get all generations for current user
+         * @description Get all generations for current user with pagination
          */
         get: operations["get_current_user_generations_generations_me_get"];
         put?: never;
@@ -1184,7 +1184,10 @@ export interface operations {
     };
     get_current_user_generations_generations_me_get: {
         parameters: {
-            query?: never;
+            query?: {
+                limit?: number;
+                offset?: number;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -1198,6 +1201,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["GenerationResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
