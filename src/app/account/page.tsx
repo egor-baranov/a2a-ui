@@ -7,11 +7,8 @@ import type { components } from "@/types/api-types";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import Paywall from "@/components/Paywall";
-import {CardElement, Elements} from "@stripe/react-stripe-js";
-import PaymentRequestButton from "@/components/ui/PaymentRequestButton";
-import {loadStripe, TokenCreateParams} from "@stripe/stripe-js";
-import Account = TokenCreateParams.Account;
+import {loadStripe} from "@stripe/stripe-js";
+
 
 import {BarChart3, Gauge, User, Zap} from 'lucide-react';
 
@@ -33,6 +30,7 @@ export default function AccountPage() {
 
 	function performLogout() {
 		logout();
+		router.push("/auth");
 	}
 
 	useEffect(() => {
