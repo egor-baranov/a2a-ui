@@ -47,7 +47,7 @@ const tiers: Tier[] = [
 		id: "basic",
 		name: "Base",
 		price: 10,
-		description: "Powerful features for casual users",
+		description: "Advanced features for casual users",
 		features: [
 			"Generate up to 50 SVGs per day",
 			"High resolution (1024x1024)",
@@ -103,8 +103,7 @@ function pickIconForFeatureText(featureText: string) {
 	return Check;
 }
 
-// Small presentational component for a feature row with icon
-function FeatureRow({item}: { item: FeatureItem }) {
+function FeatureRow({ item }: { item: FeatureItem }) {
 	// Normalize to object form so we can support both string features and {label, icon} shapes
 	const isString = typeof item === "string";
 	const label = isString ? (item as string) : (item as { label: string }).label;
@@ -112,9 +111,9 @@ function FeatureRow({item}: { item: FeatureItem }) {
 
 	if (overrideIcon) {
 		return (
-			<li className="flex items-start">
-				<span className="mr-3 mt-0.5 flex-shrink-0">{overrideIcon}</span>
-				<span className="text-sm">{label}</span>
+			<li className="flex items-center leading-tight">
+				<span className="mr-4 flex-shrink-0 flex items-center justify-center h-5">{overrideIcon}</span>
+				<span className="text-sm leading-tight flex items-center h-5">{label}</span>
 			</li>
 		);
 	}
@@ -122,13 +121,14 @@ function FeatureRow({item}: { item: FeatureItem }) {
 	const IconComp = pickIconForFeatureText(label);
 
 	return (
-		<li className="flex items-start">
-			<IconComp className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0" aria-hidden/>
-			<span className="text-sm">{label}</span>
+		<li className="flex items-center leading-tight">
+			<span className="flex items-center justify-center h-5 mr-3 flex-shrink-0">
+				<IconComp className="w-5 h-5" aria-hidden />
+			</span>
+			<span className="text-sm leading-tight flex items-center h-5">{label}</span>
 		</li>
 	);
 }
-
 
 export default function Paywall() {
 	const [selectedTier, setSelectedTier] = useState<string>("free");
@@ -215,7 +215,7 @@ export default function Paywall() {
 										{isSelected ? "Current Plan" : loading ? "Processing..." : `Get ${name}`}
 									</button>
 
-									<ul className="mt-6 space-y-2 list-none list-inside text-sm">
+									<ul className="mt-6 space-y-4 list-none list-inside text-sm">
 										{features.map((feature, i) => (
 											<FeatureRow key={i} item={feature}/>
 										))}
