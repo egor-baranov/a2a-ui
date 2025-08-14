@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { setCookie, parseCookies, destroyCookie } from 'nookies';
 import {router} from "next/client";
+import {useRouter} from "next/navigation";
 
 // Define shape of authentication data
 interface AuthData {
@@ -34,7 +35,9 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children, maxAge = 30 * 24 * 60 * 60, path = '/' }) => {
+
 	const [auth, setAuth] = useState<AuthData | null>(null);
+	const router = useRouter();
 
 	// On mount, read cookies
 	useEffect(() => {
@@ -60,7 +63,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children, maxAge = 3
 		destroyCookie(null, 'auth_token');
 		destroyCookie(null, 'auth_username');
 		setAuth(null);
-		router.replace('/auth').then();
+		router.replace('/auth');
 	};
 
 	return (

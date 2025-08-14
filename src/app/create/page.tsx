@@ -100,6 +100,12 @@ export default function CreatePage() {
 	const {auth, logout} = useAuth();
 	const router = useRouter();
 
+	useEffect(() => {
+		if (auth?.token == null) {
+			router.replace("/auth");
+		}
+	}, [auth, router]);
+
 	const handleEnhance = async () => {
 		if (auth?.token == null) {
 			router.push("/auth");
