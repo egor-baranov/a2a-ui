@@ -14,6 +14,7 @@ import {Popover} from "@/components/ui/popover";
 import {useAuth} from "@/providers/AuthProvider";
 import {useRouter} from "next/navigation";
 import {Sidebar, SidebarProvider, SidebarTrigger} from "@/components/ui/sidebar";
+import {Tabs, TabsList, TabsTrigger, TabsContent} from "@/components/ui/tabs";
 
 import {
 	Pagination,
@@ -34,6 +35,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select"
+import StyleToggle from "@/components/ui/style-toggle";
 
 
 const styles = [
@@ -72,7 +74,9 @@ type Result = { svgs: string[]; prompt: string };
 export default function CreatePage() {
 	const [newMessage, setNewMessage] = useState("");
 	const [quantity, setQuantity] = useState<number>(1);
-	const [style, setStyle] = useState<string>("icon/outline");
+	const [tab, setTab] = useState<"icon" | "illustration">("icon");
+
+	const [style, setStyle] = useState<string>(tab === "icon" ? "icon/outline" : "vector_illustration");
 	const [optimizeSvg, setOptimizeSvg] = useState<boolean>(false);
 	const [svgResults, setSvgResults] = useState<Result[]>([]);
 	const [loading, setLoading] = useState(false);
@@ -82,6 +86,7 @@ export default function CreatePage() {
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 	const [selectedSvg, setSelectedSvg] = useState<{ svg: string; prompt: string } | null>(null);
 	const [showSettings, setShowSettings] = useState<boolean>(true);
+
 
 	const [page, setPage] = useState(1);
 	const totalPages = 10;
@@ -290,53 +295,6 @@ export default function CreatePage() {
 									 zIndex: 5,
 								 }}>
 							<div className="relative flex-1 rounded-2xl border-1">
-
-								<Popover>
-									<PopoverTrigger asChild>
-										<Button
-											size="icon"
-											variant="ghost"
-											className="absolute left-2 bottom-2 h-8 w-8 p-0 rounded-full bg-white hover:bg-gray-100 border-0 shadow-none cursor-pointer"
-											aria-label="Settings"
-										>
-											<Settings2 className="h-4 w-4"/>
-										</Button>
-									</PopoverTrigger>
-									<PopoverContent
-										className="w-48 bg-white/80 backdrop-blur-md border-1 border-gray-200 rounded-lg p-2 shadow-md z-[1000]">
-										<div className="space-y-4">
-											{/* Optimize checkbox */}
-											<label className="flex items-center justify-between text-sm">
-												<span>Optimize SVG</span>
-												<input
-													type="checkbox"
-													checked={optimizeSvg}
-													onChange={(e) => setOptimizeSvg(e.target.checked)}
-													className="h-4 w-4 accent-blue-500"
-												/>
-											</label>
-
-											{/* Quantity selector */}
-
-											{/* Style selector */}
-											<div className="flex items-center justify-between">
-												<select
-													id="style"
-													value={style}
-													onChange={(e) => setStyle(e.target.value)}
-													className="h-8 w-full rounded-md border border-gray-300 px-2 text-left text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-												>
-													{styles.map((s) => (
-														<option key={s} value={s}>
-															{s}
-														</option>
-													))}
-												</select>
-											</div>
-										</div>
-									</PopoverContent>
-								</Popover>
-
 								{/* Textarea Input */}
 								<Textarea
 									placeholder="Enter your instructions"
@@ -380,7 +338,22 @@ export default function CreatePage() {
 										<SelectContent className="max-h-56 text-sm">
 											<SelectGroup>
 												<SelectLabel>Styles</SelectLabel>
-												{styles.map((s) => (
+
+												<StyleToggle onChange={(v) => {
+													setTab(v);
+
+													if (v === "icon") {
+
+													} else {
+
+													}
+												}}/>
+
+												<div className="pb-2"/>
+
+												{styles.filter((v) => {
+													return tab === "icon" ? v.startsWith("icon") : v.startsWith("vector_illustration");
+												}).map((s) => (
 													<SelectItem key={s} value={s} className="py-1 text-sm">
 														{s}
 													</SelectItem>
@@ -486,14 +459,14 @@ export default function CreatePage() {
 								</PaginationItem>
 
 								{page < totalPages && <PaginationItem>
-									<PaginationNext
-										href="#"
-										onClick={(e) => {
-											e.preventDefault();
-											handlePageChange(page + 1);
-										}}
-									/>
-								</PaginationItem>}
+                    <PaginationNext
+                        href="#"
+                        onClick={(e) => {
+													e.preventDefault();
+													handlePageChange(page + 1);
+												}}
+                    />
+                </PaginationItem>}
 							</PaginationContent>
 						</Pagination>
 					</div>)

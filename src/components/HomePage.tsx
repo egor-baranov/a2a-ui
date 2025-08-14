@@ -358,7 +358,7 @@ export default function HomePage() {
 			{/* 1. Hero Section */}
 			<section className="pt-20 pb-12 px-6 sm:px-6 lg:px-8 text-center items-center justify-items-center">
 				<h1 className="text-4xl sm:text-4xl md:text-6xl lg:text-7xl font-semibold mb-2">
-					Create thousands of icons in seconds using AI
+					Create production-ready assets in seconds using AI
 				</h1>
 				<p className="max-w-md sm:max-w-xl md:max-w-2xl mx-auto text-base sm:text-lg text-gray-700 mb-6">
 					Explore limitless opportunities via industry-leading vector graphics generation superpowered by AI.
