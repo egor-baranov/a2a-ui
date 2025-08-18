@@ -9,7 +9,7 @@ type BorderTrailProps = {
 	size?: number;
 	transition?: Transition;
 	delay?: number;
-	onAnimationComplete?: () => void;
+	onAnimationCompleteAction?: () => void; // ✅ renamed for Next.js
 	style?: CSSProperties;
 };
 
@@ -18,10 +18,10 @@ export function BorderTrail({
 															size = 100,
 															transition,
 															delay,
-															onAnimationComplete,
+															onAnimationCompleteAction,
 															style,
 														}: BorderTrailProps) {
-	const BASE_TRANSITION = {
+	const BASE_TRANSITION: Transition = {
 		repeat: Number.POSITIVE_INFINITY,
 		duration: 5,
 		ease: "linear",
@@ -41,9 +41,9 @@ export function BorderTrail({
 				}}
 				transition={{
 					...(transition ?? BASE_TRANSITION),
-					delay: delay,
+					...(delay !== undefined ? { delay } : {}), // ✅ safe spreading
 				}}
-				onAnimationComplete={onAnimationComplete}
+				onAnimationComplete={onAnimationCompleteAction} // ✅ works with Next.js
 			/>
 		</div>
 	);
