@@ -104,9 +104,10 @@ export default function Header() {
 			<Banner/>
 
 			<div className={
-				cn("flex items-center justify-between md:justify-start backdrop-blur-md shadow-sm rounded-t-xl border-b m-4 md:gap-8 p-4",
-					mobileMenuOpen ? "bg-white" : "bg-white",
+				cn("flex items-center justify-between md:justify-start backdrop-blur-md hover:shadow-sm rounded-t-xl border-1 m-4 md:gap-8 p-4",
+					mobileMenuOpen ? "bg-white" : "bg-white/60",
 					mobileMenuOpen ? "rounded-b-none" : "rounded-b-xl",
+					"lg:mx-32 md:mx-16 sm:mx-4"
 				)
 			}>
 				{/* Logo */}
