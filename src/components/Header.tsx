@@ -9,6 +9,7 @@ import {useAuth} from "@/providers/AuthProvider";
 import {cn} from "@/lib/utils";
 import {XMarkIcon} from "@heroicons/react/16/solid";
 import Hamburger from "@/components/ui/hamburger";
+import { AnimatePresence, motion } from "motion/react";
 
 const navItems = [
 	{label: "Create", href: "/create"},
@@ -73,6 +74,11 @@ export default function Header() {
 	const router = useRouter();
 
 	const {auth, logout} = useAuth();
+	const [elementFocused, setElementFocused] = useState<number | null>(null);
+
+	const handleHoverButton = (index: number | null) => {
+		setElementFocused(index);
+	};
 
 	useEffect(() => {
 		if (auth == null) return;
@@ -113,25 +119,38 @@ export default function Header() {
 				</div>
 
 				{/* Desktop Nav */}
-				<nav className="hidden md:flex gap-2 ml-auto pr-4">
+				<nav
+					onMouseLeave={() => {
+						handleHoverButton(null);
+					}}
+					className="hidden md:flex gap-4 ml-auto pr-4">
 					{navItems.filter((v) => {
 						if (v.label == "Sign In") return auth?.token == null;
 						if (v.label == "Account") return auth?.token != null;
 						return true;
-					}).map(({label, href}) => (
-						<Link key={href} href={href} passHref>
-							<Button
-								variant={(pathname === href || label === "Sign In") ? "default" : "ghost"}
-								className={cn(
-									"cursor-pointer",
-									label === "Sign In"
-										? "text-md bg-gradient-to-br from-[#FAF59F] to-[#F788D7] text-black font-semibold"
-										: "text-md hover:text-black hover:bg-transparent text-gray-600 bg-transparent border-none shadow-none"
+					}).map((button, index) => (
+						<button
+							className="relative inline-flex w-fit whitespace-nowrap rounded-xs px-4 py-1 font-medium text-neutral-500 text-lg cursor-pointer "
+							key={button.label}
+							onMouseEnter={() => handleHoverButton(index)}
+							onClick={() => {router.push(button.href);}}
+							type="button"
+						>
+							{button.label}
+							<AnimatePresence>
+								{elementFocused === index && (
+									<motion.div
+										animate={{ opacity: 1, scale: 1 }}
+										className="-z-10 absolute top-0 right-0 bottom-0 left-0 rounded-md bg-neutral-200 dark:bg-neutral-800"
+										exit={{ opacity: 0, scale: 0.9 }}
+										initial={{ opacity: 0, scale: 0.95 }}
+										layout={true}
+										layoutId="focused-element"
+										transition={{ duration: 0.2 }}
+									/>
 								)}
-							>
-								{label}
-							</Button>
-						</Link>
+							</AnimatePresence>
+						</button>
 					))}
 				</nav>
 

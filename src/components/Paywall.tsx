@@ -161,7 +161,7 @@ export default function Paywall() {
 
 	return (
 		<div className="max-w-full mx-auto px-6">
-			<div className="flex items-center space-x-4 w-full justify-center pb-4">
+			<div className="flex items-center space-x-4 w-full justify-center pb-8">
 				<BillingToggle
 					onChange={(mode) => setIsAnnual(mode == "annually")}
 				/>
@@ -171,9 +171,10 @@ export default function Paywall() {
 				{tiers.map(({id, name, description, features, price}) => {
 					const isSelected = id === selectedTier;
 					return (
-						<TiltEffect key={id} tilt={1 / 32.0}>
+						<TiltEffect key={id} tilt={1 / 64.0} >
 							<div
 								className={`border rounded-3xl px-2 pb-2 flex flex-col justify-between hover:shadow-xl hover:shadow-gray-100
+								transform-gpu hover:-translate-y-2 transition duration-500
                 ${isSelected ? "bg-gradient-to-r from-[#FBDAEC] to-[#F5EDA4] text-black" : "bg-white/20 backdrop-blur text-black"}
               `}
 							>

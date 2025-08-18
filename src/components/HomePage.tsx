@@ -13,19 +13,22 @@ import {Label} from "@/components/ui/label";
 import {CloudArrowUpIcon, LockClosedIcon, ServerIcon} from '@heroicons/react/20/solid'
 import SvgGrid from "@/components/SvgGrid";
 import GradientRoundedFooter from "@/components/ui/rounded-footer";
+import QAndA from "@/components/QA";
+import ModernAnimatedButtonVariant1 from "@/components/ui/animated-button";
+import PreviewStickyFooter, {StickyFooter} from "@/components/ui/sticky-footer";
+import {BorderTrail} from "@/components/ui/border-trail";
 
 function Bento() {
 	return (
 		<div className="bg-white py-24 sm:py-32">
 			<div className="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
 
-
 				<h2 className="text-center text-base/7 font-semibold text-black">Explore features</h2>
 				<p className="mx-auto mt-2 max-w-xl text-center text-4xl font-semibold tracking-tight text-balance text-gray-950 sm:text-5xl">
 					Industry-leading generation powered by AI
 				</p>
 				<div className="mt-10 grid gap-4 sm:mt-16 lg:grid-cols-3 lg:grid-rows-2">
-					<div className="relative lg:row-span-2">
+					<div className="transform-gpu hover:-translate-y-4 transition duration-500 relative lg:row-span-2">
 						<div className="absolute inset-px rounded-lg bg-white lg:rounded-l-4xl" />
 						<div className="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)] lg:rounded-l-[calc(2rem+1px)]">
 							<div className="px-8 pt-8 pb-3 sm:px-10 sm:pt-10 sm:pb-0">
@@ -48,7 +51,7 @@ function Bento() {
 						</div>
 						<div className="pointer-events-none absolute inset-px rounded-lg shadow-sm outline outline-black/5 lg:rounded-l-4xl" />
 					</div>
-					<div className="relative max-lg:row-start-1">
+					<div className="transform-gpu hover:-translate-y-4 transition duration-500 relative max-lg:row-start-1">
 						<div className="absolute inset-px rounded-lg bg-white max-lg:rounded-t-4xl" />
 						<div className="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)] max-lg:rounded-t-[calc(2rem+1px)]">
 							<div className="px-8 pt-8 sm:px-10 sm:pt-10">
@@ -67,7 +70,7 @@ function Bento() {
 						</div>
 						<div className="pointer-events-none absolute inset-px rounded-lg shadow-sm outline outline-black/5 max-lg:rounded-t-4xl" />
 					</div>
-					<div className="relative max-lg:row-start-3 lg:col-start-2 lg:row-start-2">
+					<div className="transform-gpu hover:-translate-y-4 transition duration-500 relative max-lg:row-start-3 lg:col-start-2 lg:row-start-2">
 						<div className="absolute inset-px rounded-lg bg-white" />
 						<div className="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)]">
 							<div className="px-8 pt-8 sm:px-10 sm:pt-10">
@@ -86,7 +89,7 @@ function Bento() {
 						</div>
 						<div className="pointer-events-none absolute inset-px rounded-lg shadow-sm outline outline-black/5" />
 					</div>
-					<div className="relative lg:row-span-2">
+					<div className="transform-gpu hover:-translate-y-4 transition duration-500 relative lg:row-span-2">
 						<div className="absolute inset-px rounded-lg bg-white max-lg:rounded-b-4xl lg:rounded-r-4xl" />
 						<div className="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)] max-lg:rounded-b-[calc(2rem+1px)] lg:rounded-r-[calc(2rem+1px)]">
 							<div className="px-8 pt-8 pb-3 sm:px-10 sm:pt-10 sm:pb-0">
@@ -320,7 +323,6 @@ export default function HomePage() {
 
 	return (
 		<div className="bg-white text-black">
-
 			<div className="relative isolate px-6 pt-28 lg:px-8">
 				<div
 					aria-hidden="true"
@@ -375,6 +377,14 @@ export default function HomePage() {
              focus-within:ring-2 border-1 focus-within:ring-transparent">
 
 					<div className="bg-white/30 backdrop-blur-sm rounded-2xl flex sm:flex-row flex-col w-full items-end px-2">
+						<BorderTrail
+							style={{
+								boxShadow:
+									"0px 0px 60px 30px rgb(255 255 255 / 50%), 0 0 100px 60px rgb(0 0 0 / 50%), 0 0 140px 90px rgb(0 0 0 / 50%)",
+							}}
+							size={100}
+						/>
+
 						<Textarea
 							placeholder="Create icons, logos and vector images in seconds"
 							className="rounded-2xl overscroll-none border-none px-4 py-4 focus:outline-none focus-visible:ring-0 resize-none shadow-none min-h-12 w-full"
@@ -426,6 +436,11 @@ export default function HomePage() {
 			<section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-48 items-center justify-items-center">
 				<h2 className="text-5xl font-medium text-center mb-8">Subscription plans</h2>
 				<Paywall/>
+			</section>
+
+			<section className="py-12 sm:py-12 lg:px-48 sm:px-8 px-4">
+				<h2 className="text-5xl font-medium text-center mb-8">Q&A</h2>
+				<QAndA/>
 			</section>
 
 			<GradientRoundedFooter className="pt-16"/>

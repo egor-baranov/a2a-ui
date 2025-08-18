@@ -62,6 +62,23 @@ const styles = [
 	"icon/uneven_fill",
 ];
 const quantities = [1, 2, 3, 5, 7, 10];
+const resolutions: string[] = [
+	"1024x1024",
+	"1365x1024",
+	"1024x1365",
+	"1536x1024",
+	"1024x1536",
+	"1820x1024",
+	"1024x1820",
+	"1024x2048",
+	"2048x1024",
+	"1434x1024",
+	"1024x1434",
+	"1024x1280",
+	"1280x1024",
+	"1024x1707",
+	"1707x1024",
+];
 
 type SVGGenerationRequest = components["schemas"]["SVGGenerationRequest"];
 type PromptEnhanceRequest = components["schemas"]["PromptEnhanceRequest"];
@@ -77,6 +94,7 @@ export default function CreatePage() {
 	const [tab, setTab] = useState<"icon" | "illustration">("icon");
 
 	const [style, setStyle] = useState<string>(tab === "icon" ? "icon/outline" : "vector_illustration");
+	const [resolution, setResolution] = useState<string>(resolutions[0]);
 	const [optimizeSvg, setOptimizeSvg] = useState<boolean>(false);
 	const [svgResults, setSvgResults] = useState<Result[]>([]);
 	const [loading, setLoading] = useState(false);
@@ -360,6 +378,27 @@ export default function CreatePage() {
 												{styles.filter((v) => {
 													return tab === "icon" ? v.startsWith("icon") : v.startsWith("vector_illustration");
 												}).map((s) => (
+													<SelectItem key={s} value={s} className="py-1 text-sm">
+														{s}
+													</SelectItem>
+												))}
+											</SelectGroup>
+										</SelectContent>
+									</Select>
+
+									<Select value={resolution} onValueChange={setResolution}>
+										<SelectTrigger
+											className="cursor-pointer max-w-[240px] w-auto h-6 text-sm text-end bg-white/80 hover:bg-gray-100/80 backdrop-blur-xl focus:outline-none focus-visible:ring-0 rounded-xl">
+											<SelectValue placeholder="Select a resolution"/>
+										</SelectTrigger>
+
+										<SelectContent className="max-h-56 text-sm">
+											<SelectGroup>
+												<SelectLabel>Resolutions</SelectLabel>
+
+												<div className="pb-2"/>
+
+												{resolutions.map((s) => (
 													<SelectItem key={s} value={s} className="py-1 text-sm">
 														{s}
 													</SelectItem>
