@@ -160,7 +160,7 @@ export default function Paywall() {
 	};
 
 	return (
-		<div className="max-w-full mx-auto px-6">
+		<div className="max-w-full mx-auto px-0">
 			<div className="flex items-center space-x-4 w-full justify-center pb-8">
 				<BillingToggle
 					onChange={(mode) => setIsAnnual(mode == "annually")}
