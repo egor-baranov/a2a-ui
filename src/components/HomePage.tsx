@@ -482,7 +482,7 @@ export default function HomePage() {
 				</section>
 
 				{cards.map(({ bgColor, description, image, title }, index) => (
-					<StackingCardItem key={index} index={index} className="lg:h-[960px] h-[876px] duration-500 lg:pt-32 pt-24 sm:pt-8">
+					<StackingCardItem key={index} index={index} className="lg:h-[960px] h-[720px] duration-500 lg:pt-32 pt-24 sm:pt-8">
 						<div
 							className={cn(
 								bgColor,
