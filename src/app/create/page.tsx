@@ -227,7 +227,7 @@ export default function CreatePage() {
 		(async () => {
 			try {
 				const res = await fetch(
-					`https://svgen-backend-production.up.railway.app/generations/me?limit=5&offset=${page - 1}`,
+					`https://svgen-backend-production.up.railway.app/generations/me?limit=5&offset=${(page - 1) * 5}&page=${page}`,
 					{
 						method: "GET",
 						headers: {

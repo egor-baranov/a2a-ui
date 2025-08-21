@@ -453,6 +453,11 @@ export interface components {
              */
             query: string;
             /**
+             * Page
+             * @description Page number (starting from 1)
+             */
+            page?: number | null;
+            /**
              * Limit
              * @description Maximum number of results
              * @default 20
@@ -461,9 +466,8 @@ export interface components {
             /**
              * Offset
              * @description Offset for pagination
-             * @default 0
              */
-            offset: number;
+            offset?: number | null;
         };
         /** GenerationResponse */
         GenerationResponse: {
@@ -1185,8 +1189,12 @@ export interface operations {
     get_current_user_generations_generations_me_get: {
         parameters: {
             query?: {
+                /** @description Page number (starting from 1) */
+                page?: number | null;
+                /** @description Number of results per page */
                 limit?: number;
-                offset?: number;
+                /** @description Number of results to skip */
+                offset?: number | null;
             };
             header?: never;
             path?: never;
