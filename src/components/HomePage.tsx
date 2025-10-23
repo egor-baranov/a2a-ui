@@ -482,16 +482,16 @@ export default function HomePage() {
 				</section>
 
 				{cards.map(({ bgColor, description, image, title }, index) => (
-					<StackingCardItem key={index} index={index} className="lg:h-[960px] h-[720px] duration-500 lg:pt-32 pt-24 sm:pt-8">
+					<StackingCardItem key={index} index={index} className="lg:h-[960px] lg:px-64 h-[720px] duration-500 lg:pt-32 pt-24 sm:pt-8">
 						<div
 							className={cn(
 								bgColor,
-								"h-[80%] sm:h-[70%] flex-col sm:flex-row aspect-video px-8 py-10 flex w-11/12 rounded-4xl mx-auto relative text-black bg-white/90 backdrop-blur-md border-1"
+								"h-[80%] sm:h-[70%] flex-col aspect-video px-8 py-10 flex w-11/12 rounded-4xl mx-auto relative text-black bg-white/90 backdrop-blur-md border-1"
 							)}
 						>
-							<div className="flex-1 flex flex-col justify-center">
+							<div className="flex-1 flex flex-col justify-center items-center">
 								<h3 className="font-medium text-4xl mb-5">{title}</h3>
-								<p>{description}</p>
+								<p className="text-center mb-2">{description}</p>
 							</div>
 
 							<div className="w-full sm:w-1/2 rounded-xl aspect-video relative overflow-hidden">
